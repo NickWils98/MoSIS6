@@ -5,7 +5,7 @@ class Vessel(object):
     def __init__(self):
         self.name = self.getVesselName()
         self.id = 0
-        self.destinations = ""
+        self.destination = ""
 
     def getVesselName(self):
         '''
