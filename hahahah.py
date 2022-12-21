@@ -10,7 +10,7 @@ class portEntryRequest(message):
         self.content = f"Ship {vessel.name} with id {vessel.id} would like to enter the port"
 
     def getMessageContent(self):
-        return self.content
+        return self.content + ""
 
 
 class portEntryPermission(message):
