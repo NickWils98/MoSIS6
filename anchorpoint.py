@@ -17,7 +17,7 @@ class AnchorPoint(AtomicDEVS):
     def __init__(self):
         AtomicDEVS.__init__(self, "K")
         # Fix the time needed to process a single event
-        self.processing_time = 1.0 # TODO: Weet nog niet hoe we met time gaan werken
+        self.processing_time = 0 # TODO: Geen Processing Time om een ship te genereren, er staat "There are no additional delays in this system."
         self.state = AnchorpointState()
 
         # Create input and output ports
