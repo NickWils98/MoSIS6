@@ -35,4 +35,4 @@ class portDepartureRequests(message):
         self.content = f"Ship {vessel.name} with id {vessel.id} has left dock at quay {quay}"
 
     def getMessageContent(self):
-        return self.content + "hallo"
+        return self.content

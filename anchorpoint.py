@@ -1,9 +1,10 @@
 from pypdevs.DEVS import AtomicDEVS
 import port_events as Messages
+import queue
 
 # Define the state of the AnchorPoint as a structured object
 class AnchorpointState:
-    def __init__(self, outputs):
+    def __init__(self):
         # Keep a queue with vessels waiting
         self.queue = []
         # The vessel that is currently being processed
@@ -19,7 +20,7 @@ class AnchorPoint(AtomicDEVS):
         self.state = AnchorpointState()
 
         # Create output ports
-        self.outport = self.addOutPort("Out") # TODO: Mss vessel name?
+        self.outport = self.addOutPort("out_port") # TODO: Mss vessel name?
 
         # Add the other ports: incoming events and finished event
         self.in_event = self.addInPort("in_event")
@@ -28,8 +29,8 @@ class AnchorPoint(AtomicDEVS):
     def intTransition(self):
         # Is only called when we are outputting an event
         # Pop the first idle processor and clear processing event
-        self.state.idle_procs.pop(0)
-        if self.state.queue and self.state.idle_procs:
+        self.state.queue.pop(0)
+        if len(self.state.queue) != 0:
             # There are still queued elements, so continue
             self.state.processing = self.state.queue.pop(0)
             self.state.remaining_time = self.processing_time
