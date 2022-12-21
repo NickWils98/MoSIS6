@@ -23,8 +23,8 @@ class CrudeOilTanker(Vessel):
         super().__init__()
         self.type = "Crude Oil Tanker"
         self.surface_area = 11007
-        self.avg_v = 10.7
-        self.max_v = 15.4
+        self.avg_v = 19.8164
+        self.max_v = 28.5727
         self.prob = .28
 
 
@@ -33,8 +33,8 @@ class BulkCarrier(Vessel):
         super().__init__()
         self.type = "Bulk Carrier"
         self.surface_area = 5399
-        self.avg_v = 12
-        self.max_v = 15.6
+        self.avg_v = 22.224
+        self.max_v = 28.8912
         self.prob = .22
 
 
@@ -43,8 +43,8 @@ class TugBoat(Vessel):
         super().__init__()
         self.type = "Tug Boat"
         self.surface_area = 348
-        self.avg_v = 7.8
-        self.max_v = 10.6
+        self.avg_v = 14.4456
+        self.max_v = 19.6312
         self.prob = .33
 
 
@@ -53,8 +53,8 @@ class SmallCargoFreighter(Vessel):
         super().__init__()
         self.type = "Small Cargo Freighter"
         self.surface_area = 1265
-        self.avg_v = 6.4
-        self.max_v = 9.8
+        self.avg_v = 11.8528
+        self.max_v = 18.1496
         self.prob = .17
 
 
