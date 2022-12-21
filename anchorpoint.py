@@ -59,7 +59,7 @@ class AnchorPoint(AtomicDEVS):
         return self.state
 
     def timeAdvance(self):
-        # Just return the remaining time for this event (or infinity else)
+        # Just return the remaining time for this event
         return self.state.remaining_time
 
     def outputFnc(self):
