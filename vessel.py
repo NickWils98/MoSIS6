@@ -2,7 +2,9 @@ import numpy as np
 
 
 class VesselFactory():
-    def create(self):
+    def __init__(self):
+        self.uuid = 0
+    def create(self, creation_time):
         number = np.random.uniform()
         choice = 0
         prob_COT = .28
@@ -18,14 +20,16 @@ class VesselFactory():
             boat = TugBoat
         else:
             boat = SmallCargoFreighter
+        self.uuid += 1
+        return boat(creation_time, self.uuid)
 
-        return boat
+
 class Vessel(object):
-    def __init__(self, creation_time):
+    def __init__(self, creation_time, uuid):
         self.name = self.getVesselName()
         self.creation_time = creation_time
-        self.id = 0
-        self.destination = ""
+        self.uuid = uuid
+        self.destination = None
 
     def getVesselName(self):
         '''
@@ -39,8 +43,8 @@ class Vessel(object):
 
 
 class CrudeOilTanker(Vessel):
-    def __init__(self, creation_time):
-        super().__init__(creation_time)
+    def __init__(self, creation_time, uuid):
+        super().__init__(creation_time, uuid)
         self.type = "Crude Oil Tanker"
         self.surface_area = 11007
         self.avg_v = 19.8164/60
@@ -49,8 +53,8 @@ class CrudeOilTanker(Vessel):
 
 
 class BulkCarrier(Vessel):
-    def __init__(self, creation_time):
-        super().__init__(creation_time)
+    def __init__(self, creation_time, uuid):
+        super().__init__(creation_time, uuid)
         self.type = "Bulk Carrier"
         self.surface_area = 5399
         self.avg_v = 22.224/60
@@ -59,8 +63,8 @@ class BulkCarrier(Vessel):
 
 
 class TugBoat(Vessel):
-    def __init__(self, creation_time):
-        super().__init__(creation_time)
+    def __init__(self, creation_time, uuid):
+        super().__init__(creation_time, uuid)
         self.type = "Tug Boat"
         self.surface_area = 348
         self.avg_v = 14.4456/60
@@ -69,8 +73,8 @@ class TugBoat(Vessel):
 
 
 class SmallCargoFreighter(Vessel):
-    def __init__(self, creation_time):
-        super().__init__(creation_time)
+    def __init__(self, creation_time, uuid):
+        super().__init__(creation_time, uuid)
         self.type = "Small Cargo Freighter"
         self.surface_area = 1265
         self.avg_v = 11.8528/60

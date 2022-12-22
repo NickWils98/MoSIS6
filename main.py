@@ -13,6 +13,7 @@ class TestSystem(CoupledDEVS):
         generator = self.addSubModel(Generator())
         anchorpoint = self.addSubModel(AnchorPoint())
 
+
         self.connectPorts(generator.outport, anchorpoint.in_port)
 
 if __name__ == '__main__':

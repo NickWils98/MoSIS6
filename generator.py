@@ -44,8 +44,8 @@ class Generator(AtomicDEVS):
 
     def outputFnc(self):
         # Determine size of the event to generate
-        vessel = Vessel.VesselFactory().create()
         # Calculate current time (note the addition!)
         creation_time = self.state.current_time + self.state.remaining
+        vessel = Vessel.VesselFactory().create(creation_time)
         # Output the new event on the output port
-        return {self.outport: vessel(creation_time)}
+        return {self.outport: vessel}
