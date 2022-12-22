@@ -21,9 +21,9 @@ class VesselFactory():
 
         return boat
 class Vessel(object):
-    def __init__(self, creation):
+    def __init__(self, creation_time):
         self.name = self.getVesselName()
-        self.creation = creation
+        self.creation_time = creation_time
         self.id = 0
         self.destination = ""
 
