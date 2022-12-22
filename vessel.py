@@ -39,8 +39,8 @@ class Vessel(object):
 
 
 class CrudeOilTanker(Vessel):
-    def __init__(self, creation):
-        super().__init__(creation)
+    def __init__(self, creation_time):
+        super().__init__(creation_time)
         self.type = "Crude Oil Tanker"
         self.surface_area = 11007
         self.avg_v = 19.8164/60
@@ -49,8 +49,8 @@ class CrudeOilTanker(Vessel):
 
 
 class BulkCarrier(Vessel):
-    def __init__(self, creation):
-        super().__init__(creation)
+    def __init__(self, creation_time):
+        super().__init__(creation_time)
         self.type = "Bulk Carrier"
         self.surface_area = 5399
         self.avg_v = 22.224/60
@@ -59,8 +59,8 @@ class BulkCarrier(Vessel):
 
 
 class TugBoat(Vessel):
-    def __init__(self, creation):
-        super().__init__(creation)
+    def __init__(self, creation_time):
+        super().__init__(creation_time)
         self.type = "Tug Boat"
         self.surface_area = 348
         self.avg_v = 14.4456/60
@@ -69,8 +69,8 @@ class TugBoat(Vessel):
 
 
 class SmallCargoFreighter(Vessel):
-    def __init__(self, creation):
-        super().__init__(creation)
+    def __init__(self, creation_time):
+        super().__init__(creation_time)
         self.type = "Small Cargo Freighter"
         self.surface_area = 1265
         self.avg_v = 11.8528/60
