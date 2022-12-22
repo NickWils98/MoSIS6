@@ -1,5 +1,6 @@
 from pypdevs.DEVS import AtomicDEVS, CoupledDEVS
 from generator import Generator
+from waterway import Waterway
 from anchorpoint import AnchorPoint
 from pypdevs.simulator import Simulator
 import random
@@ -11,10 +12,11 @@ class TestSystem(CoupledDEVS):
 
         # Define all atomic submodels of which there are only one
         generator = self.addSubModel(Generator())
+        waterway = self.addSubModel(Waterway(68.54))
         anchorpoint = self.addSubModel(AnchorPoint())
 
-
         self.connectPorts(generator.outport, anchorpoint.in_port)
+        self.connectPorts(anchorpoint.out_port, waterway.in1_port)
 
 if __name__ == '__main__':
     # Make sure each of them simulates exactly the same workload

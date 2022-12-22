@@ -8,6 +8,7 @@ class AnchorpointState:
         # Keep a queue with vessels waiting
         self.requested = []
         self.waiting = []
+
         # The vessel that is currently being processed
         self.processing = None
         self.leaving = []
@@ -43,10 +44,11 @@ class AnchorPoint(AtomicDEVS):
         return self.state
 
     def extTransition(self, inputs):
-        # Update the remaining time of this job
-        self.state.remaining_time -= self.elapsed
+        # Als ship gegenerate is
         if self.in_port in inputs:
             self.state.waiting.append(inputs[self.in_port])
+
+        # Nog ni connected, komt met control. Als ge message terugkrijgt van "uw vessel mag naar daar gaan"
         if self.in_event in inputs:
             permission = inputs[self.in_event]
             vessel = None
@@ -66,6 +68,7 @@ class AnchorPoint(AtomicDEVS):
         return self.state.remaining_time
 
     def outputFnc(self):
+        print("hallo")
         # Output the event to the processor
         leaving = self.state.leaving
         self.state.leaving = []
