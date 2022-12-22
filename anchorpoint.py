@@ -21,7 +21,7 @@ class AnchorPoint(AtomicDEVS):
         self.state = AnchorpointState()
 
         # Create input and output ports
-        self.inport = self.addInPort("in_port") # TODO: Moeten gegenereerd worden door Generator
+        self.in_port = self.addInPort("in_port") # TODO: Moeten gegenereerd worden door Generator
         self.outport = self.addOutPort("out_port") # TODO: Mss vessel name?
 
         # Add the other ports: incoming events and finished event
@@ -45,16 +45,16 @@ class AnchorPoint(AtomicDEVS):
         # Update the remaining time of this job
         self.state.remaining_time -= self.elapsed
 
-        self.state.processing = self.state.queue.pop(0)
-        self.state.remaining_time = self.processing_time
+        # self.state.processing = self.state.queue.pop(0)
+        # self.state.remaining_time = self.processing_time
 
         # TODO: Totally no idea wa die uuid en color moet zijn
-        Messages.portEntryRequest(
-            timestamp=self.state.current_time,
-            uuid=0,
-            color=0,
-            destination=self.state.processing.destination,
-            vessel=self.state.processing)
+        # Messages.portEntryRequest(
+        #     timestamp=self.state.current_time,
+        #     uuid=0,
+        #     color=0,
+        #     destination=self.state.processing.destination,
+        #     vessel=self.state.processing)
 
         return self.state
 

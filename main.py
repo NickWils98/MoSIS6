@@ -1,22 +1,24 @@
 from pypdevs.DEVS import AtomicDEVS, CoupledDEVS
-import generator as Generator
-import anchorpoint as AnchorPoint
+from generator import Generator
+from anchorpoint import AnchorPoint
 from pypdevs.simulator import Simulator
 import random
+import numpy as np
 
 class TestSystem(CoupledDEVS):
     def __init__(self):
         CoupledDEVS.__init__(self, "QueueSystem")
 
         # Define all atomic submodels of which there are only one
-        generator = self.addSubModel(Generator)
-        anchorpoint = self.addSubModel(AnchorPoint)
+        generator = self.addSubModel(Generator())
+        anchorpoint = self.addSubModel(AnchorPoint())
 
-        self.connectPorts(generator.out_event, anchorpoint.in_event)
+        self.connectPorts(generator.outport, anchorpoint.in_port)
 
 if __name__ == '__main__':
     # Make sure each of them simulates exactly the same workload
-    random.seed(1)
+    random.seed(42)
+    np.random.seed(42)
     # Set up the system
     m = TestSystem()
 
