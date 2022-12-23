@@ -19,7 +19,7 @@ class DockState:
 
 class Dock(AtomicDEVS):
     def __init__(self, quay_id):
-        AtomicDEVS.__init__(self)
+        AtomicDEVS.__init__(self, "Dock")
         self.state = DockState(quay_id)
 
         self.in_port = self.addInPort("in_port")

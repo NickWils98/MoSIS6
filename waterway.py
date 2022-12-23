@@ -68,7 +68,7 @@ class Waterway(AtomicDEVS):
 
     def outputFnc(self):
         # Output all the ships who left the water canal
-        if len(self.state.ingoing_leaving) >0:
+        if len(self.state.ingoing_leaving) > 0:
             leaving = self.state.ingoing_leaving
             self.state.ingoing_leaving = []
             return {self.out1_port: leaving}

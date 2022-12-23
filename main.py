@@ -20,7 +20,7 @@ class TestSystem(CoupledDEVS):
         anchorpoint = self.addSubModel(AnchorPoint())
         control_tower = self.addSubModel(ControlTower())
         confluence = self.addSubModel(Confluence([["K"], ["S"], [1,2,3,4,5,6,7,8]], 3))
-        #dock = self.addSubModel(Dock(1))
+        dock = self.addSubModel(Dock(1))
 
         self.connectPorts(generator.outport, anchorpoint.in_port)
         self.connectPorts(anchorpoint.out_port, waterway.in1_port)
@@ -28,6 +28,8 @@ class TestSystem(CoupledDEVS):
         self.connectPorts(control_tower.out_event, anchorpoint.in_event)
         self.connectPorts(waterway.out1_port, confluence.in_ports[0])
         self.connectPorts(confluence.out_ports[2], waterway2.in1_port)
+        self.connectPorts(waterway2.out1_port, dock.in_port)
+
 
 if __name__ == '__main__':
     # Make sure each of them simulates exactly the same workload
