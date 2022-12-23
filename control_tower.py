@@ -1,7 +1,7 @@
 from pypdevs.DEVS import AtomicDEVS
 import port_events as Messages
 
-# Define the state of the AnchorPoint as a structured object
+# Define the state of the Control Tower as a structured object
 class ControlTowerState:
     def __init__(self, dock_count=8):
         self.answers = []

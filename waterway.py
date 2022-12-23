@@ -1,7 +1,7 @@
 from pypdevs.DEVS import AtomicDEVS
 import port_events as Messages
 
-# Define the state of the AnchorPoint as a structured object
+# Define the state of the Waterway as a structured object
 class WaterwayState:
     def __init__(self, distance):
         # dict: key = vessel in 1 way, value is the remaining time
@@ -18,7 +18,7 @@ class WaterwayState:
 
 class Waterway(AtomicDEVS):
     def __init__(self, distance):
-        AtomicDEVS.__init__(self, "K")
+        AtomicDEVS.__init__(self, "Waterway")
         self.state = WaterwayState(distance)
 
         # Create input and output ports for one way

@@ -1,7 +1,7 @@
 from pypdevs.DEVS import AtomicDEVS
 import port_events as Messages
 
-# Define the state of the AnchorPoint as a structured object
+# Define the state of the Confluence as a structured object
 class ConfluenceState:
     def __init__(self, map_port, outputs):
         self.queue = []
