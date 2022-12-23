@@ -4,6 +4,8 @@ import port_events as Messages
 # Define the state of the AnchorPoint as a structured object
 class WaterwayState:
     def __init__(self, distance):
+        self.remaining_time = 0
+
         # dict: key = vessel in 1 way, value is the remaining time
         self.ingoing = {}
         self.ingoing_leaving = []
@@ -33,8 +35,8 @@ class Waterway(AtomicDEVS):
                 self.state.ingoing[vessel] -= self.elapsed
 
             #  if the vessel is arrived add it to the leaving list
-            if self.state.ingoing[vessel]  <=0:
-                self.state.ingoing_leaving.append(vessel) # Als ge meteen popt komt uw loop in de shit
+            if self.state.ingoing[vessel] <= 0:
+                self.state.ingoing_leaving.append(vessel)
 
         # delete the arrived vessel
         for vessel in self.state.ingoing_leaving:
@@ -59,8 +61,9 @@ class Waterway(AtomicDEVS):
     def timeAdvance(self):
         # wait idl if there is no ship in the waterway
         self.state.remaining_time = float("inf")
+
         # find the shortest time between the vessels
-        if len(self.state.ingoing.keys())>0:
+        if len(self.state.ingoing.keys()) > 0:
             self.state.remaining_time = min(self.state.ingoing.values())
         return self.state.remaining_time
 

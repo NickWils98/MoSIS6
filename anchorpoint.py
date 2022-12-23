@@ -63,9 +63,9 @@ class AnchorPoint(AtomicDEVS):
 
     def timeAdvance(self):
         # Don't wait if there is a message or vessel waiting to send else be idle
-        if len(self.state.leaving)>0:
+        if len(self.state.leaving) > 0:
             return 0
-        if len(self.state.waiting)>0:
+        if len(self.state.waiting) > 0:
             return 0
         return float('inf')
 

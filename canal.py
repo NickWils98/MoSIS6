@@ -4,13 +4,12 @@ import port_events as Messages
 # Define the state of the AnchorPoint as a structured object
 class WaterwayState:
     def __init__(self, distance):
-        self.current_time = 0
         self.remaining_time = 0
 
         self.ingoing = [] # Queue van dictionaries
         self.ingoing_leaving = [] # lijst van vessels
         self.outgoing = []
-        self.ingoing_leaving = []
+        self.outgoing_leaving = []
 
         self.distance = distance
 
@@ -19,36 +18,26 @@ class Waterway(AtomicDEVS):
     def __init__(self, distance):
         AtomicDEVS.__init__(self, "K")
         # Fix the time needed to process a single event
-        self.processing_time = 0
         self.state = WaterwayState(distance)
 
         # Create input and output ports for one way
         self.in1_port = self.addInPort("in_port")
         self.out1_port = self.addOutPort("out_port")
 
-        # TODO: Create input and output ports for the other way
-
     def intTransition(self):
-        #self.state.current_time += self.elapsed
+
         if len(self.state.ingoing) != 0:
             for vessel_dict in self.state.ingoing:
-                for vessel, remainder in vessel_dict:
-                    new_time = remainder - self.elapsed
-                    vessel_dict[vessel] = new_time
+                for vessel in vessel_dict.keys():
+                    if self.elapsed is not None:
+                        vessel_dict[vessel] -= self.elapsed
 
-            # Check wether a vessel has arrived or not
-            for vessel_dict in self.state.ingoing:
-                for vessel, remainder in vessel_dict:
-                    if remainder <= 0:
-                        self.state.ingoing_leaving.append(vessel)  # Als ge meteen popt komt uw loop in de shit
+                    if self.state.ingoing[vessel] <= 0:
+                        self.state.ingoing_leaving.append(vessel)
 
             # delete from the dictionary
-            for vessel_dict in self.state.ingoing:
-                for vessel, remainder in vessel_dict:
-                    if vessel in self.state.ingoing_leaving:
-                        self.state.ingoing.pop()
-
-        # TODO: Same for outgoing, aka other direction
+            for vessel in self.state.ingoing_leaving:
+                del self.state.ingoing[vessel]
 
         return self.state
 
@@ -75,7 +64,16 @@ class Waterway(AtomicDEVS):
         return self.state
 
     def timeAdvance(self):
-        # Just return the remaining time for this event
+        # wait idl if there is no ship in the waterway
+        self.state.remaining_time = float("inf")
+
+        all_times = []
+        # find the shortest time between the vessels
+        for vessel_dict in self.state.ingoing:
+            for key, val in vessel_dict:
+                all_times.append(val)
+
+        self.state.remaining_time = min(all_times)
         return self.state.remaining_time
 
 
