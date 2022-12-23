@@ -5,40 +5,35 @@ import port_events as Messages
 class AnchorpointState:
     def __init__(self):
         self.current_time = 0
-        # Keep a queue with vessels waiting
-        self.requested = []
+        # Keep a queue with vessels that just came in
         self.waiting = []
-
-        # The vessel that is currently being processed
-        self.processing = None
+        # Keep a queue with vessels that requested to enter the port
+        self.requested = []
+        # Keep a queue with vessels that are about to leave
         self.leaving = []
+
+        # List of request to send
         self.requests = []
-        # Time remaining for this event
-        self.remaining_time = float("inf")
+
 
 class AnchorPoint(AtomicDEVS):
     def __init__(self):
         AtomicDEVS.__init__(self, "K")
-        # Fix the time needed to process a single event
-        self.processing_time = 0 # TODO: Geen Processing Time om een ship te genereren, er staat "There are no additional delays in this system."
         self.state = AnchorpointState()
 
         # Create input and output ports
         self.in_port = self.addInPort("in_port")
         self.out_port = self.addOutPort("out_port")
 
-        # Add the other ports: incoming events and finished event
+        # Add the other ports: incoming events and finished event for communication
         self.in_event = self.addInPort("in_event")
         self.out_event = self.addOutPort("out_event")
 
     def intTransition(self):
-        if self.elapsed is not None:
-            self.state.current_time += self.elapsed
-        if len(self.state.leaving) != 0:
-            for vessel in self.state.leaving:
-                pass
+        # Make a request to ask the control tower for a port
         if len(self.state.waiting) != 0:
             for vessel in self.state.waiting:
+                # remove it from the waiting list and make the message
                 self.state.waiting.remove(vessel)
                 request = Messages.portEntryRequest(self.state.current_time, vessel.uuid, vessel)
                 self.state.requests.append(request)
@@ -46,14 +41,15 @@ class AnchorPoint(AtomicDEVS):
         return self.state
 
     def extTransition(self, inputs):
-        # Als ship gegenerate is
+        # add a vessel to the queue
         if self.in_port in inputs:
             self.state.waiting.append(inputs[self.in_port])
 
-        # Nog ni connected, komt met control. Als ge message terugkrijgt van "uw vessel mag naar daar gaan"
+        # When a message is received proces it
         if self.in_event in inputs:
             permission = inputs[self.in_event]
             vessel = None
+            # Find the vessel
             for ship in self.state.requested:
                 if ship.uuid == permission.uuid:
                     vessel = ship
@@ -66,7 +62,7 @@ class AnchorPoint(AtomicDEVS):
         return self.state
 
     def timeAdvance(self):
-        # Just return the remaining time for this event
+        # Don't wait if there is a message or vessel waiting to send else be idle
         if len(self.state.leaving)>0:
             return 0
         if len(self.state.waiting)>0:
@@ -74,15 +70,14 @@ class AnchorPoint(AtomicDEVS):
         return float('inf')
 
     def outputFnc(self):
-        # Output the event to the processor
         return_dict = {}
         if len(self.state.leaving) > 0:
             leaving = self.state.leaving.pop()
             return_dict[self.out_port] = leaving
-            # self.state.leaving = []
+
 
         if len(self.state.requests) > 0:
             requests = self.state.requests.pop()
             return_dict[self.out_event] = requests
-            # self.state.requests = []
+
         return return_dict

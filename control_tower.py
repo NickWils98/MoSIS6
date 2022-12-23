@@ -8,14 +8,6 @@ class ControlTowerState:
         self.docks = []
         for _ in range(dock_count):
             self.docks.append(50)
-        self.dock1 = 50
-        self.dock2 = 50
-        self.dock3 = 50
-        self.dock4 = 50
-        self.dock5 = 50
-        self.dock6 = 50
-        self.dock7 = 50
-        self.dock8 = 50
         self.current_time = 0
 
 class ControlTower(AtomicDEVS):
@@ -47,12 +39,11 @@ class ControlTower(AtomicDEVS):
         return self.state
 
     def timeAdvance(self):
-        # Just return the remaining time for this event
+        # if an answer is ready don't wait else be idle waiting
         if len(self.state.answers) > 0:
             return 0
         return float('inf')
 
     def outputFnc(self):
         answer = self.state.answers.pop()
-        # self.state.answers = []
         return {self.out_event:answer}

@@ -1,12 +1,18 @@
 import numpy as np
 
-
+# Conversion from knots to km/h
 KNOT_TO_KM_H =1.852
 
-class VesselFactory():
+class VesselFactory:
+    """
+    Make vessels
+    """
     def __init__(self):
         self.uuid = 0
     def create(self, creation_time):
+        """
+        Create a vessel based on a probability.
+        """
         number = np.random.uniform()
         choice = 0
         prob_COT = .28
