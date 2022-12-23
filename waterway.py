@@ -13,6 +13,7 @@ class WaterwayState:
 
         # distance of the waterway
         self.distance = distance
+        self.remaining_time = float('inf')
 
 
 class Waterway(AtomicDEVS):
@@ -29,8 +30,8 @@ class Waterway(AtomicDEVS):
 
         # update all the remaining times
         for vessel in self.state.ingoing.keys():
-            if self.elapsed is not None:
-                self.state.ingoing[vessel] -= self.elapsed
+            # self.state.ingoing[vessel] -= self.state.remaining_time
+            self.state.ingoing[vessel] -= self.timeAdvance()
 
             #  if the vessel is arrived add it to the leaving list
             if self.state.ingoing[vessel]  <=0:
@@ -67,6 +68,8 @@ class Waterway(AtomicDEVS):
 
     def outputFnc(self):
         # Output all the ships who left the water canal
-        leaving = self.state.ingoing_leaving
-        self.state.ingoing_leaving = []
-        return {self.out1_port: leaving}
+        if len(self.state.ingoing_leaving) >0:
+            leaving = self.state.ingoing_leaving
+            self.state.ingoing_leaving = []
+            return {self.out1_port: leaving}
+        return {}
