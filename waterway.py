@@ -27,7 +27,6 @@ class Waterway(AtomicDEVS):
 
 
     def intTransition(self):
-
         # update all the remaining times
         for vessel in self.state.ingoing.keys():
             # self.state.ingoing[vessel] -= self.state.remaining_time
