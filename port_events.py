@@ -20,12 +20,11 @@ class portEntryPermission():
     This is a message sent from the ControlTower to the Anchorpoint, informing the latter that a ship
     with a certain identification number is allowed to enter the port and can dock at a specified quay.
     '''
-    def __init__(self, timestamp, uuid, destination, vessel):
-        self.destination = destination
+    def __init__(self, timestamp, uuid, vessel):
         self.vessel = vessel
         self.uuid = uuid
         self.timestamp = timestamp
-        self.content = f"Ship {vessel.name} with id {vessel.uuid} is allowed to enter port and can dock at {destination}"
+        self.content = f"Ship {vessel.name} with id {vessel.uuid} is allowed to enter port and can dock at {1}"
 
     def getMessageContent(self):
         return self.content
@@ -35,8 +34,12 @@ class portDepartureRequests():
     Sent by a Dock to the ControlTower, identifying that a certain
     Vessel has left a specific Dock, making room for another ship to arrive.
     '''
-    def __init__(self, timestamp, uuid, destination, vessel):
-        self.content = f"Ship {vessel.name} with id {vessel.uuid} has left dock {destination}"
+    def __init__(self, timestamp, uuid, vessel, quay_id):
+        self.vessel = vessel
+        self.uuid = uuid
+        self.timestamp = timestamp
+        self.quay_id = quay_id
+        self.content = f"Ship {vessel.name} with id {vessel.uuid} has left dock {self.quay_id}"
 
     def getMessageContent(self):
         return self.content

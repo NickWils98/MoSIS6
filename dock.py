@@ -1,39 +1,82 @@
 from pypdevs.DEVS import AtomicDEVS
 import numpy as np
+import port_events as Messages
 
 # Define the state of the AnchorPoint as a structured object
 class DockState:
-    def __init__(self):
+    def __init__(self, quay_id):
         # Keep track of current time and received vessels
         self.current_time = 0.0
-        self.vessels = []
-        self.id = 0
+        self.vessels = {}
+        self.quay_id = quay_id
+
+        self.leaving = []
+
+        # List of request to send
+        self.requests = []
 
 class Dock(AtomicDEVS):
-    def __init__(self):
-        AtomicDEVS.__init__(self, "S")
-        self.state = DockState()
+    def __init__(self, quay_id):
+        AtomicDEVS.__init__(self)
+        self.state = DockState(quay_id)
+
+        self.in_port = self.addInPort("in_port")
+        self.out_port = self.addInPort("out_port")
+
         self.in_event = self.addInPort("in_event")
+        self.out_event = self.addOutPort("out_event")
 
     def intTransition(self):
-        self.state.current_time += self.timeAdvance()
+        # update all the remaining times
+        for vessel in self.state.vessels.keys():
+            self.state.vessels[vessel] -= self.timeAdvance()
 
-        hour = math.floor(self.state.current_time) % 24
-        self.state.remaining = np.random.exponential(scale=1 / self.state.ships_hours[hour])
+            #  if the vessel is arrived add it to the leaving list
+            if self.state.vessels[vessel] <= 0:
+                self.state.leaving.append(vessel)
+                request = Messages.portDepartureRequests(self.state.current_time, vessel.uuid, vessel, self.state.quay_id)
+                self.state.requests.append(request)
+
+        # delete the arrived vessel
+        for vessel in self.state.vessels:
+            del self.state.vessels[vessel]
+
         return self.state
 
     def extTransition(self, inputs):
-        time_at_dock = np.random.normal(36, 12)
+        # update all the remaining times
+        for vessel in self.state.vessels.keys():
+            self.state.vessels[vessel] -= self.elapsed
 
-        # Update simulation time
-        self.state.current_time += self.elapsed
+        # add a new vessel in the waterway if possible
+        if len(self.state.vessels) <= 50:
+            if self.in_port in inputs:
+                vessel = inputs[self.in_port]
+                self.state.vessels[vessel] = np.random.normal(36, 12)
 
-        # Calculate time in queue
-        evt = inputs[self.in_event]
-        time = self.state.current_time - evt.creation_time - evt.processing_time
-        inputs[self.in_event].queueing_time = max(0.0, time)
-
-        # Add incoming event to received events
-        self.state.vessels.append(inputs[self.in_event])
         return self.state
+
+    def timeAdvance(self):
+        # wait idl if there is no ship in the dock
+        self.state.remaining_time = float("inf")
+
+        # find the shortest time between the vessels
+        if len(self.state.vessels.keys()) > 0:
+            self.state.remaining_time = min(self.state.vessels.values())
+        return self.state.remaining_time
+
+    def outputFnc(self):
+        return_dict = {}
+
+        # Output all the outgoing events
+        if len(self.state.requests) > 0:
+            requests = self.state.requests.pop()
+            return_dict[self.out_event] = requests
+
+        # Output all the ships who left the water canal
+        if len(self.state.leaving) > 0:
+            leaving = self.state.leaving.pop()
+            return_dict[self.out_port] = leaving
+
+        return return_dict
 
