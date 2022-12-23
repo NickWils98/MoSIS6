@@ -5,6 +5,7 @@ from anchorpoint import AnchorPoint
 from pypdevs.simulator import Simulator
 from control_tower import ControlTower
 from confluence import Confluence
+from dock import Dock
 import random
 import numpy as np
 
@@ -19,6 +20,7 @@ class TestSystem(CoupledDEVS):
         anchorpoint = self.addSubModel(AnchorPoint())
         control_tower = self.addSubModel(ControlTower())
         confluence = self.addSubModel(Confluence([["K"], ["S"], [1,2,3,4,5,6,7,8]], 3))
+        #dock = self.addSubModel(Dock(1))
 
         self.connectPorts(generator.outport, anchorpoint.in_port)
         self.connectPorts(anchorpoint.out_port, waterway.in1_port)

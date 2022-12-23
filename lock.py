@@ -33,8 +33,11 @@ class Lock(AtomicDEVS):
         AtomicDEVS.__init__(self)
         self.state = LockState(lock_id, washing_duration, lock_shift_interval, open_close_duration, surface_area)
 
-        self.in_port = self.addInPort("in_port")
-        self.out_port = self.addInPort("out_port")
+        self.in_port_sea = self.addInPort("in_port")
+        self.out_port_dock = self.addInPort("out_port")
+
+        self.in_port_dock = self.addInPort("in_port")
+        self.out_port_sea = self.addInPort("out_port")
 
         # TODO: Ports voor de andere direction
 
@@ -54,22 +57,22 @@ class Lock(AtomicDEVS):
         for vessel in self.state.in_lock:
             self.state.in_lock[vessel] -= self.elapsed
 
-        if self.in_port in inputs:
-            vessel = inputs[self.in_port]
+        if self.in_port_sea in inputs:
+            vessel = inputs[self.in_port_sea]
             duration = self.state.washing_duration
 
             # Als water level hetzelfde is en de poort open -> ships can enter
-            if self.state.water_level == "LOW" and self.state.gate1_state == "OPEN":
+            if self.state.water_level == "HIGH" and self.state.gate1_state == "OPEN":
                 # Check of het ship past
                 if vessel.surface_area <= self.state.remaining_capacity:
                     self.state.remaining_capacity -= vessel.surface_area
-                    duration += self.state.open_close_duration * 2 + 30
-                    self.state.in_lock.append({vessel: duration})
+                    duration += self.state.open_close_duration * 2 + len(self.state.in_lock)*30
+                    self.state.in_lock[vessel] = duration
 
                     if self.state.water_level == "LOW" and self.state.gate1_state == "OPEN":
                         pass
 
-            # Als water level hetzelfde is maar poort toe -> washing gaat beginnen. Voeg toe aan wait queue
+            # Als water level [sea ~ Lock] hetzelfde is maar poort toe -> washing gaat beginnen. Voeg toe aan wait queue
             elif self.state.water_level == "LOW" and self.state.gate1_state == "CLOSED":
                 self.state.waiting_queue.append(vessel)
 
@@ -80,19 +83,19 @@ class Lock(AtomicDEVS):
         self.state.remaining_time = float("inf")
 
         # find the shortest time between the vessels
-        if len(self.state.vessels.keys()) > 0:
-            self.state.remaining_time = min(self.state.vessels.values())
+        if len(self.state.in_lock.keys()) > 0:
+            self.state.remaining_time = min(self.state.in_lock.values())
         return self.state.remaining_time
 
     def outputFnc(self):
         return_dict = {}
 
-        # Output all the outgoing events
+        # Output all the outgoing boats one side
         if len(self.state.requests) > 0:
             requests = self.state.requests.pop()
             return_dict[self.out_event] = requests
 
-        # Output all the ships who left the water canal
+        # Output all the outgoing boats other side
         if len(self.state.leaving) > 0:
             leaving = self.state.leaving.pop()
             return_dict[self.out_port] = leaving

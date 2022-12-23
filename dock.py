@@ -2,18 +2,20 @@ from pypdevs.DEVS import AtomicDEVS
 import numpy as np
 import port_events as Messages
 
+
 # Define the state of the AnchorPoint as a structured object
 class DockState:
     def __init__(self, quay_id):
         # Keep track of current time and received vessels
         self.current_time = 0.0
-        self.vessels = {}
         self.quay_id = quay_id
 
+        self.vessels = {}
         self.leaving = []
 
         # List of request to send
         self.requests = []
+
 
 class Dock(AtomicDEVS):
     def __init__(self, quay_id):
@@ -34,7 +36,8 @@ class Dock(AtomicDEVS):
             #  if the vessel is leaving the dock, add it to the leaving list
             if self.state.vessels[vessel] <= 0:
                 self.state.leaving.append(vessel)
-                request = Messages.portDepartureRequests(self.state.current_time, vessel.uuid, vessel, self.state.quay_id)
+                request = Messages.portDepartureRequests(self.state.current_time, vessel.uuid, vessel,
+                                                         self.state.quay_id)  # TODO: Current time wordt ni aangepast
                 self.state.requests.append(request)
 
         # delete the arrived vessel
@@ -79,4 +82,3 @@ class Dock(AtomicDEVS):
             return_dict[self.out_port] = leaving
 
         return return_dict
-
