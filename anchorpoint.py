@@ -32,12 +32,14 @@ class AnchorPoint(AtomicDEVS):
         self.out_event = self.addOutPort("out_event")
 
     def intTransition(self):
-        self.state.current_time += self.elapsed
+        if self.elapsed is not None:
+            self.state.current_time += self.elapsed
         if len(self.state.leaving) != 0:
             for vessel in self.state.leaving:
                 pass
         if len(self.state.waiting) != 0:
             for vessel in self.state.waiting:
+                self.state.waiting.remove(vessel)
                 request = Messages.portEntryRequest(self.state.current_time, vessel.uuid, vessel)
                 self.state.requests.append(request)
                 self.state.requested.append(vessel)
@@ -65,12 +67,22 @@ class AnchorPoint(AtomicDEVS):
 
     def timeAdvance(self):
         # Just return the remaining time for this event
-        return self.state.remaining_time
+        if len(self.state.leaving)>0:
+            return 0
+        if len(self.state.waiting)>0:
+            return 0
+        return float('inf')
 
     def outputFnc(self):
         # Output the event to the processor
-        leaving = self.state.leaving
-        self.state.leaving = []
-        requests = self.state.requests
-        self.state.requests = []
-        return {self.out_port: leaving,self.out_event:requests}
+        return_dict = {}
+        if len(self.state.leaving) > 0:
+            leaving = self.state.leaving.pop()
+            return_dict[self.out_port] = leaving
+            # self.state.leaving = []
+
+        if len(self.state.requests) > 0:
+            requests = self.state.requests.pop()
+            return_dict[self.out_event] = requests
+            # self.state.requests = []
+        return return_dict

@@ -1,6 +1,8 @@
 import numpy as np
 
 
+KNOT_TO_KM_H =1.852
+
 class VesselFactory():
     def __init__(self):
         self.uuid = 0
@@ -47,8 +49,8 @@ class CrudeOilTanker(Vessel):
         super().__init__(creation_time, uuid)
         self.type = "Crude Oil Tanker"
         self.surface_area = 11007
-        self.avg_v = 19.8164/60
-        self.max_v = 28.5727/60
+        self.avg_v = 10.7*KNOT_TO_KM_H
+        self.max_v = 15.4 * KNOT_TO_KM_H
         self.prob = .28
 
 
@@ -57,8 +59,8 @@ class BulkCarrier(Vessel):
         super().__init__(creation_time, uuid)
         self.type = "Bulk Carrier"
         self.surface_area = 5399
-        self.avg_v = 22.224/60
-        self.max_v = 28.8912/60
+        self.avg_v = 12*KNOT_TO_KM_H
+        self.max_v = 15.6 * KNOT_TO_KM_H
         self.prob = .22
 
 
@@ -67,8 +69,8 @@ class TugBoat(Vessel):
         super().__init__(creation_time, uuid)
         self.type = "Tug Boat"
         self.surface_area = 348
-        self.avg_v = 14.4456/60
-        self.max_v = 19.6312/60
+        self.avg_v = 7.8*KNOT_TO_KM_H
+        self.max_v = 10.6 * KNOT_TO_KM_H
         self.prob = .33
 
 
@@ -77,8 +79,8 @@ class SmallCargoFreighter(Vessel):
         super().__init__(creation_time, uuid)
         self.type = "Small Cargo Freighter"
         self.surface_area = 1265
-        self.avg_v = 11.8528/60
-        self.max_v = 18.1496/60
+        self.avg_v = 6.4*KNOT_TO_KM_H
+        self.max_v = 9.8 * KNOT_TO_KM_H
         self.prob = .17
 
 

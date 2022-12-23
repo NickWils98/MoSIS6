@@ -6,6 +6,7 @@ class WaterwayState:
     def __init__(self, distance):
         self.current_time = 0
         self.remaining_time = 0
+        self.count =0
 
         self.ingoing = {}
         self.ingoing_leaving = []
@@ -26,40 +27,47 @@ class Waterway(AtomicDEVS):
         self.in1_port = self.addInPort("in_port")
         self.out1_port = self.addOutPort("out_port")
 
-        # TODO: Create input and output ports for the other way
 
     def intTransition(self):
+
         #self.state.current_time += self.elapsed
         if len(self.state.ingoing) != 0:
-            # Update time of each Vessel
-            for vessel, remainder in self.state.ingoing:
-                new_time = remainder - self.elapsed
-                self.state.ingoing[vessel] = new_time
 
-            # Check wether a vessel has arrived or not
-            for vessel, remainder in self.state.ingoing:
-                if remainder <= 0:
+            for vessel in self.state.ingoing.keys():
+                if self.elapsed is not None:
+                    self.state.ingoing[vessel] -= self.elapsed
+                if self.state.ingoing[vessel]  <=0:
                     self.state.ingoing_leaving.append(vessel) # Als ge meteen popt komt uw loop in de shit
 
             # delete from the dictionary
-            for vessel, remainder in self.state.ingoing:
-                if vessel in self.state.ingoing_leaving:
-                    del self.state.ingoing[vessel]
+            for vessel in self.state.ingoing_leaving:
+                del self.state.ingoing[vessel]
+
+
 
         # TODO: Same for outgoing, aka other direction
 
         return self.state
 
     def extTransition(self, inputs):
+        for vessel in self.state.ingoing.keys():
+            self.state.ingoing[vessel] -= self.elapsed
         if self.in1_port in inputs:
-            remaining_time = self.state.distance / self.state.ingoing[(inputs[self.in1_port])].avg_v
-            self.state.ingoing[(inputs[self.in1_port])] = remaining_time
-            self.state.remaining_time = 100
-
+            vessel = inputs[self.in1_port]
+            remaining_time = self.state.distance / vessel.avg_v
+            self.state.ingoing[vessel] = remaining_time
+            if remaining_time< self.state.remaining_time:
+                self.state.remaining_time = remaining_time
         return self.state
 
     def timeAdvance(self):
         # Just return the remaining time for this event
+        self.state.remaining_time = float("inf")
+        if len(self.state.ingoing.keys())>0:
+            self.state.remaining_time = min(self.state.ingoing.values())
+        print(self.state.remaining_time)
+        self.state.count+=1
+        print(self.state.count)
         return self.state.remaining_time
 
 
