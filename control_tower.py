@@ -23,7 +23,6 @@ class ControlTower(AtomicDEVS):
         return self.state
 
     def extTransition(self, inputs):
-
         self.state.current_time += self.elapsed
         if self.in_event in inputs:
             request = inputs[self.in_event]

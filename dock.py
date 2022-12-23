@@ -31,7 +31,7 @@ class Dock(AtomicDEVS):
         for vessel in self.state.vessels.keys():
             self.state.vessels[vessel] -= self.timeAdvance()
 
-            #  if the vessel is arrived add it to the leaving list
+            #  if the vessel is leaving the dock, add it to the leaving list
             if self.state.vessels[vessel] <= 0:
                 self.state.leaving.append(vessel)
                 request = Messages.portDepartureRequests(self.state.current_time, vessel.uuid, vessel, self.state.quay_id)
