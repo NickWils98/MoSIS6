@@ -68,7 +68,6 @@ class AnchorPoint(AtomicDEVS):
         return self.state.remaining_time
 
     def outputFnc(self):
-        print("hallo")
         # Output the event to the processor
         leaving = self.state.leaving
         self.state.leaving = []

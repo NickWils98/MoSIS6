@@ -5,16 +5,15 @@ import port_events as Messages
 class WaterwayState:
     def __init__(self, distance):
         self.current_time = 0
-        # Keep a list with ingoing and outgoing vessels
-        # ingoing = vaart de haven in
-        # outgoing = vaart de haven uit
+        self.remaining_time = 0
+
         self.ingoing = {}
-        self.outgoing = []
-        self.distance = distance
+        self.ingoing_leaving = []
+        self.outgoing = {}
         self.ingoing_leaving = []
 
-        # Time remaining for this event
-        self.remaining_time = float("inf")
+        self.distance = distance
+
 
 class Waterway(AtomicDEVS):
     def __init__(self, distance):
@@ -30,6 +29,7 @@ class Waterway(AtomicDEVS):
         # TODO: Create input and output ports for the other way
 
     def intTransition(self):
+        #self.state.current_time += self.elapsed
         if len(self.state.ingoing) != 0:
             # Update time of each Vessel
             for vessel, remainder in self.state.ingoing:
@@ -46,18 +46,22 @@ class Waterway(AtomicDEVS):
                 if vessel in self.state.ingoing_leaving:
                     del self.state.ingoing[vessel]
 
+        # TODO: Same for outgoing, aka other direction
+
         return self.state
 
     def extTransition(self, inputs):
         if self.in1_port in inputs:
             remaining_time = self.state.distance / self.state.ingoing[(inputs[self.in1_port])].avg_v
             self.state.ingoing[(inputs[self.in1_port])] = remaining_time
+            self.state.remaining_time = 100
 
         return self.state
 
     def timeAdvance(self):
         # Just return the remaining time for this event
         return self.state.remaining_time
+
 
     def outputFnc(self):
         # Output all the ships who left the water canal
