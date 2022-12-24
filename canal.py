@@ -53,7 +53,7 @@ class Canal(AtomicDEVS):
             # If not first vessel, need to take into account velocity ship in front (take min)
             else:
                 # Get vessel in front and it's velocity to calculate min (my vel, front vel)
-                front_vessel = self.state.ingoing[-1]
+                front_vessel = self.state.ingoing[-1][0]
 
                 min_avg_velocity = min(vessel.avg_v, front_vessel.avg_v)
 
@@ -72,6 +72,10 @@ class Canal(AtomicDEVS):
 
     def outputFnc(self):
         # Output all the ships who left the water canal
-        leaving = self.state.ingoing_leaving
-        self.state.ingoing_leaving = []
-        return {self.out1_port: leaving}
+        return_dict = {}
+        if len(self.state.ingoing_leaving) >0:
+            leaving = self.state.ingoing_leaving
+            self.state.ingoing_leaving = []
+            print(leaving[0].uuid)
+            return_dict[self.out1_port] = leaving
+        return return_dict

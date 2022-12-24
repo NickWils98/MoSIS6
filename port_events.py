@@ -20,11 +20,11 @@ class portEntryPermission():
     This is a message sent from the ControlTower to the Anchorpoint, informing the latter that a ship
     with a certain identification number is allowed to enter the port and can dock at a specified quay.
     '''
-    def __init__(self, timestamp, uuid,vessel, dock):
+    def __init__(self, timestamp, uuid, vessel, dock):
         self.vessel = vessel
         self.uuid = uuid
         self.timestamp = timestamp
-        self.destination = ""
+        self.destination = dock
         self.content = f"Ship {vessel.name} with id {vessel.uuid} is allowed to enter port and can dock at quay {dock}"
 
     def getMessageContent(self):

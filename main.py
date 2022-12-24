@@ -5,7 +5,9 @@ from anchorpoint import AnchorPoint
 from pypdevs.simulator import Simulator
 from control_tower import ControlTower
 from confluence import Confluence
+from canal import Canal
 from dock import Dock
+from lock import Lock
 import random
 import numpy as np
 
@@ -15,20 +17,24 @@ class TestSystem(CoupledDEVS):
 
         # Define all atomic submodels of which there are only one
         generator = self.addSubModel(Generator())
-        waterway = self.addSubModel(Waterway(47.52))
-        waterway2 = self.addSubModel(Waterway(68.54))
+        waterway = self.addSubModel(Waterway(116.06))
+        waterway2 = self.addSubModel(Waterway(2.1))
         anchorpoint = self.addSubModel(AnchorPoint())
         control_tower = self.addSubModel(ControlTower())
-        confluence = self.addSubModel(Confluence([["K"], ["S"], [1,2,3,4,5,6,7,8]], 3))
+        confluence = self.addSubModel(Confluence([["K"], [1], [2,3,4,5,6,7,8]], 3))
+        canal = self.addSubModel(Canal(0.8))
         dock = self.addSubModel(Dock(1))
+        lock = self.addSubModel(Lock("A", 20/60, 1, 7/60, 62500))
 
         self.connectPorts(generator.outport, anchorpoint.in_port)
         self.connectPorts(anchorpoint.out_port, waterway.in1_port)
         self.connectPorts(anchorpoint.out_event, control_tower.in_event)
         self.connectPorts(control_tower.out_event, anchorpoint.in_event)
         self.connectPorts(waterway.out1_port, confluence.in_ports[0])
-        self.connectPorts(confluence.out_ports[2], waterway2.in1_port)
-        self.connectPorts(waterway2.out1_port, dock.in_port)
+
+        self.connectPorts(confluence.out_ports[1], waterway2.in1_port)
+        self.connectPorts(waterway2.out1_port, lock.in_port_sea)
+        self.connectPorts(lock.out_port_dock, canal.in1_port)
 
 
 if __name__ == '__main__':

@@ -9,6 +9,7 @@ class ControlTowerState:
         for _ in range(dock_count):
             self.docks.append(50)
         self.current_time = 0
+        self.queue = []
 
 class ControlTower(AtomicDEVS):
     def __init__(self):
@@ -30,7 +31,7 @@ class ControlTower(AtomicDEVS):
             for i in range(0, len(self.state.docks)):
                 if self.state.docks[i]>=1:
                     self.state.docks[i] -= 1
-                    dock = i
+                    dock = i+1
                     break
             answer = Messages.portEntryPermission(self.state.current_time, request.uuid, request.vessel, dock)
             self.state.answers.append(answer)
