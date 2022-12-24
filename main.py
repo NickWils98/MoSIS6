@@ -21,8 +21,10 @@ class TestSystem(CoupledDEVS):
         waterway2 = self.addSubModel(Waterway(2.1))
         anchorpoint = self.addSubModel(AnchorPoint())
         control_tower = self.addSubModel(ControlTower())
-        confluence = self.addSubModel(Confluence([["K"], [1], [2,3,4,5,6,7,8]], 3))
+        confluence = self.addSubModel(Confluence([["K", "S"], [1], [2,3,4,5,6,7,8]], 3))
+        confluence2 = self.addSubModel(Confluence([["K", "S" ,6,7,8], [1], [2,3,4,5]], 3))
         canal = self.addSubModel(Canal(0.8))
+        canal2 = self.addSubModel(Canal(1.89))
         dock = self.addSubModel(Dock(1))
         lock = self.addSubModel(Lock("A", 20/60, 1, 7/60, 62500))
 
@@ -35,6 +37,11 @@ class TestSystem(CoupledDEVS):
         self.connectPorts(confluence.out_ports[1], waterway2.in1_port)
         self.connectPorts(waterway2.out1_port, lock.in_port_sea)
         self.connectPorts(lock.out_port_dock, canal.in1_port)
+
+        self.connectPorts(canal.out1_port, confluence2.in_ports[0])
+
+        self.connectPorts(confluence2.out_ports[1], canal2.in1_port)
+        self.connectPorts(canal.out1_port, dock.in_port)
 
 
 if __name__ == '__main__':

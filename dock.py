@@ -7,7 +7,7 @@ import port_events as Messages
 class DockState:
     def __init__(self, quay_id):
         # Keep track of current time and received vessels
-        self.current_time = 0.0
+        self.current_time = float('inf')
         self.quay_id = quay_id
 
         self.vessels = {}
@@ -41,7 +41,7 @@ class Dock(AtomicDEVS):
                 self.state.requests.append(request)
 
         # delete the arrived vessel
-        for vessel in self.state.vessels:
+        for vessel in self.state.leaving:
             del self.state.vessels[vessel]
 
         return self.state
@@ -54,7 +54,7 @@ class Dock(AtomicDEVS):
         # add a new vessel in the waterway if possible
         if len(self.state.vessels) <= 50:
             if self.in_port in inputs:
-                vessel = inputs[self.in_port]
+                vessel = inputs[self.in_port][0]
                 self.state.vessels[vessel] = np.random.normal(36, 12)
 
         return self.state

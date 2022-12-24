@@ -1,5 +1,3 @@
-from pypdevs.message import NetworkMessage as message
-
 class portEntryRequest():
     '''
     Indicates a message sent from the Anchorpoint to the ControlTower,
