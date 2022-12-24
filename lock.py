@@ -88,6 +88,7 @@ class Lock(AtomicDEVS):
                     self.state.gate_sea = 1
                     # ships can now leave and enter
                     self.state.leaving = self.state.in_lock.copy()
+                    self.state.in_lock = []
 
                     # reset capacity
                     self.state.remaining_capacity = self.state.surface_area
@@ -115,6 +116,7 @@ class Lock(AtomicDEVS):
                     self.state.gate_dock = 1
                     # ships can now leave and enter
                     self.state.leaving = self.state.in_lock.copy()
+                    self.state.in_lock = []
 
                     # reset capacity
                     self.state.remaining_capacity = self.state.surface_area
