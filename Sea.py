@@ -11,18 +11,12 @@ class Sea(AtomicDEVS):
     def __init__(self):
         AtomicDEVS.__init__(self, "S")
         self.state = SeaState()
-        self.in_event = self.addInPort("in_event")
+        self.in_port = self.addInPort("in_port")
 
     def extTransition(self, inputs):
-        # Update simulation time
-        self.state.current_time += self.elapsed
 
-        # Calculate time in queue
-        evt = inputs[self.in_event]
-        time = self.state.current_time - evt.creation_time - evt.processing_time
-        inputs[self.in_event].queueing_time = max(0.0, time)
-
-        # Add incoming event to received events
-        self.state.vessels.append(inputs[self.in_event])
+        if self.in_port in inputs:
+            vessel = inputs[self.in_port]
+            print(vessel.uuid)
         return self.state
 

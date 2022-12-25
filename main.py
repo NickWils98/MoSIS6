@@ -8,6 +8,7 @@ from confluence import Confluence
 from canal import Canal
 from dock import Dock
 from lock import Lock
+from Sea import Sea
 import random
 import numpy as np
 
@@ -27,6 +28,7 @@ class TestSystem(CoupledDEVS):
         canal2 = self.addSubModel(Canal(1.89))
         dock = self.addSubModel(Dock(1))
         lock = self.addSubModel(Lock("A", 20/60, 1, 7/60, 62500))
+        sea = self.addSubModel(Sea())
 
         self.connectPorts(generator.outport, anchorpoint.in_port)
         self.connectPorts(anchorpoint.out_port, waterway.in1_port)
@@ -41,7 +43,8 @@ class TestSystem(CoupledDEVS):
         self.connectPorts(canal.out1_port, confluence2.in_ports[0])
 
         self.connectPorts(confluence2.out_ports[1], canal2.in1_port)
-        # self.connectPorts(canal2.out1_port, dock.in_port)
+        self.connectPorts(canal2.out1_port, dock.in_port)
+        self.connectPorts(dock.out_port, sea.in_port)
 
 
 if __name__ == '__main__':

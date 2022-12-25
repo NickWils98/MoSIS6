@@ -7,7 +7,7 @@ import port_events as Messages
 class DockState:
     def __init__(self, quay_id):
         # Keep track of current time and received vessels
-        self.current_time = float('inf')
+        self.remaining_time = float('inf')
         self.quay_id = quay_id
 
         self.vessels = {}
@@ -23,7 +23,7 @@ class Dock(AtomicDEVS):
         self.state = DockState(quay_id)
 
         self.in_port = self.addInPort("in_port")
-        self.out_port = self.addInPort("out_port")
+        self.out_port = self.addOutPort("out_port")
 
         self.in_event = self.addInPort("in_event")
         self.out_event = self.addOutPort("out_event")
@@ -35,9 +35,9 @@ class Dock(AtomicDEVS):
 
             #  if the vessel is leaving the dock, add it to the leaving list
             if self.state.vessels[vessel] <= 0:
+                request = Messages.portDepartureRequests(vessel.uuid, vessel, vessel.destination)
+                vessel.destination = "S"
                 self.state.leaving.append(vessel)
-                request = Messages.portDepartureRequests(self.state.current_time, vessel.uuid, vessel,
-                                                         self.state.quay_id)  # TODO: Current time wordt ni aangepast
                 self.state.requests.append(request)
 
         # delete the arrived vessel
@@ -52,11 +52,13 @@ class Dock(AtomicDEVS):
             self.state.vessels[vessel] -= self.elapsed
 
         # add a new vessel in the waterway if possible
-        if len(self.state.vessels) <= 50:
-            if self.in_port in inputs:
-                vessel = inputs[self.in_port][0]
-                self.state.vessels[vessel] = np.random.normal(36, 12)
 
+        if self.in_port in inputs:
+            vessel = inputs[self.in_port][0]
+            self.state.vessels[vessel] = np.random.normal(36, 12)
+
+        if len(self.state.vessels) > 50:
+            print("ERROR")
         return self.state
 
     def timeAdvance(self):
@@ -66,6 +68,9 @@ class Dock(AtomicDEVS):
         # find the shortest time between the vessels
         if len(self.state.vessels.keys()) > 0:
             self.state.remaining_time = min(self.state.vessels.values())
+
+        if len(self.state.requests) > 0 or len(self.state.leaving) > 0:
+            self.state.remaining_time =0
         return self.state.remaining_time
 
     def outputFnc(self):
@@ -75,6 +80,7 @@ class Dock(AtomicDEVS):
         if len(self.state.requests) > 0:
             requests = self.state.requests.pop()
             return_dict[self.out_event] = requests
+
 
         # Output all the ships who left the water canal
         if len(self.state.leaving) > 0:

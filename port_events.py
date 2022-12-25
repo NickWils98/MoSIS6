@@ -33,10 +33,9 @@ class portDepartureRequests():
     Sent by a Dock to the ControlTower, identifying that a certain
     Vessel has left a specific Dock, making room for another ship to arrive.
     '''
-    def __init__(self, timestamp, uuid, vessel, quay_id):
+    def __init__(self, uuid, vessel, quay_id):
         self.vessel = vessel
         self.uuid = uuid
-        self.timestamp = timestamp
         self.quay_id = quay_id
         self.content = f"Ship {vessel.name} with id {vessel.uuid} has left dock {self.quay_id}"
 
