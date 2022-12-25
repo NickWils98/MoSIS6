@@ -29,6 +29,7 @@ class Waterway(AtomicDEVS):
     def intTransition(self):
         # update all the remaining times
         for vessel in self.state.ingoing.keys():
+
             # self.state.ingoing[vessel] -= self.state.remaining_time
             self.state.ingoing[vessel] -= self.timeAdvance()
 
@@ -38,6 +39,7 @@ class Waterway(AtomicDEVS):
 
         # delete the arrived vessel
         for vessel in self.state.ingoing_leaving:
+
             del self.state.ingoing[vessel]
 
         return self.state
@@ -50,6 +52,7 @@ class Waterway(AtomicDEVS):
         # add a new vessel in the waterway
         if self.in1_port in inputs:
             vessel = inputs[self.in1_port]
+
             # calculate the remaining time
             remaining_time = self.state.distance / vessel.avg_v
             self.state.ingoing[vessel] = remaining_time
@@ -63,6 +66,10 @@ class Waterway(AtomicDEVS):
         # find the shortest time between the vessels
         if len(self.state.ingoing.keys()) > 0:
             self.state.remaining_time = min(self.state.ingoing.values())
+
+
+        if len(self.state.ingoing_leaving) > 0:
+            self.state.remaining_time = 0
         return self.state.remaining_time
 
 

@@ -33,8 +33,11 @@ class ControlTower(AtomicDEVS):
                     self.state.docks[i] -= 1
                     dock = i+1
                     break
-            answer = Messages.portEntryPermission(self.state.current_time, request.uuid, request.vessel, dock)
-            self.state.answers.append(answer)
+            if dock == 0:
+                self.state.queue.append(request)
+            else:
+                answer = Messages.portEntryPermission(self.state.current_time, request.uuid, request.vessel, dock)
+                self.state.answers.append(answer)
 
         return self.state
 

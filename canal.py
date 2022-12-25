@@ -42,6 +42,8 @@ class Canal(AtomicDEVS):
 
         for i in range(len(self.state.ingoing)):
             self.state.ingoing[i][1] -= self.elapsed
+            if self.state.ingoing[i][1]<0:
+                print("aiaiaiai", i)
         if self.in1_port in inputs:
             # If first vessel, no need to take into account velocity ship in front
             vessel = inputs[self.in1_port]
@@ -53,7 +55,7 @@ class Canal(AtomicDEVS):
             # If not first vessel, need to take into account velocity ship in front (take min)
             else:
                 # Get vessel in front and it's velocity to calculate min (my vel, front vel)
-                front_vessel = self.state.ingoing[-1][0]
+                front_vessel = self.state.ingoing[0][0]
 
                 min_avg_velocity = min(vessel.avg_v, front_vessel.avg_v)
 
@@ -67,6 +69,8 @@ class Canal(AtomicDEVS):
 
         if len(self.state.ingoing) > 0:
             self.state.remaining_time = self.state.ingoing[0][1]
+        if len(self.state.ingoing_leaving) > 0:
+            self.state.remaining_time = 0
         return self.state.remaining_time
 
 

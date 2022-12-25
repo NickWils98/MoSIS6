@@ -41,7 +41,7 @@ class TestSystem(CoupledDEVS):
         self.connectPorts(canal.out1_port, confluence2.in_ports[0])
 
         self.connectPorts(confluence2.out_ports[1], canal2.in1_port)
-        self.connectPorts(canal.out1_port, dock.in_port)
+        # self.connectPorts(canal2.out1_port, dock.in_port)
 
 
 if __name__ == '__main__':
