@@ -1,6 +1,6 @@
 from pypdevs.DEVS import AtomicDEVS
 
-# Define the state of the AnchorPoint as a structured object
+# Define the state of the Sea as a structured object
 class SeaState:
     def __init__(self):
         # Keep track of current time and received vessels
@@ -16,7 +16,7 @@ class Sea(AtomicDEVS):
     def extTransition(self, inputs):
 
         if self.in_port in inputs:
-            vessel = inputs[self.in_port]
-            print(vessel.uuid)
+            for vessel in inputs[self.in_port]:
+                print(vessel.vessel_id, vessel.type)
         return self.state
 

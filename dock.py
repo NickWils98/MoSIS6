@@ -35,7 +35,7 @@ class Dock(AtomicDEVS):
 
             #  if the vessel is leaving the dock, add it to the leaving list
             if self.state.vessels[vessel] <= 0:
-                request = Messages.portDepartureRequests(vessel.uuid, vessel, vessel.destination)
+                request = Messages.portDepartureRequests(vessel.vessel_id, vessel.destination)
                 vessel.destination = "S"
                 self.state.leaving.append(vessel)
                 self.state.requests.append(request)
@@ -50,15 +50,18 @@ class Dock(AtomicDEVS):
         # update all the remaining times
         for vessel in self.state.vessels.keys():
             self.state.vessels[vessel] -= self.elapsed
-
         # add a new vessel in the waterway if possible
 
         if self.in_port in inputs:
-            vessel = inputs[self.in_port][0]
-            self.state.vessels[vessel] = np.random.normal(36, 12)
+            for vessel in inputs[self.in_port]:
+                wait_time = np.random.normal(36,12)
+                if wait_time < 6:
+                    wait_time = 6
+                self.state.vessels[vessel] = wait_time
 
         if len(self.state.vessels) > 50:
             print("ERROR")
+
         return self.state
 
     def timeAdvance(self):
@@ -70,7 +73,9 @@ class Dock(AtomicDEVS):
             self.state.remaining_time = min(self.state.vessels.values())
 
         if len(self.state.requests) > 0 or len(self.state.leaving) > 0:
-            self.state.remaining_time =0
+            self.state.remaining_time = 0
+        if self.state.remaining_time <0:
+            print("aiaiaiaiaiaiai")
         return self.state.remaining_time
 
     def outputFnc(self):
@@ -78,13 +83,14 @@ class Dock(AtomicDEVS):
 
         # Output all the outgoing events
         if len(self.state.requests) > 0:
-            requests = self.state.requests.pop()
+            requests = self.state.requests
             return_dict[self.out_event] = requests
-
+            self.state.requests = []
 
         # Output all the ships who left the water canal
         if len(self.state.leaving) > 0:
-            leaving = self.state.leaving.pop()
+            leaving = self.state.leaving
             return_dict[self.out_port] = leaving
+            self.state.leaving = []
 
         return return_dict

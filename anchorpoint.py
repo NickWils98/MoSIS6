@@ -1,5 +1,5 @@
 from pypdevs.DEVS import AtomicDEVS
-import port_events as Messages
+from port_events import portEntryRequest
 
 # Define the state of the AnchorPoint as a structured object
 class AnchorpointState:
@@ -11,7 +11,6 @@ class AnchorpointState:
         self.requested = []
         # Keep a queue with vessels that are about to leave
         self.leaving = []
-
         # List of request to send
         self.requests = []
 
@@ -35,7 +34,7 @@ class AnchorPoint(AtomicDEVS):
             for vessel in self.state.waiting:
                 # remove it from the waiting list and make the message
                 self.state.waiting.remove(vessel)
-                request = Messages.portEntryRequest(self.state.current_time, vessel.uuid, vessel)
+                request = portEntryRequest(vessel.vessel_id)
                 self.state.requests.append(request)
                 self.state.requested.append(vessel)
         return self.state
@@ -47,17 +46,19 @@ class AnchorPoint(AtomicDEVS):
 
         # When a message is received proces it
         if self.in_event in inputs:
-            permission = inputs[self.in_event]
-            vessel = None
-            # Find the vessel
-            for ship in self.state.requested:
-                if ship.uuid == permission.uuid:
-                    vessel = ship
-                    self.state.requested.remove(vessel)
-                    break
-            if vessel is not None:
-                vessel.destination = permission.destination
-                self.state.leaving.append(vessel)
+            for permission in inputs[self.in_event]:
+
+                vessel = None
+                # Find the vessel
+                for ship in self.state.requested:
+
+                    if ship.vessel_id == permission.vessel_id:
+                        vessel = ship
+                        self.state.requested.remove(vessel)
+                        break
+                if vessel is not None:
+                    vessel.destination = permission.destination
+                    self.state.leaving.append(vessel)
 
         return self.state
 
@@ -72,12 +73,15 @@ class AnchorPoint(AtomicDEVS):
     def outputFnc(self):
         return_dict = {}
         if len(self.state.leaving) > 0:
-            leaving = self.state.leaving.pop()
+            leaving = self.state.leaving
             return_dict[self.out_port] = leaving
+            self.state.leaving = []
 
 
         if len(self.state.requests) > 0:
-            requests = self.state.requests.pop()
+            requests = self.state.requests
             return_dict[self.out_event] = requests
+            self.state.requests = []
+
 
         return return_dict

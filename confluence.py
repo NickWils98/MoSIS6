@@ -32,7 +32,6 @@ class Confluence(AtomicDEVS):
             if self.in_ports[i] in inputs:
                 for vessel in inputs[self.in_ports[i]]:
                     destination = vessel.destination
-
                     for ports in range(len(self.state.map_port)):
                         if destination in self.state.map_port[ports]:
                             self.state.queue[ports].append(vessel)
@@ -49,7 +48,8 @@ class Confluence(AtomicDEVS):
         output_dict = {}
         for queue_number in range(self.state.output_number):
             if len(self.state.queue[queue_number]) > 0:
-                vessel = self.state.queue[queue_number].pop()
+                vessel = self.state.queue[queue_number]
                 port = self.out_ports[queue_number]
                 output_dict[port] = vessel
+                self.state.queue[queue_number] = []
         return output_dict

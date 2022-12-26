@@ -20,7 +20,7 @@ class Generator(AtomicDEVS):
     def __init__(self):
         AtomicDEVS.__init__(self, "Generator")
         # Output port for the vessel
-        self.outport = self.addOutPort("outport")
+        self.out_port = self.addOutPort("out_port")
         # factory to create vessels
         self.factory = Vessel.VesselFactory()
         # Define the state
@@ -45,4 +45,4 @@ class Generator(AtomicDEVS):
         creation_time = self.state.current_time + self.state.remaining
         vessel = self.factory.create(creation_time)
         # Output the new event on the output port
-        return {self.outport: vessel}
+        return {self.out_port: vessel}

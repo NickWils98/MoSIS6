@@ -8,7 +8,7 @@ class VesselFactory:
     Make vessels
     """
     def __init__(self):
-        self.uuid = 0
+        self.vessel_id = 0
     def create(self, creation_time):
         """
         Create a vessel based on a probability.
@@ -28,15 +28,15 @@ class VesselFactory:
             boat = TugBoat
         else:
             boat = SmallCargoFreighter
-        self.uuid += 1
-        return boat(creation_time, self.uuid)
+        self.vessel_id += 1
+        return boat(creation_time, self.vessel_id)
 
 
 class Vessel(object):
-    def __init__(self, creation_time, uuid):
+    def __init__(self, creation_time, vessel_id):
         self.name = self.getVesselName()
         self.creation_time = creation_time
-        self.uuid = uuid
+        self.vessel_id = vessel_id
         self.destination = None
 
     def getVesselName(self):

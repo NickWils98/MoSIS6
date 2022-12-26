@@ -142,34 +142,33 @@ class Lock(AtomicDEVS):
 
     def extTransition(self, inputs):
         self.state.remaining_time -= self.elapsed
-        # print(self.state.remaining_time)
 
         # ship at sea gate
         if self.in_port_sea in inputs:
-            vessel = inputs[self.in_port_sea][0]
-            # gate at sea open and there is capacity
-            if self.state.water_level == 1 &\
-                    self.state.gate_sea == 1 &\
-                    self.state.remaining_capacity >= vessel.surface_area:
-                # go in lock
-                self.state.in_lock.append(vessel)
-            # else wait in queue
-            else:
-                self.state.waiting_queue_sea.append(vessel)
+            for vessel in inputs[self.in_port_sea]:
+                # gate at sea open and there is capacity
+                if self.state.water_level == 1 &\
+                        self.state.gate_sea == 1 &\
+                        self.state.remaining_capacity >= vessel.surface_area:
+                    # go in lock
+                    self.state.in_lock.append(vessel)
+                # else wait in queue
+                else:
+                    self.state.waiting_queue_sea.append(vessel)
 
         if self.in_port_dock in inputs:
-            vessel = inputs[self.in_port_dock][0]
-            # gate at dock open and there is capacity
-            if self.state.water_level == 0 &\
-                    self.state.gate_dock == 1 &\
-                    self.state.remaining_capacity >= vessel.surface_area:
-                # go in lock
-                self.state.in_lock.append(vessel)
+            for vessel in inputs[self.in_port_dock]:
+                # gate at dock open and there is capacity
+                if self.state.water_level == 0 &\
+                        self.state.gate_dock == 1 &\
+                        self.state.remaining_capacity >= vessel.surface_area:
+                    # go in lock
+                    self.state.in_lock.append(vessel)
 
-                self.state.remaining_capacity -= vessel.surface_area
-            # else wait in queue
-            else:
-                self.state.waiting_queue_dock.append(vessel)
+                    self.state.remaining_capacity -= vessel.surface_area
+                # else wait in queue
+                else:
+                    self.state.waiting_queue_dock.append(vessel)
         return self.state
 
     def timeAdvance(self):
@@ -183,9 +182,9 @@ class Lock(AtomicDEVS):
             vessel = self.state.left
             self.state.left = None
             if self.state.gate_dock == 1:
-                return_dict[self.out_port_dock] = vessel
+                return_dict[self.out_port_dock] = [vessel]
             else:
-                return_dict[self.out_port_sea] = vessel
+                return_dict[self.out_port_sea] = [vessel]
 
         return return_dict
 

@@ -8,7 +8,7 @@ from confluence import Confluence
 from canal import Canal
 from dock import Dock
 from lock import Lock
-from Sea import Sea
+from sea import Sea
 import random
 import numpy as np
 
@@ -20,9 +20,10 @@ class TestSystem(CoupledDEVS):
         generator = self.addSubModel(Generator())
         waterway = self.addSubModel(Waterway(116.06))
         waterway2 = self.addSubModel(Waterway(2.1))
+        waterway3 = self.addSubModel(Waterway(99.39))
         anchorpoint = self.addSubModel(AnchorPoint())
         control_tower = self.addSubModel(ControlTower())
-        confluence = self.addSubModel(Confluence([["K", "S"], [1], [2,3,4,5,6,7,8]], 3))
+        confluence = self.addSubModel(Confluence([["K", 2,3,4,5,6,7,8], [1], ["S"]], 3))
         confluence2 = self.addSubModel(Confluence([["K", "S" ,6,7,8], [1], [2,3,4,5]], 3))
         canal = self.addSubModel(Canal(0.8))
         canal2 = self.addSubModel(Canal(1.89))
@@ -30,7 +31,7 @@ class TestSystem(CoupledDEVS):
         lock = self.addSubModel(Lock("A", 20/60, 1, 7/60, 62500))
         sea = self.addSubModel(Sea())
 
-        self.connectPorts(generator.outport, anchorpoint.in_port)
+        self.connectPorts(generator.out_port, anchorpoint.in_port)
         self.connectPorts(anchorpoint.out_port, waterway.in1_port)
         self.connectPorts(anchorpoint.out_event, control_tower.in_event)
         self.connectPorts(control_tower.out_event, anchorpoint.in_event)
@@ -44,7 +45,19 @@ class TestSystem(CoupledDEVS):
 
         self.connectPorts(confluence2.out_ports[1], canal2.in1_port)
         self.connectPorts(canal2.out1_port, dock.in_port)
-        self.connectPorts(dock.out_port, sea.in_port)
+        self.connectPorts(dock.out_port, confluence2.in_ports[1])
+        self.connectPorts(dock.out_event, control_tower.free_event)
+
+
+
+        self.connectPorts(confluence2.out_ports[0], canal2.in2_port)
+        self.connectPorts(canal2.out2_port, lock.in_port_dock)
+
+        self.connectPorts(lock.out_port_sea, waterway2.in2_port)
+        self.connectPorts(waterway2.out2_port, confluence.in_ports[1])
+        self.connectPorts(confluence.out_ports[2], waterway3.in1_port)
+        self.connectPorts(waterway3.out1_port, sea.in_port)
+
 
 
 if __name__ == '__main__':
