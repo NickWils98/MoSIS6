@@ -7,6 +7,7 @@ class SeaState:
         self.current_time = 0.0
         self.vessels = []
 
+
 class Sea(AtomicDEVS):
     def __init__(self):
         AtomicDEVS.__init__(self, "S")
@@ -14,9 +15,8 @@ class Sea(AtomicDEVS):
         self.in_port = self.addInPort("in_port")
 
     def extTransition(self, inputs):
-
         if self.in_port in inputs:
             for vessel in inputs[self.in_port]:
-                print(vessel.vessel_id, vessel.type)
+                print(vessel.vessel_id, vessel.type) # TODO: Moet dees er in finale versie ook staan?
         return self.state
 
