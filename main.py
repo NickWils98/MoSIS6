@@ -285,7 +285,45 @@ class TestSystemFull(CoupledDEVS):
         self.connectPorts(dock_5.out_event, control_tower.free_event)
         self.connectPorts(canal_C1_5.out2_port, confluence_C1.in_ports[2])
 
+        # Connect confluence Mid to lock B
+        self.connectPorts(confluence_MID.out_ports[2], canal_MID_B.in1_port)
+        self.connectPorts(canal_MID_B.out1_port, lock_B.in_port_sea)
+        self.connectPorts(lock_B.out_port_sea, canal_MID_B.in2_port)
+        self.connectPorts(canal_MID_B.out2_port, confluence_MID.in_ports[2])
 
+        # Connect lock B to confluence B1
+        self.connectPorts(lock_B.out_port_dock, canal_B1_B.in1_port)
+        self.connectPorts(canal_B1_B.out1_port, confluence_B1.in_ports[0])
+        self.connectPorts(confluence_B1.out_ports[0], canal_C1_C.in2_port)
+        self.connectPorts(canal_C1_C.out2_port, lock_B.in_port_dock)
+
+        # Connect confluence B1 to lock 8
+        self.connectPorts(confluence_B1.out_ports[1], canal_B1_8.in1_port)
+        self.connectPorts(canal_B1_8.out1_port, dock_8.in_port)
+        self.connectPorts(dock_8.out_port, canal_B1_8.in2_port)
+        self.connectPorts(dock_8.out_event, control_tower.free_event)
+        self.connectPorts(canal_B1_8.out2_port, confluence_B1.in_ports[1])
+
+        # Connect confluence B1 to confluence B2
+        self.connectPorts(confluence_B1.out_ports[2], canal_B1_B2.in1_port)
+        self.connectPorts(canal_B1_B2.out1_port, confluence_B2.in_ports[0])
+        self.connectPorts(confluence_B2.out_ports[0], canal_B1_B2.in2_port)
+        self.connectPorts(canal_B1_B2.out2_port, confluence_B1.in_ports[2])
+
+
+        # Connect confluence B2 to lock 6
+        self.connectPorts(confluence_B2.out_ports[1], canal_B2_6.in1_port)
+        self.connectPorts(canal_B2_6.out1_port, dock_6.in_port)
+        self.connectPorts(dock_6.out_port, canal_B2_6.in2_port)
+        self.connectPorts(dock_6.out_event, control_tower.free_event)
+        self.connectPorts(canal_B2_6.out2_port, confluence_B1.in_ports[1])
+
+        # Connect confluence B2 to lock 7
+        self.connectPorts(confluence_B2.out_ports[1], canal_B2_7.in1_port)
+        self.connectPorts(canal_B2_7.out1_port, dock_7.in_port)
+        self.connectPorts(dock_7.out_port, canal_B2_7.in2_port)
+        self.connectPorts(dock_7.out_event, control_tower.free_event)
+        self.connectPorts(canal_B2_7.out2_port, confluence_B2.in_ports[1])
 
 
 if __name__ == '__main__':
