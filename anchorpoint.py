@@ -8,6 +8,7 @@ class AnchorpointState:
         self.current_time = 0
         self.avg_waiting_time = 0
         self.passed_ships = []
+
         # Keep a queue with vessels that just came in
         self.waiting = []
         # Keep a queue with vessels that requested to enter the port
@@ -40,6 +41,7 @@ class AnchorPoint(AtomicDEVS):
                 request = portEntryRequest(vessel.vessel_id, self.state.current_time)
                 self.state.requests.append(request)
                 self.state.requested.append(vessel)
+
         return self.state
 
     def extTransition(self, inputs):
