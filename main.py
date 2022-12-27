@@ -150,7 +150,7 @@ class TestSystemFull(CoupledDEVS):
         confluence_A1 = self.addSubModel(Confluence([["K", "S", 6, 7, 8], [1], [2, 3, 4, 5]], 3))
         confluence_A2 = self.addSubModel(Confluence([[2], ["K", "S", 1, 6, 7, 8], [3, 4, 5]], 3))
         confluence_B1 = self.addSubModel(Confluence([["K", "S", 1, 2, 3, 4, 5], [6, 7], [8]], 3))
-        confluence_B2 = self.addSubModel(Confluence([[7], [6], ["K", "S", 1, 2, 3, 4, 5]], 3))
+        confluence_B2 = self.addSubModel(Confluence([[7], [6], ["K", "S", 1, 2, 3, 4, 5, 8]], 3))
         confluence_C1 = self.addSubModel(Confluence([["K", "S", 6, 7, 8], [4], [5], [3], [1, 2]], 5))
 
         # Define all canal atomic submodels
