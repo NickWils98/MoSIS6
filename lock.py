@@ -43,6 +43,11 @@ class LockState:
         # List of request to send
         self.requests = []
 
+        self.current_time = 0
+        self.idle_time = 0
+        self.empty_itteration = 0
+        self.empty = True
+
 class Lock(AtomicDEVS):
     def __init__(self, lock_id, washing_duration, lock_shift_interval, open_close_duration, surface_area):
         AtomicDEVS.__init__(self, "Lock")
@@ -56,6 +61,7 @@ class Lock(AtomicDEVS):
 
     def intTransition(self):
         # ships are leaving takeing 30s each
+        self.state.current_time += self.timeAdvance()
         if self.state.leaving_bool:
             # ships are still leaving
             if len(self.state.leaving) > 0:
@@ -141,7 +147,8 @@ class Lock(AtomicDEVS):
         return self.state
 
     def extTransition(self, inputs):
-        self.state.remaining_time -= self.elapsed
+        if self.elapsed is not None:
+            self.state.current_time += self.elapsed
 
         # ship at sea gate
         if self.in_port_sea in inputs:
