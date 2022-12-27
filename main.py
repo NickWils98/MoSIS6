@@ -9,6 +9,7 @@ from canal import Canal
 from dock import Dock
 from lock import Lock
 from sea import Sea
+from port_confluence import ConfluencePort
 import random
 import numpy as np
 
@@ -18,12 +19,14 @@ class TestSystem(CoupledDEVS):
 
         # Define all atomic submodels of which there are only one
         generator = self.addSubModel(Generator())
-        waterway = self.addSubModel(Waterway(116.06))
-        waterway2 = self.addSubModel(Waterway(2.1))
-        waterway3 = self.addSubModel(Waterway(99.39))
+        waterway = self.addSubModel(Waterway(47.52))
+        waterway2 = self.addSubModel(Waterway(68.54))
+        waterway3 = self.addSubModel(Waterway(2.1))
+        waterway4 = self.addSubModel(Waterway(30.85))
         anchorpoint = self.addSubModel(AnchorPoint())
         control_tower = self.addSubModel(ControlTower())
-        confluence = self.addSubModel(Confluence([["K", 2,3,4,5,6,7,8], [1], ["S"]], 3))
+        confluence_port = self.addSubModel(ConfluencePort())
+        confluence = self.addSubModel(Confluence([["K"], ["S"], [1,2,3,4,5,6,7,8]], 3))
         confluence2 = self.addSubModel(Confluence([["K", "S" ,6,7,8], [1], [2,3,4,5]], 3))
         canal = self.addSubModel(Canal(0.8))
         canal2 = self.addSubModel(Canal(1.89))
@@ -37,26 +40,35 @@ class TestSystem(CoupledDEVS):
         self.connectPorts(control_tower.out_event, anchorpoint.in_event)
         self.connectPorts(waterway.out1_port, confluence.in_ports[0])
 
-        self.connectPorts(confluence.out_ports[1], waterway2.in1_port)
-        self.connectPorts(waterway2.out1_port, lock.in_port_sea)
+        self.connectPorts(confluence.out_ports[2], waterway2.in1_port)
+
+
+        self.connectPorts(waterway2.out1_port, confluence_port.in_ports[0])
+        self.connectPorts(confluence_port.out_ports[1], waterway3.in1_port)
+
+        self.connectPorts(waterway3.out1_port, lock.in_port_sea)
         self.connectPorts(lock.out_port_dock, canal.in1_port)
 
         self.connectPorts(canal.out1_port, confluence2.in_ports[0])
 
         self.connectPorts(confluence2.out_ports[1], canal2.in1_port)
         self.connectPorts(canal2.out1_port, dock.in_port)
-        self.connectPorts(dock.out_port, confluence2.in_ports[1])
+        self.connectPorts(dock.out_port, canal2.in2_port)
         self.connectPorts(dock.out_event, control_tower.free_event)
 
+        self.connectPorts(canal2.out2_port, confluence2.in_ports[1])
 
 
-        self.connectPorts(confluence2.out_ports[0], canal2.in2_port)
-        self.connectPorts(canal2.out2_port, lock.in_port_dock)
+        self.connectPorts(confluence2.out_ports[0], canal.in2_port)
+        self.connectPorts(canal.out2_port, lock.in_port_dock)
 
-        self.connectPorts(lock.out_port_sea, waterway2.in2_port)
-        self.connectPorts(waterway2.out2_port, confluence.in_ports[1])
-        self.connectPorts(confluence.out_ports[2], waterway3.in1_port)
-        self.connectPorts(waterway3.out1_port, sea.in_port)
+        self.connectPorts(lock.out_port_sea, waterway3.in2_port)
+        self.connectPorts(waterway3.out2_port, confluence_port.in_ports[1])
+        self.connectPorts(confluence_port.out_ports[0], waterway2.in2_port)
+        self.connectPorts(waterway2.out2_port, confluence.in_ports[2])
+        self.connectPorts(confluence.out_ports[1], waterway4.in1_port)
+        self.connectPorts(waterway4.out1_port, sea.in_port)
+
 
 
 

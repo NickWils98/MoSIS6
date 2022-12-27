@@ -38,6 +38,7 @@ class Vessel(object):
         self.creation_time = creation_time
         self.vessel_id = vessel_id
         self.destination = None
+        self.enter_port = 0
 
     def getVesselName(self):
         '''

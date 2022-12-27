@@ -4,7 +4,10 @@ from port_events import portEntryRequest
 # Define the state of the AnchorPoint as a structured object
 class AnchorpointState:
     def __init__(self):
+        # for statistics
         self.current_time = 0
+        self.avg_waiting_time = 0
+        self.passed_ships = []
         # Keep a queue with vessels that just came in
         self.waiting = []
         # Keep a queue with vessels that requested to enter the port
@@ -34,12 +37,14 @@ class AnchorPoint(AtomicDEVS):
             for vessel in self.state.waiting:
                 # remove it from the waiting list and make the message
                 self.state.waiting.remove(vessel)
-                request = portEntryRequest(vessel.vessel_id)
+                request = portEntryRequest(vessel.vessel_id, self.state.current_time)
                 self.state.requests.append(request)
                 self.state.requested.append(vessel)
         return self.state
 
     def extTransition(self, inputs):
+        if self.elapsed is not None:
+            self.state.current_time += self.elapsed
         # add a vessel to the queue
         if self.in_port in inputs:
             self.state.waiting.append(inputs[self.in_port])
@@ -59,6 +64,9 @@ class AnchorPoint(AtomicDEVS):
                 if vessel is not None:
                     vessel.destination = permission.destination
                     self.state.leaving.append(vessel)
+                    avg_time = self.state.current_time - permission.current_time
+                    self.state.passed_ships.append(avg_time)
+                    self.state.avg_waiting_time = sum(self.state.passed_ships)/len(self.state.passed_ships)
 
         return self.state
 

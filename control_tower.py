@@ -1,5 +1,5 @@
 from pypdevs.DEVS import AtomicDEVS
-import port_events as Messages
+from port_events import portEntryPermission
 
 # Define the state of the Control Tower as a structured object
 class ControlTowerState:
@@ -34,7 +34,7 @@ class ControlTower(AtomicDEVS):
                 self.state.queue.append(request)
                 self.state.place_free = False
             else:
-                answer = Messages.portEntryPermission(request.vessel_id, quay_id)
+                answer = portEntryPermission(request.vessel_id, quay_id, request.current_time)
                 self.state.answers.append(answer)
         return self.state
 
@@ -52,7 +52,7 @@ class ControlTower(AtomicDEVS):
                     self.state.queue.append(request)
                     self.state.place_free = False
                 else:
-                    answer = Messages.portEntryPermission(request.vessel_id, quay_id)
+                    answer = portEntryPermission(request.vessel_id, quay_id, request.current_time)
                     self.state.answers.append(answer)
 
 
