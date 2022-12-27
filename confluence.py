@@ -6,13 +6,15 @@ class ConfluenceState:
     def __init__(self, map_port, outputs):
         self.queue = []
         self.map_port = map_port
+
         for i in range(outputs):
             self.queue.append([])
+
         self.current_time = 0
         self.output_number = outputs
 
 class Confluence(AtomicDEVS):
-    def __init__(self, map_port, outputs = 3):
+    def __init__(self, map_port, outputs=3):
         AtomicDEVS.__init__(self, "CF")
         self.state = ConfluenceState(map_port, outputs)
 
@@ -42,6 +44,7 @@ class Confluence(AtomicDEVS):
         for queue in self.state.queue:
             if len(queue) > 0:
                 return 0
+
         return float('inf')
 
     def outputFnc(self):
@@ -52,4 +55,5 @@ class Confluence(AtomicDEVS):
                 port = self.out_ports[queue_number]
                 output_dict[port] = vessel
                 self.state.queue[queue_number] = []
+
         return output_dict
