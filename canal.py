@@ -29,7 +29,6 @@ class Canal(AtomicDEVS):
         self.out2_port = self.addOutPort("out_port")
 
     def intTransition(self):
-
         for i in range(len(self.state.ingoing)):
             self.state.ingoing[i][1] -= self.timeAdvance()
 
@@ -53,7 +52,7 @@ class Canal(AtomicDEVS):
         return self.state
 
     def extTransition(self, inputs):
-        temp_list = []
+        temp_list = [] # TODO:: Dees deleten of houden voor statistics?
         for i in range(len(self.state.ingoing)):
             self.state.ingoing[i][1] -= self.elapsed
 
@@ -97,9 +96,9 @@ class Canal(AtomicDEVS):
                     self.state.outgoing.append([vessel, remaining_time, min_avg_velocity])
 
         for v in range(len(self.state.ingoing)):
-            if v-1>=0:
+            if v-1 >= 0:
                 if self.state.ingoing[v-1][1] > self.state.ingoing[v][1]:
-                    print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+                    print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa") # TODO: Dees prolly ni houden in final version?
         return self.state
 
     def timeAdvance(self):
@@ -116,17 +115,17 @@ class Canal(AtomicDEVS):
             self.state.remaining_time = 0
         return self.state.remaining_time
 
-
     def outputFnc(self):
         # Output all the ships who left the water canal
         return_dict = {}
-        if len(self.state.ingoing_leaving) >0:
+        if len(self.state.ingoing_leaving) > 0:
             leaving = self.state.ingoing_leaving
             self.state.ingoing_leaving = []
             return_dict[self.out1_port] = leaving
 
-        if len(self.state.outgoing_leaving) >0:
+        if len(self.state.outgoing_leaving) > 0:
             leaving = self.state.outgoing_leaving
             self.state.outgoing_leaving = []
             return_dict[self.out2_port] = leaving
+
         return return_dict
