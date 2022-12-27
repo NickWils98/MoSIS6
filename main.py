@@ -26,8 +26,8 @@ class TestSystem(CoupledDEVS):
         anchorpoint = self.addSubModel(AnchorPoint())
         control_tower = self.addSubModel(ControlTower())
         confluence_port = self.addSubModel(ConfluencePort())
-        confluence = self.addSubModel(Confluence([["K"], ["S"], [1,2,3,4,5,6,7,8]], 3))
-        confluence2 = self.addSubModel(Confluence([["K", "S" ,6,7,8], [1], [2,3,4,5]], 3))
+        confluence = self.addSubModel(Confluence([["K"], ["S"], [1, 2, 3, 4, 5, 6, 7, 8]], 3)) # TODO: Narekenen
+        confluence2 = self.addSubModel(Confluence([["K", "S", 6, 7, 8], [1], [2, 3, 4, 5]], 3))
         canal = self.addSubModel(Canal(0.8))
         canal2 = self.addSubModel(Canal(1.89))
         dock = self.addSubModel(Dock(1))
