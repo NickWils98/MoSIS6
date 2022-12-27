@@ -84,15 +84,10 @@ class TestSystemSmall(CoupledDEVS):
         dock_7 = self.addSubModel(Dock(7))
         dock_8 = self.addSubModel(Dock(8))
 
-
-
-
-
-
-        self.connectPorts(generator.out_port, anchorpoint.in_port)
-        self.connectPorts(anchorpoint.out_port, waterway_K.in1_port)
-        self.connectPorts(anchorpoint.out_event, control_tower.in_event)
-        self.connectPorts(control_tower.out_event, anchorpoint.in_event)
+        #self.connectPorts(generator.out_port, anchorpoint.in_port)
+        #self.connectPorts(anchorpoint.out_port, waterway_K.in1_port)
+        #self.connectPorts(anchorpoint.out_event, control_tower.in_event)
+        #self.connectPorts(control_tower.out_event, anchorpoint.in_event)
         self.connectPorts(waterway_K.out1_port, confluence_KS.in_ports[0])
 
         self.connectPorts(confluence_KS.out_ports[2], waterway_KS_to_CP.in1_port)
@@ -195,43 +190,102 @@ class TestSystemFull(CoupledDEVS):
         dock_7 = self.addSubModel(Dock(7))
         dock_8 = self.addSubModel(Dock(8))
 
+        # TODO: Alle confluenc ports checken!!!!!!!!
+        # TODO: Alle confluenc ports checken!!!!!!!!
+        # TODO: Alle confluenc ports checken!!!!!!!!
 
-        # Connect generator, anchorpoint, control_tower and confluence_KS
+        # Connect generator, anchorpoint, Sea, control_tower and confluence_KS
         self.connectPorts(generator.out_port, anchorpoint.in_port)
         self.connectPorts(anchorpoint.out_port, waterway_K.in1_port)
         self.connectPorts(anchorpoint.out_event, control_tower.in_event)
         self.connectPorts(control_tower.out_event, anchorpoint.in_event)
         self.connectPorts(waterway_K.out1_port, confluence_KS.in_ports[0])
+        self.connectPorts(confluence_KS.out_ports[2], waterway_S.in1_port)
+        self.connectPorts(waterway_S.out1_port, sea.in_port)
 
-        # Connect confluence KS to waterway KS->CP
-        self.connectPorts(confluence_KS.out_ports[2], waterway_KS_to_CP.in1_port)
-
-
+        # Connect confluence KS to waterway KS->CP and vice versa
+        self.connectPorts(confluence_KS.out_ports[0], waterway_KS_to_CP.in1_port)
         self.connectPorts(waterway_KS_to_CP.out1_port, confluence_port.in_ports[0])
-        self.connectPorts(confluence_port.out_ports[1], waterway_CP_to_A.in1_port)
+        self.connectPorts(confluence_KS.out_ports[2], waterway_KS_to_CP.in2_port)
+        self.connectPorts(waterway_KS_to_CP.out2_port, confluence_KS.in_ports[2])
 
+        # Connect confluence CP to Lock A and confluence mid
+        self.connectPorts(confluence_port.out_ports[0], waterway_CP_to_A.in1_port)
         self.connectPorts(waterway_CP_to_A.out1_port, lock_A.in_port_sea)
+        self.connectPorts(confluence_port.out_ports[1], waterway_CP_to_MID.in1_port)
+        self.connectPorts(waterway_CP_to_MID.out1_port, confluence_MID.in_ports[0])
+
+        self.connectPorts(confluence_MID.out_ports[1], waterway_CP_to_MID.in2_port)
+        self.connectPorts(waterway_CP_to_MID.out2_port, confluence_port.in_ports[1])
+        self.connectPorts(lock_A.out_port_sea, waterway_CP_to_A.in2_port)
+        self.connectPorts(waterway_CP_to_A.out2_port, confluence_port.in_ports[1])
+
+        # Connect Lock_A to Confluence A1
         self.connectPorts(lock_A.out_port_dock, canal_A1_A.in1_port)
-
         self.connectPorts(canal_A1_A.out1_port, confluence_A1.in_ports[0])
+        self.connectPorts(confluence_A1.out_ports[1], canal_A1_A.in2_port)
+        self.connectPorts(canal_A1_A.out2_port, lock_A.in_port_dock)
 
-        self.connectPorts(confluence_A1.out_ports[1], canal_A1_1.in1_port)
+        # Connect Confluence A1 to dock 1
+        self.connectPorts(confluence_A1.out_ports[0], canal_A1_1.in1_port)
         self.connectPorts(canal_A1_1.out1_port, dock_1.in_port)
         self.connectPorts(dock_1.out_port, canal_A1_1.in2_port)
         self.connectPorts(dock_1.out_event, control_tower.free_event)
-
         self.connectPorts(canal_A1_1.out2_port, confluence_A1.in_ports[1])
 
+        # Connect Confluence A1 to confluence A2
+        self.connectPorts(confluence_A1.out_ports[2], canal_A1_A2.in1_port)
+        self.connectPorts(canal_A1_A2.out1_port, confluence_A2.in_ports[0])
+        self.connectPorts(confluence_A2.out_ports[0], canal_A1_A2.in2_port)
+        self.connectPorts(canal_A1_A2.out2_port, confluence_A1.in_ports[2])
 
-        self.connectPorts(confluence_A1.out_ports[0], canal_A1_A.in2_port)
-        self.connectPorts(canal_A1_A.out2_port, lock_A.in_port_dock)
+        # Connect Confluence A2 to dock 2
+        self.connectPorts(confluence_A2.out_ports[0], canal_A2_2.in1_port)
+        self.connectPorts(canal_A2_2.out1_port, dock_2.in_port)
+        self.connectPorts(dock_2.out_port, canal_A2_2.in2_port)
+        self.connectPorts(dock_2.out_event, control_tower.free_event)
+        self.connectPorts(canal_A2_2.out2_port, confluence_A2.in_ports[1])
 
-        self.connectPorts(lock_A.out_port_sea, waterway_CP_to_A.in2_port)
-        self.connectPorts(waterway_CP_to_A.out2_port, confluence_port.in_ports[1])
-        self.connectPorts(confluence_port.out_ports[0], waterway_KS_to_CP.in2_port)
-        self.connectPorts(waterway_KS_to_CP.out2_port, confluence_KS.in_ports[2])
-        self.connectPorts(confluence_KS.out_ports[1], waterway_S.in1_port)
-        self.connectPorts(waterway_S.out1_port, sea.in_port)
+        # Connect confluence A2 to confluence C1
+        self.connectPorts(confluence_A2.out_ports[2], canal_A2_C1.in1_port)
+        self.connectPorts(canal_A2_C1.out1_port, confluence_C1.in_ports[0])
+        self.connectPorts(confluence_A2.out_ports[1], canal_A2_C1.in2_port)
+        self.connectPorts(canal_A2_C1.out2_port, confluence_A1.in_ports[2])
+
+        # confluence mid to C
+        self.connectPorts(confluence_MID.out_ports[0], waterway_MID_to_C.in1_port)
+        self.connectPorts(waterway_MID_to_C.out1_port, lock_C.in_port_sea)
+        self.connectPorts(lock_C.out_port_sea, waterway_MID_to_C.in2_port)
+        self.connectPorts(waterway_MID_to_C.out2_port, confluence_MID.in_ports[1])
+
+        # Connect Lock_C to Confluence C1
+        self.connectPorts(lock_C.out_port_dock, canal_C1_C.in1_port)
+        self.connectPorts(canal_C1_C.out1_port, confluence_C1.in_ports[1])
+        self.connectPorts(confluence_C1.out_ports[2], canal_C1_C.in2_port)
+        self.connectPorts(canal_C1_C.out2_port, lock_C.in_port_dock)
+
+        # Connect Confluence C1 to dock 3
+        self.connectPorts(confluence_C1.out_ports[3], canal_C1_3.in1_port)
+        self.connectPorts(canal_C1_3.out1_port, dock_3.in_port)
+        self.connectPorts(dock_3.out_port, canal_C1_3.in2_port)
+        self.connectPorts(dock_3.out_event, control_tower.free_event)
+        self.connectPorts(canal_C1_3.out2_port, confluence_C1.in_ports[3])
+
+        # Connect Confluence C1 to dock 4
+        self.connectPorts(confluence_C1.out_ports[1], canal_C1_4.in1_port)
+        self.connectPorts(canal_C1_4.out1_port, dock_4.in_port)
+        self.connectPorts(dock_4.out_port, canal_C1_4.in2_port)
+        self.connectPorts(dock_4.out_event, control_tower.free_event)
+        self.connectPorts(canal_C1_4.out2_port, confluence_C1.in_ports[1])
+
+        # Connect Confluence C1 to dock 5
+        self.connectPorts(confluence_C1.out_ports[2], canal_C1_5.in1_port)
+        self.connectPorts(canal_C1_5.out1_port, dock_5.in_port)
+        self.connectPorts(dock_5.out_port, canal_C1_5.in2_port)
+        self.connectPorts(dock_5.out_event, control_tower.free_event)
+        self.connectPorts(canal_C1_5.out2_port, confluence_C1.in_ports[2])
+
+
 
 
 if __name__ == '__main__':
@@ -239,7 +293,7 @@ if __name__ == '__main__':
     random.seed(42)
     np.random.seed(42)
     # Set up the system
-    m = TestSystemSmall()
+    m = TestSystemFull()
 
     # PythonPDEVS specific setup and configuration
     sim = Simulator(m)
