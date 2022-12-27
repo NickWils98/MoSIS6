@@ -1,7 +1,7 @@
 import numpy as np
 
 # Conversion from knots to km/h
-KNOT_TO_KM_H =1.852
+KNOT_TO_KM_H = 1.852
 
 class VesselFactory:
     """
@@ -9,16 +9,17 @@ class VesselFactory:
     """
     def __init__(self):
         self.vessel_id = 0
+
     def create(self, creation_time):
         """
         Create a vessel based on a probability.
         """
         number = np.random.uniform()
-        choice = 0
+        choice = 0 # TODO: Analyse of deleten
         prob_COT = .28
         prob_BK = .22
         prob_TB = .33
-        prob_SCF = .17
+        prob_SCF = .17 # TODO: deleten? wordt ni gebruikt en niet voor analyse
 
         if number < prob_COT:
             boat = CrudeOilTanker
