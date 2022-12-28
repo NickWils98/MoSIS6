@@ -5,7 +5,7 @@ import port_events as Messages
 class ConfluencePortState:
     def __init__(self):
         self.queue = []
-        self.map_port = [["S"], [1, 2], [3, 4, 5, 6, 7, 8]] # TODO: Natellen
+        self.map_port = [["S"], [1, 2], [3, 4, 5, 6, 7, 8]]
         for i in range(3):
             self.queue.append([])
         self.current_time = 0
