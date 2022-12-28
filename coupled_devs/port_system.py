@@ -218,6 +218,12 @@ class PortSystem(CoupledDEVS):
         self.connectPorts(dock_7.out_event, control_tower.free_event)
         self.connectPorts(canal_B2_7.out2_port, confluence_B2.in_ports[1])
 
+        # Connect collector ports
+        self.addPort(confluence_port.stat1_out, collector.stat1_in)
+        self.addPort(confluence_port.stat3_out, collector.stat3_in)
+        self.addPort(confluence_port.stat4_out, collector.stat4_in)
+
+
     def run(self):
         # PythonPDEVS specific setup and configuration
         sim = Simulator(self)
