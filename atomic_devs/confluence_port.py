@@ -12,7 +12,7 @@ class ConfluencePortState:
         self.current_time = 0
         self.output_number = 3
 
-        self.ships_in_lock = 0
+        self.ships_in_port = 0
         self.avg_time = 0
         self.ships_time = []
 
@@ -45,14 +45,14 @@ class ConfluencePort(AtomicDEVS):
                 for vessel in inputs[self.in_ports[i]]:
                     if i == 0:
                         vessel.enter_port = self.state.current_time
-                        self.state.ships_in_lock += 1
+                        self.state.ships_in_port += 1
                     else:
                         avg_time = self.state.current_time - vessel.enter_port
                         self.state.ships_time.append(avg_time)
                         self.state.avg_time = sum(self.state.ships_time)/len(self.state.ships_time)
                         # if vessel.vessel_id == 98:
                             # print(f"avg_time = {avg_time}, current time = {self.state.current_time} and start_time for {vessel.vessel_id} = {vessel.enter_port}")
-                        self.state.ships_in_lock -= 1
+                        self.state.ships_in_port -= 1
 
                     hour = math.floor(self.state.current_time) % 24
 
@@ -65,7 +65,7 @@ class ConfluencePort(AtomicDEVS):
                         self.state.ships_memory_hour[self.state.last_hour] = []
                         self.state.last_hour = hour
 
-                    self.state.ships_memory_hour[hour].append(self.state.ships_in_lock)
+                    self.state.ships_memory_hour[hour].append(self.state.ships_in_port)
 
 
                     #print(f"average number of vessels in the port at time {self.state.current_time} is {sum(self.state.ships_memory) / len(self.state.ships_memory)}")

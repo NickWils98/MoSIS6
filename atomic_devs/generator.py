@@ -34,7 +34,7 @@ class Generator(AtomicDEVS):
         hour = math.floor(self.state.current_time) % 24
         # Calculate waiting time to next vessel
         self.state.remaining = np.random.exponential(scale=1 / self.state.ships_hours[hour])
-        if self.state.counter >100:
+        if self.state.counter >=100:
             self.state.remaining = float('inf')
         return self.state
 

@@ -200,8 +200,8 @@ class Lock(AtomicDEVS):
         if self.state.left is not None:
             vessel = self.state.left
 
-            if vessel.vessel_id == 98:
-                print("confused in lock", self.state.current_time)
+            # if vessel.vessel_id == 98:
+            #     print("confused in lock", self.state.current_time)
             self.state.left = None
             if self.state.gate_dock == 1:
                 return_dict[self.out_port_dock] = [vessel]
