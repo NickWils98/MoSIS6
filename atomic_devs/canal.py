@@ -129,11 +129,15 @@ class Canal(AtomicDEVS):
         return_dict = {}
         if len(self.state.ingoing_leaving) > 0:
             leaving = self.state.ingoing_leaving
+            if leaving[0].vessel_id ==98:
+                print("canal lock out",leaving[0].vessel_id, self.state.current_time)
             self.state.ingoing_leaving = []
             return_dict[self.out1_port] = leaving
 
         if len(self.state.outgoing_leaving) > 0:
             leaving = self.state.outgoing_leaving
+            if leaving[0].vessel_id ==98:
+                print("canal lock out",leaving[0].vessel_id, self.state.current_time)
             self.state.outgoing_leaving = []
             return_dict[self.out2_port] = leaving
 

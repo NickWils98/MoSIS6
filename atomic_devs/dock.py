@@ -17,6 +17,7 @@ class DockState:
         self.requests = []
         self.activate = False
         self.counter = 0
+        self.current_time = 0
 
 
 class Dock(AtomicDEVS):
@@ -32,6 +33,7 @@ class Dock(AtomicDEVS):
 
     def intTransition(self):
         # update all the remaining times
+        self.state.current_time+= self.state.remaining_time
         for vessel in self.state.vessels.keys():
             self.state.vessels[vessel] -= self.timeAdvance()
 
@@ -50,6 +52,8 @@ class Dock(AtomicDEVS):
 
     def extTransition(self, inputs):
         # update all the remaining times
+
+        self.state.current_time+= self.elapsed
         for vessel in self.state.vessels.keys():
             self.state.vessels[vessel] -= self.elapsed
         # add a new vessel in the waterway if possible
@@ -58,10 +62,12 @@ class Dock(AtomicDEVS):
             for vessel in inputs[self.in_port]:
                 # self.state.counter += 1
                 # print(f"dock {self.state.quay_id}, counter= {self.state.counter}")
-                if self.state.activate == False:
-                    self.state.activate =True
-                    print(f"vessel= {vessel.destination}, dock = {self.state.quay_id}, same = {self.state.quay_id == vessel.destination}")
+                # if self.state.activate == False:
+                #     self.state.activate =True
+                #     print(f"vessel= {vessel.destination}, dock = {self.state.quay_id}, same = {self.state.quay_id == vessel.destination}")
                 wait_time = np.random.normal(36,12)
+                if vessel.vessel_id ==98:
+                    print("time in dock",vessel.vessel_id, wait_time, self.state.current_time)
                 if wait_time < 6:
                     wait_time = 6
                 self.state.vessels[vessel] = wait_time

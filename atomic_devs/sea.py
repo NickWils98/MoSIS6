@@ -17,6 +17,7 @@ class Sea(AtomicDEVS):
     def extTransition(self, inputs):
         if self.in_port in inputs:
              for vessel in inputs[self.in_port]:
-                 print(vessel.vessel_id, vessel.type) # TODO: Moet dees er in finale versie ook staan?
+                 if vessel.vessel_id ==98:
+                     print(vessel.vessel_id, vessel.type) # TODO: Moet dees er in finale versie ook staan?
         return self.state
 
