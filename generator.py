@@ -15,6 +15,7 @@ class GeneratorState:
         # Keep a list of scales on how many vessels are created on each hour
         self.ships_hours = [100, 120, 150, 175, 125, 50, 42, 68, 200, 220, 250, 245, 253, 236, 227,
                             246, 203, 43, 51, 33, 143, 187, 164, 123]
+        self.counter = 0
 
 class Generator(AtomicDEVS):
     def __init__(self):
@@ -27,6 +28,7 @@ class Generator(AtomicDEVS):
         self.state = GeneratorState()
 
     def intTransition(self):
+        self.state.counter+=1
         # Update simulation time
         self.state.current_time += self.timeAdvance()
 
@@ -34,6 +36,8 @@ class Generator(AtomicDEVS):
         hour = math.floor(self.state.current_time) % 24
         # Calculate waiting time to next vessel
         self.state.remaining = np.random.exponential(scale=1 / self.state.ships_hours[hour])
+        if self.state.counter >101:
+            self.state.remaining = float('inf')
         return self.state
 
     def timeAdvance(self):
@@ -41,6 +45,8 @@ class Generator(AtomicDEVS):
         return self.state.remaining
 
     def outputFnc(self):
+        if self.state.counter >100:
+            return {}
         # Calculate current time (note the addition!)
         creation_time = self.state.current_time + self.state.remaining
         vessel = self.factory.create(creation_time)
