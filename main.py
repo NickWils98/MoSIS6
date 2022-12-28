@@ -206,7 +206,7 @@ class TestSystemFull(CoupledDEVS):
         # Connect confluence KS to waterway KS->CP and vice versa
         self.connectPorts(confluence_KS.out_ports[1], waterway_KS_to_CP.in1_port)
         self.connectPorts(waterway_KS_to_CP.out1_port, confluence_port.in_ports[0])
-        self.connectPorts(confluence_KS.out_ports[0], waterway_KS_to_CP.in2_port)
+        self.connectPorts(confluence_port.out_ports[0], waterway_KS_to_CP.in2_port)
         self.connectPorts(waterway_KS_to_CP.out2_port, confluence_KS.in_ports[1])
 
         # Connect confluence CP to Lock A
