@@ -47,10 +47,11 @@ class ConfluencePort(AtomicDEVS):
                         vessel.enter_port = self.state.current_time
                         self.state.ships_in_port += 1
                     else:
-                        avg_time = self.state.current_time - vessel.enter_port
-                        self.state.ships_time.append(avg_time)
-                        self.state.avg_time = sum(self.state.ships_time)/len(self.state.ships_time)
-                        self.state.ships_in_port -= 1
+                        if vessel.destination == "S":
+                            avg_time = self.state.current_time - vessel.enter_port
+                            self.state.ships_time.append(avg_time)
+                            self.state.avg_time = sum(self.state.ships_time)/len(self.state.ships_time)
+                            self.state.ships_in_port -= 1
 
                     # Analytics 3
                     self.state.ships_time.append(self.state.ships_in_port)
