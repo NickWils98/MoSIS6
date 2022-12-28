@@ -9,7 +9,7 @@ from atomic_devs.canal import Canal
 from atomic_devs.dock import Dock
 from atomic_devs.lock import Lock
 from atomic_devs.sea import Sea
-from atomic_devs.port_confluence import ConfluencePort
+from atomic_devs.confluence_port import ConfluencePort
 
 
 class PortSystem(CoupledDEVS):
