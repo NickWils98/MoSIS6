@@ -13,6 +13,6 @@ if __name__ == '__main__':
     # Set up the system and run
     system = port_system.PortSystem()
     sim =Simulator(system)
-    sim.setTerminationTime(74.709856)
+    sim.setTerminationTime(100)
     sim.setClassicDEVS()
     sim.simulate()

@@ -12,6 +12,7 @@ class CanalState:
         self.outgoing_leaving = []
 
         self.distance = distance
+        self.current_time = 0
 
 
 class Canal(AtomicDEVS):
@@ -29,6 +30,7 @@ class Canal(AtomicDEVS):
         self.out2_port = self.addOutPort("out_port")
 
     def intTransition(self):
+        self.state.current_time+= self.state.remaining_time
         for i in range(len(self.state.ingoing)):
             self.state.ingoing[i][1] -= self.timeAdvance()
 
@@ -52,6 +54,8 @@ class Canal(AtomicDEVS):
         return self.state
 
     def extTransition(self, inputs):
+
+        self.state.current_time += self.elapsed
         temp_list = [] # TODO:: Dees deleten of houden voor statistics?
         for i in range(len(self.state.ingoing)):
             self.state.ingoing[i][1] -= self.elapsed
@@ -61,6 +65,8 @@ class Canal(AtomicDEVS):
 
         if self.in1_port in inputs:
             for vessel in inputs[self.in1_port]:
+                if vessel.vessel_id ==98:
+                    print("canal lock in",vessel.vessel_id, self.state.current_time)
                 # If first vessel, no need to take into account velocity ship in front
                 if len(self.state.ingoing) == 0:
                     # calculate the remaining time
@@ -79,6 +85,9 @@ class Canal(AtomicDEVS):
 
         if self.in2_port in inputs:
             for vessel in inputs[self.in2_port]:
+
+                if vessel.vessel_id ==98:
+                    print("canal dock in",vessel.vessel_id, self.state.current_time)
                 # If first vessel, no need to take into account velocity ship in front
                 if len(self.state.outgoing) == 0:
                     # calculate the remaining time
