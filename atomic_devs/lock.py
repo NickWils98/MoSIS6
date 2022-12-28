@@ -205,14 +205,19 @@ class Lock(AtomicDEVS):
     def outputFnc(self):
         return_dict = {}
 
+        if self.state.empty:
+            self.state.idle_time += self.state.current_time - self.state.start_empty
+            self.state.start_empty = self.state.current_time
         if self.state.left is not None:
+            print(self.state.idle_time)
             in_lock_bool = len(self.state.in_lock) == 0
             leaving_bool = len(self.state.leaving) == 0
             waiting_dock_bool = len(self.state.waiting_queue_dock) == 0
             waiting_sea_bool = len(self.state.waiting_queue_sea) == 0
-            if in_lock_bool and leaving_bool and waiting_sea_bool and waiting_dock_bool:
+            if in_lock_bool and leaving_bool and waiting_sea_bool and waiting_dock_bool and not self.state.empty:
+                self.state.start_empty = self.state.current_time
                 self.state.empty = True
-                print("yeahaw")
+                print("aribariba")
             vessel = self.state.left
 
             # if vessel.vessel_id == 98:

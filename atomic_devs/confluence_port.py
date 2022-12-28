@@ -118,5 +118,4 @@ class ConfluencePort(AtomicDEVS):
                 output_dict[port] = vessel
                 self.state.queue[queue_number] = []
 
-        output_dict[self.out_analytic] = self.state.ships_memory_hour[self.state.last_hour] / len(self.state.ships_memory_hour[self.state.last_hour])
         return output_dict
