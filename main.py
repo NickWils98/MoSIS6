@@ -9,6 +9,6 @@ if __name__ == '__main__':
     random.seed(42)
     np.random.seed(42)
 
-    # Set up the system
-    m = Experiment.TestSystemFull()
-    m.run()
+    # Set up the system and run
+    system = Experiment.TestSystemFull()
+    system.run()
