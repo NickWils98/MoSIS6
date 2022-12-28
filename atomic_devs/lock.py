@@ -45,6 +45,7 @@ class LockState:
         self.idle_time = 0
         self.empty_itteration = 0
         self.empty = True
+        self.start_empty = 0
 
 class Lock(AtomicDEVS):
     def __init__(self, lock_id, washing_duration, lock_shift_interval, open_close_duration, surface_area):
@@ -81,6 +82,9 @@ class Lock(AtomicDEVS):
         else:
             # if the gate closes:
             if self.state.gate_sea == 1 or self.state.gate_dock == 1:
+                if self.state.empty:
+                    # analytic 6
+                    self.state.empty_itteration += 1
                 # close gates
                 self.state.gate_sea = 0
                 self.state.gate_dock = 0
@@ -159,8 +163,7 @@ class Lock(AtomicDEVS):
         # ship at sea gate
         if self.in_port_sea in inputs:
             for vessel in inputs[self.in_port_sea]:
-                if vessel.vessel_id == 98:
-                    pass
+                self.state.empty = False
                     #print("enter lock via sea at time", self.state.current_time)
                 # gate at sea open and there is capacity
                 if self.state.water_level == 1 &\
@@ -174,9 +177,11 @@ class Lock(AtomicDEVS):
 
         if self.in_port_dock in inputs:
             for vessel in inputs[self.in_port_dock]:
-                if vessel.vessel_id == 98:
-                    pass
-                    #print("enter lock via dock at time", self.state.current_time)
+                if self.state.empty:
+                    self.state.idle_time += self.state.current_time -  self.state.start_empty
+                    self.state.start_empty = 0
+                self.state.empty = False
+
                 # gate at dock open and there is capacity
                 if self.state.water_level == 0 &\
                         self.state.gate_dock == 1 &\
@@ -198,6 +203,13 @@ class Lock(AtomicDEVS):
         return_dict = {}
 
         if self.state.left is not None:
+            in_lock_bool = len(self.state.in_lock) == 0
+            leaving_bool = len(self.state.leaving) == 0
+            waiting_dock_bool = len(self.state.waiting_queue_dock) == 0
+            waiting_sea_bool = len(self.state.waiting_queue_sea) == 0
+            if in_lock_bool and leaving_bool and waiting_sea_bool and waiting_dock_bool:
+                self.state.empty = True
+                print("yeahaw")
             vessel = self.state.left
 
             # if vessel.vessel_id == 98:

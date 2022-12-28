@@ -40,14 +40,11 @@ class ConfluencePort(AtomicDEVS):
 
     def intTransition(self):
         self.state.current_time += self.state.remaining_time
-        # if not self.state.hour_update:
-        #     print(f"false: {self.state.remaining_time}")
         if self.state.hour_update:
-            print(self.state.ships_in_port, self.state.current_time)
-            # print(f"true: {self.state.remaining_time}")
-            self.state.count += 1
+            pass
+            # ananlitic 4
+            # print(self.state.ships_in_port, self.state.current_time)
         self.state.remaining_time = self.state.count-math.floor(self.state.current_time)
-        # print(self.state.hour_update, self.state.current_time)
         return self.state
 
     def extTransition(self, inputs):
@@ -75,9 +72,9 @@ class ConfluencePort(AtomicDEVS):
                     else:
 
                         self.state.ships_average_weight.append(self.state.current_time)
-                    x = self.state.ships_average[:-1]
 
-                    # print("3: Average number of vessels in port: ",np.average(x, weights=self.state.ships_average_weight))
+
+                    # print("3: Average number of vessels in port: ",np.average(self.state.ships_average[:-1], weights=self.state.ships_average_weight))
 
                     # Analytics 4
                     hour = math.floor(self.state.current_time) % 24
@@ -101,7 +98,7 @@ class ConfluencePort(AtomicDEVS):
 
     def timeAdvance(self):
         y = math.floor(5.21)
-        self.state.remaining_time = self.state.count-self.state.current_time
+        self.state.remaining_time = math.floor(self.state.current_time)+1-self.state.current_time
         self.state.hour_update =True
         for queue in self.state.queue:
             if len(queue) > 0:
