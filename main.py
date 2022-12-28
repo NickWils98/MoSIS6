@@ -144,14 +144,16 @@ class TestSystemFull(CoupledDEVS):
         waterway_MID_to_C = self.addSubModel(Waterway(5.16))
 
         # Define all confluence atomic submodels
+        # TODO: moet "K" wel in de map_port staan aangezien da eig ni reached kan worden
+        # TODO: Maakt de volgorde binnen de lijst ook uit of ni echt?
         confluence_port = self.addSubModel(ConfluencePort())
-        confluence_KS = self.addSubModel(Confluence([["K"], ["S"], [1, 2, 3, 4, 5, 6, 7, 8]], 3))  # TODO: moet "K" hier wel instaan aangezien da eig ni reached kan worden
-        confluence_MID = self.addSubModel(Confluence([[6, 7, 8], ["K", "S", 1, 2], [3, 4, 5]], 3))
+        confluence_KS = self.addSubModel(Confluence([["K"], [1, 2, 3, 4, 5, 6, 7, 8], ["S"]], 3))
+        confluence_MID = self.addSubModel(Confluence([["K", "S", 1, 2], [3, 4, 5], [6, 7, 8], ], 3))
         confluence_A1 = self.addSubModel(Confluence([["K", "S", 6, 7, 8], [1], [2, 3, 4, 5]], 3))
-        confluence_A2 = self.addSubModel(Confluence([[2], ["K", "S", 1, 6, 7, 8], [3, 4, 5]], 3))
-        confluence_B1 = self.addSubModel(Confluence([["K", "S", 1, 2, 3, 4, 5], [6, 7], [8]], 3))
-        confluence_B2 = self.addSubModel(Confluence([[7], [6], ["K", "S", 1, 2, 3, 4, 5, 8]], 3))
-        confluence_C1 = self.addSubModel(Confluence([["K", "S", 6, 7, 8], [4], [5], [3], [1, 2]], 5))
+        confluence_A2 = self.addSubModel(Confluence([["K", "S", 1, 6, 7, 8], [2], [3, 4, 5]], 3))
+        confluence_B1 = self.addSubModel(Confluence([["K", "S", 1, 2, 3, 4, 5], [8], [6, 7]], 3))
+        confluence_B2 = self.addSubModel(Confluence([[6], [7], ["K", "S", 1, 2, 3, 4, 5, 8]], 3))
+        confluence_C1 = self.addSubModel(Confluence([["K", "S", 6, 7, 8], [5], [4], [3], [1, 2]], 5))
 
         # Define all canal atomic submodels
         canal_A1_A = self.addSubModel(Canal(0.8))
@@ -190,9 +192,6 @@ class TestSystemFull(CoupledDEVS):
         dock_7 = self.addSubModel(Dock(7))
         dock_8 = self.addSubModel(Dock(8))
 
-        # TODO: Alle confluenc ports checken!!!!!!!!
-        # TODO: Alle confluenc ports checken!!!!!!!!
-        # TODO: Alle confluenc ports checken!!!!!!!!
 
         # Connect generator, anchorpoint, Sea, control_tower and confluence_KS
         self.connectPorts(generator.out_port, anchorpoint.in_port)
