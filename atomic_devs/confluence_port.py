@@ -38,6 +38,9 @@ class ConfluencePort(AtomicDEVS):
             self.out_ports.append(self.addOutPort(f"out_port_{i}"))
             self.in_ports.append(self.addInPort(f"in_port_{i}"))
 
+        # Add output port for analytics
+        self.out_analytic = self.addOutPort("out_analytic")
+
     def intTransition(self):
         self.state.current_time += self.state.remaining_time
         if self.state.hour_update:
@@ -114,4 +117,6 @@ class ConfluencePort(AtomicDEVS):
                 port = self.out_ports[queue_number]
                 output_dict[port] = vessel
                 self.state.queue[queue_number] = []
+
+        output_dict[self.out_analytic] = self.state.ships_memory_hour[self.state.last_hour] / len(self.state.ships_memory_hour[self.state.last_hour])
         return output_dict
