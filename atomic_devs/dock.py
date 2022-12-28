@@ -103,6 +103,9 @@ class Dock(AtomicDEVS):
         # Output all the ships who left the water canal
         if len(self.state.leaving) > 0:
             leaving = self.state.leaving
+
+            if leaving[0].vessel_id == 98:
+                print("time out dock", leaving[0].vessel_id, self.state.current_time)
             return_dict[self.out_port] = leaving
             self.state.leaving = []
 

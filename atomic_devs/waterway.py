@@ -64,6 +64,11 @@ class Waterway(AtomicDEVS):
             if self.state.ingoing[vessel] < 0:
                 self.state.ingoing[vessel] = 0
 
+        for vessel in self.state.outgoing.keys():
+            self.state.outgoing[vessel] -= self.elapsed
+            if self.state.outgoing[vessel] < 0:
+                self.state.outgoing[vessel] = 0
+
         # add a new vessel in the waterway in 1 way
         if self.in1_port in inputs:
             for vessel in inputs[self.in1_port]:

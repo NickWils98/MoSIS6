@@ -64,7 +64,11 @@ class Canal(AtomicDEVS):
 
             if self.state.ingoing[i][1] < 0:
                 self.state.ingoing[i][1] = 0
+        for i in range(len(self.state.outgoing)):
+            self.state.outgoing[i][1] -= self.elapsed
 
+            if self.state.outgoing[i][1] < 0:
+                self.state.outgoing[i][1] = 0
         if self.in1_port in inputs:
             for vessel in inputs[self.in1_port]:
                 if vessel.vessel_id ==98:
@@ -121,7 +125,7 @@ class Canal(AtomicDEVS):
         if len(self.state.ingoing) > 0:
             self.state.remaining_time = self.state.ingoing[0][1]
         if len(self.state.outgoing) > 0:
-            self.state.remaining_time = self.state.outgoing[0][1]
+            self.state.remaining_time = min(self.state.outgoing[0][1], self.state.remaining_time)
         if len(self.state.ingoing_leaving) > 0:
             self.state.remaining_time = 0
         if len(self.state.outgoing_leaving) > 0:
@@ -141,7 +145,7 @@ class Canal(AtomicDEVS):
         if len(self.state.outgoing_leaving) > 0:
             leaving = self.state.outgoing_leaving
             if leaving[0].vessel_id ==98:
-                print("canal out",leaving[0].vessel_id, self.state.current_time, self.state.current_time-self.x)
+                print("canal out",leaving[0].vessel_id, self.state.current_time, self.state.distance,self.state.current_time-self.x)
             self.state.outgoing_leaving = []
             return_dict[self.out2_port] = leaving
 
