@@ -43,7 +43,7 @@ class Generator(AtomicDEVS):
         return self.state.remaining
 
     def outputFnc(self):
-        if self.state.counter >100:
+        if self.state.counter >=100:
             return {}
         # Calculate current time (note the addition!)
         creation_time = self.state.current_time + self.state.remaining

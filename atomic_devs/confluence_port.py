@@ -50,25 +50,24 @@ class ConfluencePort(AtomicDEVS):
                         avg_time = self.state.current_time - vessel.enter_port
                         self.state.ships_time.append(avg_time)
                         self.state.avg_time = sum(self.state.ships_time)/len(self.state.ships_time)
-                        # if vessel.vessel_id == 98:
-                            # print(f"avg_time = {avg_time}, current time = {self.state.current_time} and start_time for {vessel.vessel_id} = {vessel.enter_port}")
                         self.state.ships_in_port -= 1
 
-                    hour = math.floor(self.state.current_time) % 24
+                    # Analytics 3
+                    self.state.ships_time.append(self.state.ships_in_port)
+                    print(f"3: Average number of vessels in port: {sum(self.state.ships_time) / len(self.state.ships_time)}")
 
+                    # Analytics 4
+                    hour = math.floor(self.state.current_time) % 24
                     if self.state.last_hour == -1:
                         self.state.last_hour = hour
                     if self.state.last_hour != hour:
                         print(
-                            f"average number of vessels in the port at hour {self.state.last_hour} is "
+                            f"4: Total number of vessels in the port at hour {self.state.last_hour}: "
                             f"{sum(self.state.ships_memory_hour[self.state.last_hour]) / len(self.state.ships_memory_hour[self.state.last_hour])}")
                         self.state.ships_memory_hour[self.state.last_hour] = []
                         self.state.last_hour = hour
 
                     self.state.ships_memory_hour[hour].append(self.state.ships_in_port)
-
-
-                    #print(f"average number of vessels in the port at time {self.state.current_time} is {sum(self.state.ships_memory) / len(self.state.ships_memory)}")
 
                     destination = vessel.destination
                     for ports in range(len(self.state.map_port)):
