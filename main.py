@@ -251,7 +251,7 @@ class TestSystemFull(CoupledDEVS):
         self.connectPorts(confluence_A2.out_ports[2], canal_A2_C1.in1_port)
         self.connectPorts(canal_A2_C1.out1_port, confluence_C1.in_ports[4])
         self.connectPorts(confluence_C1.out_ports[4], canal_A2_C1.in2_port)
-        self.connectPorts(canal_A2_C1.out2_port, confluence_A1.in_ports[2])
+        self.connectPorts(canal_A2_C1.out2_port, confluence_A2.in_ports[2])
 
         # confluence mid to C
         self.connectPorts(confluence_MID.out_ports[1], waterway_MID_to_C.in1_port)
