@@ -59,7 +59,7 @@ class Lock(AtomicDEVS):
 
     def intTransition(self):
         # ships are leaving takeing 30s each
-        self.state.current_time += self.timeAdvance()
+        self.state.current_time += self.state.remaining_time
         if self.state.leaving_bool:
             # ships are still leaving
             if len(self.state.leaving) > 0:

@@ -28,7 +28,7 @@ class Generator(AtomicDEVS):
     def intTransition(self):
         self.state.counter+=1
         # Update simulation time
-        self.state.current_time += self.timeAdvance()
+        self.state.current_time += self.state.remaining
 
         # Get the hour from the current time
         hour = math.floor(self.state.current_time) % 24

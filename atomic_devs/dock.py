@@ -35,7 +35,7 @@ class Dock(AtomicDEVS):
         # update all the remaining times
         self.state.current_time+= self.state.remaining_time
         for vessel in self.state.vessels.keys():
-            self.state.vessels[vessel] -= self.timeAdvance()
+            self.state.vessels[vessel] -= self.state.remaining_time
 
             #  if the vessel is leaving the dock, add it to the leaving list
             if self.state.vessels[vessel] <= 0:

@@ -33,7 +33,7 @@ class Waterway(AtomicDEVS):
     def intTransition(self):
         # update all the remaining times
         for vessel in self.state.ingoing.keys():
-            self.state.ingoing[vessel] -= self.timeAdvance()
+            self.state.ingoing[vessel] -= self.state.remaining_time
 
             #  if the vessel is arrived add it to the leaving list
             if self.state.ingoing[vessel] <= 0:
@@ -45,7 +45,7 @@ class Waterway(AtomicDEVS):
 
         # update all the remaining times
         for vessel in self.state.outgoing.keys():
-            self.state.outgoing[vessel] -= self.timeAdvance()
+            self.state.outgoing[vessel] -= self.state.remaining_time
 
             #  if the vessel is arrived add it to the leaving list
             if self.state.outgoing[vessel] <= 0:

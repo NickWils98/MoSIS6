@@ -28,11 +28,13 @@ class Canal(AtomicDEVS):
         # Create input and output ports for the other way
         self.in2_port = self.addInPort("in_port")
         self.out2_port = self.addOutPort("out_port")
+        self.x = 0
+        self.y = 0
 
     def intTransition(self):
         self.state.current_time+= self.state.remaining_time
         for i in range(len(self.state.ingoing)):
-            self.state.ingoing[i][1] -= self.timeAdvance()
+            self.state.ingoing[i][1] -= self.state.remaining_time
 
             if self.state.ingoing[i][1] <= 0:
                 self.state.ingoing_leaving.append(self.state.ingoing[i][0])
@@ -42,7 +44,7 @@ class Canal(AtomicDEVS):
             self.state.ingoing.pop(0)
 
         for i in range(len(self.state.outgoing)):
-            self.state.outgoing[i][1] -= self.timeAdvance()
+            self.state.outgoing[i][1] -= self.state.remaining_time
 
             if self.state.outgoing[i][1] <= 0:
                 self.state.outgoing_leaving.append(self.state.outgoing[i][0])
@@ -66,7 +68,8 @@ class Canal(AtomicDEVS):
         if self.in1_port in inputs:
             for vessel in inputs[self.in1_port]:
                 if vessel.vessel_id ==98:
-                    print("canal lock in",vessel.vessel_id, self.state.current_time)
+                    print("canal in",vessel.vessel_id, self.state.current_time)
+                    self.x = self.state.current_time
                 # If first vessel, no need to take into account velocity ship in front
                 if len(self.state.ingoing) == 0:
                     # calculate the remaining time
@@ -87,7 +90,8 @@ class Canal(AtomicDEVS):
             for vessel in inputs[self.in2_port]:
 
                 if vessel.vessel_id ==98:
-                    print("canal dock in",vessel.vessel_id, self.state.current_time)
+                    print("canal in",vessel.vessel_id, self.state.current_time)
+                    self.x = self.state.current_time
                 # If first vessel, no need to take into account velocity ship in front
                 if len(self.state.outgoing) == 0:
                     # calculate the remaining time
@@ -130,14 +134,14 @@ class Canal(AtomicDEVS):
         if len(self.state.ingoing_leaving) > 0:
             leaving = self.state.ingoing_leaving
             if leaving[0].vessel_id ==98:
-                print("canal lock out",leaving[0].vessel_id, self.state.current_time)
+                print("canal out",leaving[0].vessel_id, self.state.current_time, self.state.distance, self.state.current_time-self.x)
             self.state.ingoing_leaving = []
             return_dict[self.out1_port] = leaving
 
         if len(self.state.outgoing_leaving) > 0:
             leaving = self.state.outgoing_leaving
             if leaving[0].vessel_id ==98:
-                print("canal lock out",leaving[0].vessel_id, self.state.current_time)
+                print("canal out",leaving[0].vessel_id, self.state.current_time, self.state.current_time-self.x)
             self.state.outgoing_leaving = []
             return_dict[self.out2_port] = leaving
 
