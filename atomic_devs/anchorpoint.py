@@ -33,7 +33,7 @@ class AnchorPoint(AtomicDEVS):
         self.out_event = self.addOutPort("out_event")
 
         # Add output port for analytics
-        self.out_analytic = self.addOutPort("out_analytic")
+        self.stat2_out = self.addOutPort("stat2_out")
 
     def intTransition(self):
         # Make a request to ask the control tower for a port
@@ -95,5 +95,7 @@ class AnchorPoint(AtomicDEVS):
             requests = self.state.requests
             return_dict[self.out_event] = requests
             self.state.requests = []
+
+        return_dict[self.stat2_out] = self.state.avg_waiting_time
 
         return return_dict

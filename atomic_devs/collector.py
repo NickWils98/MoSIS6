@@ -13,7 +13,6 @@ class CollectorState(object):
         self.stat4_info = []
 
 
-
 class Collector(AtomicDEVS):
     def __init__(self):
         AtomicDEVS.__init__(self, "Collector")
