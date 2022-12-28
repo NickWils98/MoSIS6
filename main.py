@@ -1,4 +1,3 @@
-from pypdevs.simulator import Simulator
 from coupled_devs import experiment as Experiment
 import random
 import numpy as np
