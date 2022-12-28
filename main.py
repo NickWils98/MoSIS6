@@ -190,10 +190,6 @@ class TestSystemFull(CoupledDEVS):
         dock_7 = self.addSubModel(Dock(7))
         dock_8 = self.addSubModel(Dock(8))
 
-        # TODO: Alle confluenc ports checken!!!!!!!!
-        # TODO: Alle confluenc ports checken!!!!!!!!
-        # TODO: Alle confluenc ports checken!!!!!!!!
-
         # Connect generator, anchorpoint, Sea, control_tower and confluence_KS
         self.connectPorts(generator.out_port, anchorpoint.in_port)
         self.connectPorts(anchorpoint.out_port, waterway_K.in1_port)
