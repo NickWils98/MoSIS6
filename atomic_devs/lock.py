@@ -91,7 +91,7 @@ class Lock(AtomicDEVS):
         else:
             # if the gate closes:
             if self.state.gate_sea == 1 or self.state.gate_dock == 1:
-                self.state.hourly_remainig_cappacity += self.state.remaining_capacity
+                self.state.hourly_remainig_cappacity = self.state.remaining_capacity
                 if self.state.empty:
                     # analytic 6
                     self.state.empty_itteration += 1
@@ -171,7 +171,7 @@ class Lock(AtomicDEVS):
         if self.in_port_sea in inputs:
             for vessel in inputs[self.in_port_sea]:
                 self.state.empty = False
-                    #print("enter lock via sea at time", self.state.current_time)
+
                 # gate at sea open and there is capacity
                 if self.state.water_level == 1 &\
                         self.state.gate_sea == 1 &\
