@@ -1,5 +1,5 @@
 from pypdevs.DEVS import AtomicDEVS
-
+import math
 # Hours to seconds
 HOUR_TO_SECOND = 1/3600
 # delay for a ship to start when leaving a lock
@@ -46,6 +46,10 @@ class LockState:
         self.empty_itteration = 0
         self.empty = True
         self.start_empty = 0
+        self.hourly_remainig_cappacity = 0
+        self.hour_update =True
+
+        self.hour_remaining = 0
 
 class Lock(AtomicDEVS):
     def __init__(self, lock_id, washing_duration, lock_shift_interval, open_close_duration, surface_area):
@@ -62,6 +66,9 @@ class Lock(AtomicDEVS):
         self.out_analytic = self.addOutPort("out_analytic")
 
     def intTransition(self):
+        if self.state.hour_update:
+            self.state.remaining_time -= self.state.hour_remaining
+            return self.state
         # ships are leaving takeing 30s each
         self.state.current_time += self.state.remaining_time
         if self.state.leaving_bool:
@@ -82,6 +89,7 @@ class Lock(AtomicDEVS):
         else:
             # if the gate closes:
             if self.state.gate_sea == 1 or self.state.gate_dock == 1:
+                self.state.hourly_remainig_cappacity += self.state.remaining_capacity
                 if self.state.empty:
                     # analytic 6
                     self.state.empty_itteration += 1
@@ -193,11 +201,24 @@ class Lock(AtomicDEVS):
         return self.state
 
     def timeAdvance(self):
+        self.state.hour_remaining = math.floor(self.state.current_time)+1-self.state.current_time
+
         # return the remaining time that the lock will be open or closed or leaving of a ship
-        return self.state.remaining_time
+        if self.state.remaining_time < self.state.hour_remaining:
+
+            return self.state.remaining_time
+        else:
+            self.state.hour_update = True
+            return self.state.hour_remaining
 
     def outputFnc(self):
         return_dict = {}
+
+        if self.state.hour_update:
+            self.state.hour_update =False
+            remainig_cappacity = self.state.hourly_remainig_cappacity
+            self.state.hourly_remainig_cappacity = 0
+
 
         if self.state.empty:
             self.state.idle_time += self.state.current_time - self.state.start_empty

@@ -102,7 +102,6 @@ class ConfluencePort(AtomicDEVS):
         return self.state
 
     def timeAdvance(self):
-        y = math.floor(5.21)
         self.state.remaining_time = math.floor(self.state.current_time)+1-self.state.current_time
         self.state.hour_update =True
         for queue in self.state.queue:
