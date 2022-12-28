@@ -1,5 +1,5 @@
 from pypdevs.DEVS import AtomicDEVS
-import port_events as Messages
+
 
 # Define the state of the Canal as a structured object
 class CanalState:

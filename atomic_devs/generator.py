@@ -1,9 +1,7 @@
-from pypdevs.DEVS import AtomicDEVS, CoupledDEVS
-import random
+from pypdevs.DEVS import AtomicDEVS
 import numpy as np
 import math
-import vessel as Vessel
-
+from messages_events import vessel
 
 # Define the state of the generator as a structured object
 class GeneratorState:
@@ -23,7 +21,7 @@ class Generator(AtomicDEVS):
         # Output port for the vessel
         self.out_port = self.addOutPort("out_port")
         # factory to create vessels
-        self.factory = Vessel.VesselFactory()
+        self.factory = vessel.VesselFactory()
         # Define the state
         self.state = GeneratorState()
 

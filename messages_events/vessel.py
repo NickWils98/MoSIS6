@@ -46,7 +46,7 @@ class Vessel(object):
         Get vessel name for ship
         :return: random name chose from list
         '''
-        with open("shipnames.txt", 'r', encoding='utf-8') as f:
+        with open("../shipnames.txt", 'r', encoding='utf-8') as f:
             words = f.read().splitlines()
 
         return np.random.choice(words)

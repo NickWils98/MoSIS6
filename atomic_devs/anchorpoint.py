@@ -1,5 +1,5 @@
 from pypdevs.DEVS import AtomicDEVS
-from port_events import portEntryRequest
+from messages_events.port_events import portEntryRequest
 
 # Define the state of the AnchorPoint as a structured object
 class AnchorpointState:

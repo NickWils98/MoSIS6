@@ -1,6 +1,6 @@
 from pypdevs.DEVS import AtomicDEVS
 import numpy as np
-import port_events as Messages
+from messages_events import port_events as Messages
 
 
 # Define the state of the AnchorPoint as a structured object

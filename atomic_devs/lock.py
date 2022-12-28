@@ -1,6 +1,4 @@
 from pypdevs.DEVS import AtomicDEVS
-import numpy as np
-import port_events as Messages
 
 # Hours to seconds
 HOUR_TO_SECOND = 1/3600

@@ -1,15 +1,15 @@
-from pypdevs.DEVS import AtomicDEVS, CoupledDEVS
-from generator import Generator
-from waterway import Waterway
-from anchorpoint import AnchorPoint
+from pypdevs.DEVS import CoupledDEVS
+from atomic_devs.generator import Generator
+from atomic_devs.waterway import Waterway
+from atomic_devs.anchorpoint import AnchorPoint
 from pypdevs.simulator import Simulator
-from control_tower import ControlTower
-from confluence import Confluence
-from canal import Canal
-from dock import Dock
-from lock import Lock
-from sea import Sea
-from port_confluence import ConfluencePort
+from atomic_devs.control_tower import ControlTower
+from atomic_devs.confluence import Confluence
+from atomic_devs.canal import Canal
+from atomic_devs.dock import Dock
+from atomic_devs.lock import Lock
+from atomic_devs.sea import Sea
+from atomic_devs.port_confluence import ConfluencePort
 import random
 import numpy as np
 

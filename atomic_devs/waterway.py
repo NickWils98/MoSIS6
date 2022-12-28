@@ -1,5 +1,5 @@
 from pypdevs.DEVS import AtomicDEVS
-import port_events as Messages
+
 
 # Define the state of the Waterway as a structured object
 class WaterwayState:

@@ -1,5 +1,5 @@
 from pypdevs.DEVS import AtomicDEVS
-from port_events import portEntryPermission
+from messages_events.port_events import portEntryPermission
 
 # Define the state of the Control Tower as a structured object
 class ControlTowerState:
