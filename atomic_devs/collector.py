@@ -7,9 +7,10 @@ class CollectorState(object):
         self.current_time = 0.0
 
         # Contains all info about anchor, confluence_port and the lock
-        self.anchor_info = []
-        self.cp_info = []
-        self.lock_info = []
+        self.stat1_info = []
+        self.stat2_info = []
+        self.stat3_info = []
+        self.stat4_info = []
 
 
 
@@ -18,28 +19,34 @@ class Collector(AtomicDEVS):
         AtomicDEVS.__init__(self, "Collector")
         self.state = CollectorState()
 
-        # Input port for anchorpoint analytics
-        self.anchor_event = self.addInPort("anchor_event")
-        # Input port for CP analytics
-        self.cp_event = self.addInPort("cp_event")
-        # Input port for lock analytics
-        self.lock_event = self.addInPort("lock_event")
+        # Avg travel time vessel
+        self.stat1_in = self.addInPort("stat1_in")
+        # Avg waiting time vessel in anchorpoint
+        self.stat2_in = self.addInPort("stat2_in")
+        # Avg vessels in port
+        self.stat3_in = self.addInPort("stat3_in")
+        # Vessels in port hourly
+        self.stat4_in = self.addInPort("stat4_in")
 
     def extTransition(self, inputs):
         # Update simulation time
         self.state.current_time += self.elapsed
 
         # add anchor info to the list
-        if self.anchor_event in inputs:
-            self.state.anchor_info.append(inputs[self.anchor_event])
+        if self.stat1_in in inputs:
+            self.state.stat1_info.append(inputs[self.stat1_in])
 
         # add cp info to the list
-        if self.cp_event in inputs:
-            self.state.cp_info.append(inputs[self.cp_event])
+        if self.stat2_in in inputs:
+            self.state.stat2_info.append(inputs[self.stat2_in])
 
         # add anchor info to the list
-        if self.lock_event in inputs:
-            self.state.lock_info.append(inputs[self.lock_event])
+        if self.stat3_in in inputs:
+            self.state.stat3_info.append(inputs[self.stat3_in])
+
+        # add anchor info to the list
+        if self.stat4_in in inputs:
+            self.state.stat4_info.append(inputs[self.stat4_in])
 
         return self.state
 

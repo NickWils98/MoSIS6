@@ -9,6 +9,7 @@ from atomic_devs.canal import Canal
 from atomic_devs.dock import Dock
 from atomic_devs.lock import Lock
 from atomic_devs.sea import Sea
+from atomic_devs.collector import Collector
 from atomic_devs.confluence_port import ConfluencePort
 
 
@@ -82,6 +83,9 @@ class PortSystem(CoupledDEVS):
         dock_6 = self.addSubModel(Dock(6))
         dock_7 = self.addSubModel(Dock(7))
         dock_8 = self.addSubModel(Dock(8))
+
+        # Define colector atomic submodel
+        collector = self.addSubModel(Collector())
 
         # Connect generator, anchorpoint, Sea, control_tower and confluence_KS
         self.connectPorts(generator.out_port, anchorpoint.in_port)

@@ -69,9 +69,6 @@ class Lock(AtomicDEVS):
             if len(self.state.leaving) > 0:
                 # remove the ship
                 self.state.left = self.state.leaving.pop(0)
-                if self.state.left.vessel_id == 98:
-                    pass
-                    #print("leave lock at time: ", self.state.current_time)
                 # the delay is 30 seconds
                 self.state.remaining_time = START_DELAY * HOUR_TO_SECOND
                 # the delay of leaving a ship is subtracted from the time the gate stays open
@@ -116,9 +113,6 @@ class Lock(AtomicDEVS):
                     # if a ship needs to leave
                     if len(self.state.leaving) > 0:
                         self.state.left = self.state.leaving.pop(0)
-                        if self.state.left.vessel_id == 98:
-                            pass
-                            #print("leave lock via sea at time: ", self.state.current_time)
                         self.state.remaining_time = START_DELAY*HOUR_TO_SECOND
                         self.state.time_open_used = self.state.time_open-self.state.remaining_time
                         self.state.leaving_bool = True

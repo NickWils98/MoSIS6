@@ -38,8 +38,10 @@ class ConfluencePort(AtomicDEVS):
             self.out_ports.append(self.addOutPort(f"out_port_{i}"))
             self.in_ports.append(self.addInPort(f"in_port_{i}"))
 
-        # Add output port for analytics
-        self.out_analytic = self.addOutPort("out_analytic")
+        # Add output ports for statistics
+        self.stat1_out = self.addOutPort("stat1_out")
+        self.stat3_out = self.addOutPort("stat3_out")
+        self.stat4_out = self.addOutPort("stat4_out")
 
     def intTransition(self):
         self.state.current_time += self.state.remaining_time
@@ -77,7 +79,7 @@ class ConfluencePort(AtomicDEVS):
                         self.state.ships_average_weight.append(self.state.current_time)
 
 
-                    # print("3: Average number of vessels in port: ",np.average(self.state.ships_average[:-1], weights=self.state.ships_average_weight))
+                    #print("3: Average number of vessels in port: ",np.average(self.state.ships_average[:-1], weights=self.state.ships_average_weight))
 
                     # Analytics 4
                     hour = math.floor(self.state.current_time) % 24
@@ -117,5 +119,10 @@ class ConfluencePort(AtomicDEVS):
                 port = self.out_ports[queue_number]
                 output_dict[port] = vessel
                 self.state.queue[queue_number] = []
+
+        output_dict[self.stat3_out] = np.average(self.state.ships_average[:-1], weights=self.state.ships_average_weight)
+
+        if self.state.hour_update:
+            output_dict[self.stat4_out] = np.average(self.state.ships_in_port)
 
         return output_dict
