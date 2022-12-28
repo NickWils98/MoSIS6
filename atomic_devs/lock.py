@@ -46,7 +46,7 @@ class LockState:
         self.empty_itteration = 0
         self.empty = True
         self.start_empty = 0
-        self.hourly_remainig_cappacity = 0
+        self.hourly_remainig_cappacity = self.surface_area
         self.hour_update =True
 
         self.hour_remaining = 0
@@ -63,7 +63,9 @@ class Lock(AtomicDEVS):
         self.out_port_sea = self.addOutPort("out_port_sea")
 
         # Add output port for analytics
-        self.out_analytic = self.addOutPort("out_analytic")
+        self.stat5_out = self.addOutPort("stat5_out")
+        self.stat6_out = self.addOutPort("stat6_out")
+        self.stat7_out = self.addOutPort("stat7_out")
 
     def intTransition(self):
         if self.state.hour_update:
@@ -215,10 +217,10 @@ class Lock(AtomicDEVS):
         return_dict = {}
 
         if self.state.hour_update:
-            self.state.hour_update =False
-            remainig_cappacity = self.state.hourly_remainig_cappacity
+            self.state.hour_update = False
+            remaining_capacity = self.state.hourly_remainig_cappacity
             self.state.hourly_remainig_cappacity = 0
-
+            return_dict[self.stat7_out] = remaining_capacity
 
         if self.state.empty:
             self.state.idle_time += self.state.current_time - self.state.start_empty
@@ -235,13 +237,22 @@ class Lock(AtomicDEVS):
                 print("aribariba")
             vessel = self.state.left
 
-            # if vessel.vessel_id == 98:
-            #     print("confused in lock", self.state.current_time)
+
             self.state.left = None
             if self.state.gate_dock == 1:
                 return_dict[self.out_port_dock] = [vessel]
             else:
                 return_dict[self.out_port_sea] = [vessel]
+
+            # Statistic ports connect
+            if self.state.current_time > 0:
+                return_dict[self.stat5_out] = self.state.idle_time / self.state.current_time
+            else:
+                return_dict[self.stat5_out] = 0
+
+            return_dict[self.stat6_out] = self.state.empty_itteration
+
+
 
         return return_dict
 

@@ -71,9 +71,6 @@ class Canal(AtomicDEVS):
                 self.state.outgoing[i][1] = 0
         if self.in1_port in inputs:
             for vessel in inputs[self.in1_port]:
-                if vessel.vessel_id ==98:
-                    #print("canal in",vessel.vessel_id, self.state.current_time)
-                    self.x = self.state.current_time
                 # If first vessel, no need to take into account velocity ship in front
                 if len(self.state.ingoing) == 0:
                     # calculate the remaining time
@@ -137,17 +134,11 @@ class Canal(AtomicDEVS):
         return_dict = {}
         if len(self.state.ingoing_leaving) > 0:
             leaving = self.state.ingoing_leaving
-            if leaving[0].vessel_id ==98:
-                pass
-                #print("canal out",leaving[0].vessel_id, self.state.current_time, self.state.distance, self.state.current_time-self.x)
             self.state.ingoing_leaving = []
             return_dict[self.out1_port] = leaving
 
         if len(self.state.outgoing_leaving) > 0:
             leaving = self.state.outgoing_leaving
-            if leaving[0].vessel_id ==98:
-                pass
-                #print("canal out",leaving[0].vessel_id, self.state.current_time, self.state.distance,self.state.current_time-self.x)
             self.state.outgoing_leaving = []
             return_dict[self.out2_port] = leaving
 

@@ -218,11 +218,32 @@ class PortSystem(CoupledDEVS):
         self.connectPorts(dock_7.out_event, control_tower.free_event)
         self.connectPorts(canal_B2_7.out2_port, confluence_B2.in_ports[1])
 
-        # Connect collector ports
+        # Connect collector ports for statistic 1
         self.connectPorts(confluence_port.stat1_out, collector.stat1_in)
+
+        # Connect collector ports for statistic 2
         self.connectPorts(anchorpoint.stat2_out, collector.stat2_in)
+
+        # Connect collector ports for statistic 3
         self.connectPorts(confluence_port.stat3_out, collector.stat3_in)
+
+        # Connect collector ports for statistic 4
         self.connectPorts(confluence_port.stat4_out, collector.stat4_in)
+
+        # Connect collector ports for statistic 5
+        self.connectPorts(lock_A.stat5_out, collector.stat5A_in)
+        self.connectPorts(lock_B.stat5_out, collector.stat5B_in)
+        self.connectPorts(lock_C.stat5_out, collector.stat5C_in)
+
+        # Connect collector ports for statistic 6
+        self.connectPorts(lock_A.stat6_out, collector.stat6A_in)
+        self.connectPorts(lock_B.stat6_out, collector.stat6B_in)
+        self.connectPorts(lock_C.stat6_out, collector.stat6C_in)
+
+        # Connect collector ports for statistic 6
+        self.connectPorts(lock_A.stat7_out, collector.stat7A_in)
+        self.connectPorts(lock_B.stat7_out, collector.stat7B_in)
+        self.connectPorts(lock_C.stat7_out, collector.stat7C_in)
 
         # Make it accessible outside of our own scope
         self.collector = collector
