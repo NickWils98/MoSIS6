@@ -57,6 +57,9 @@ class Lock(AtomicDEVS):
         self.in_port_dock = self.addInPort("in_port_dock")
         self.out_port_sea = self.addOutPort("out_port_sea")
 
+        # Add output port for analytics
+        self.out_analytic = self.addOutPort("out_analytic")
+
     def intTransition(self):
         # ships are leaving takeing 30s each
         self.state.current_time += self.state.remaining_time
