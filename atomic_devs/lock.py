@@ -66,7 +66,8 @@ class Lock(AtomicDEVS):
                 # remove the ship
                 self.state.left = self.state.leaving.pop(0)
                 if self.state.left.vessel_id == 98:
-                    print("leave lock somehwere", self.state.current_time)
+                    pass
+                    #print("leave lock at time: ", self.state.current_time)
                 # the delay is 30 seconds
                 self.state.remaining_time = START_DELAY * HOUR_TO_SECOND
                 # the delay of leaving a ship is subtracted from the time the gate stays open
@@ -109,7 +110,8 @@ class Lock(AtomicDEVS):
                     if len(self.state.leaving) > 0:
                         self.state.left = self.state.leaving.pop(0)
                         if self.state.left.vessel_id == 98:
-                            print("leave lock sea", self.state.current_time)
+                            pass
+                            #print("leave lock via sea at time: ", self.state.current_time)
                         self.state.remaining_time = START_DELAY*HOUR_TO_SECOND
                         self.state.time_open_used = self.state.time_open-self.state.remaining_time
                         self.state.leaving_bool = True
@@ -139,7 +141,8 @@ class Lock(AtomicDEVS):
                     if len(self.state.leaving) > 0:
                         self.state.left = self.state.leaving.pop(0)
                         if self.state.left.vessel_id == 98:
-                            print("leave lock dock", self.state.current_time)
+                            pass
+                            #print("leave lock via dock at time: ", self.state.current_time)
                         self.state.remaining_time = START_DELAY * HOUR_TO_SECOND
                         self.state.time_open_used = self.state.time_open - self.state.remaining_time
                         self.state.leaving_bool = True
@@ -157,7 +160,8 @@ class Lock(AtomicDEVS):
         if self.in_port_sea in inputs:
             for vessel in inputs[self.in_port_sea]:
                 if vessel.vessel_id == 98:
-                    print("enter lock sea 98", self.state.current_time)
+                    pass
+                    #print("enter lock via sea at time", self.state.current_time)
                 # gate at sea open and there is capacity
                 if self.state.water_level == 1 &\
                         self.state.gate_sea == 1 &\
@@ -171,7 +175,8 @@ class Lock(AtomicDEVS):
         if self.in_port_dock in inputs:
             for vessel in inputs[self.in_port_dock]:
                 if vessel.vessel_id == 98:
-                    print("enter lock dock", self.state.current_time)
+                    pass
+                    #print("enter lock via dock at time", self.state.current_time)
                 # gate at dock open and there is capacity
                 if self.state.water_level == 0 &\
                         self.state.gate_dock == 1 &\

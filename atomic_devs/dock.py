@@ -67,7 +67,8 @@ class Dock(AtomicDEVS):
                 #     print(f"vessel= {vessel.destination}, dock = {self.state.quay_id}, same = {self.state.quay_id == vessel.destination}")
                 wait_time = np.random.normal(36,12)
                 if vessel.vessel_id ==98:
-                    print("time in dock",vessel.vessel_id, wait_time, self.state.current_time)
+                    pass
+                    #print("time in dock for vessel with id ", vessel.vessel_id, wait_time, self.state.current_time)
                 if wait_time < 6:
                     wait_time = 6
                 self.state.vessels[vessel] = wait_time
@@ -105,7 +106,8 @@ class Dock(AtomicDEVS):
             leaving = self.state.leaving
 
             if leaving[0].vessel_id == 98:
-                print("time out dock", leaving[0].vessel_id, self.state.current_time)
+                pass
+                #print("time out dock", leaving[0].vessel_id, self.state.current_time)
             return_dict[self.out_port] = leaving
             self.state.leaving = []
 

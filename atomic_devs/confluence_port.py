@@ -1,4 +1,5 @@
 from pypdevs.DEVS import AtomicDEVS
+import math
 
 
 # Define the state of the Confluence as a structured object
@@ -14,6 +15,10 @@ class ConfluencePortState:
         self.ships_in_lock = 0
         self.avg_time = 0
         self.ships_time = []
+
+        self.last_hour = -1
+        self.ships_memory_hour = [[], [], [], [], [], [], [], [], [], [], [], [],
+                             [], [], [], [], [], [], [], [], [], [], [], []]
 
 class ConfluencePort(AtomicDEVS):
     def __init__(self):
@@ -45,9 +50,25 @@ class ConfluencePort(AtomicDEVS):
                         avg_time = self.state.current_time - vessel.enter_port
                         self.state.ships_time.append(avg_time)
                         self.state.avg_time = sum(self.state.ships_time)/len(self.state.ships_time)
-                        if vessel.vessel_id == 98:
-                            print("avg",vessel.vessel_id, avg_time, f"time {self.state.current_time}, start{vessel.enter_port}")
+                        # if vessel.vessel_id == 98:
+                            # print(f"avg_time = {avg_time}, current time = {self.state.current_time} and start_time for {vessel.vessel_id} = {vessel.enter_port}")
                         self.state.ships_in_lock -= 1
+
+                    hour = math.floor(self.state.current_time) % 24
+
+                    if self.state.last_hour == -1:
+                        self.state.last_hour = hour
+                    if self.state.last_hour != hour:
+                        print(
+                            f"average number of vessels in the port at hour {self.state.last_hour} is "
+                            f"{sum(self.state.ships_memory_hour[self.state.last_hour]) / len(self.state.ships_memory_hour[self.state.last_hour])}")
+                        self.state.ships_memory_hour[self.state.last_hour] = []
+                        self.state.last_hour = hour
+
+                    self.state.ships_memory_hour[hour].append(self.state.ships_in_lock)
+
+
+                    #print(f"average number of vessels in the port at time {self.state.current_time} is {sum(self.state.ships_memory) / len(self.state.ships_memory)}")
 
                     destination = vessel.destination
                     for ports in range(len(self.state.map_port)):
