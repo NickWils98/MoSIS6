@@ -316,7 +316,7 @@ class TestSystemFull(CoupledDEVS):
         self.connectPorts(canal_B2_6.out1_port, dock_6.in_port)
         self.connectPorts(dock_6.out_port, canal_B2_6.in2_port)
         self.connectPorts(dock_6.out_event, control_tower.free_event)
-        self.connectPorts(canal_B2_6.out2_port, confluence_B1.in_ports[0])
+        self.connectPorts(canal_B2_6.out2_port, confluence_B2.in_ports[0])
 
         # Connect confluence B2 to lock 7
         self.connectPorts(confluence_B2.out_ports[1], canal_B2_7.in1_port)
