@@ -12,7 +12,7 @@ from atomic_devs.sea import Sea
 from atomic_devs.port_confluence import ConfluencePort
 
 
-class TestSystemFull(CoupledDEVS):
+class PortSystem(CoupledDEVS):
     def __init__(self):
         CoupledDEVS.__init__(self, "FullSystem")
 

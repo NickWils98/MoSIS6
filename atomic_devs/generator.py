@@ -34,7 +34,7 @@ class Generator(AtomicDEVS):
         hour = math.floor(self.state.current_time) % 24
         # Calculate waiting time to next vessel
         self.state.remaining = np.random.exponential(scale=1 / self.state.ships_hours[hour])
-        if self.state.counter >101:
+        if self.state.counter >1000:
             self.state.remaining = float('inf')
         return self.state
 
@@ -43,7 +43,7 @@ class Generator(AtomicDEVS):
         return self.state.remaining
 
     def outputFnc(self):
-        if self.state.counter >100:
+        if self.state.counter >801:
             return {}
         # Calculate current time (note the addition!)
         creation_time = self.state.current_time + self.state.remaining

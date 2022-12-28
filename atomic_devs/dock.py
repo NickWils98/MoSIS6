@@ -15,6 +15,8 @@ class DockState:
 
         # List of request to send
         self.requests = []
+        self.activate = False
+        self.counter = 0
 
 
 class Dock(AtomicDEVS):
@@ -54,6 +56,11 @@ class Dock(AtomicDEVS):
 
         if self.in_port in inputs:
             for vessel in inputs[self.in_port]:
+                # self.state.counter += 1
+                # print(f"dock {self.state.quay_id}, counter= {self.state.counter}")
+                if self.state.activate == False:
+                    self.state.activate =True
+                    print(f"vessel= {vessel.destination}, dock = {self.state.quay_id}, same = {self.state.quay_id == vessel.destination}")
                 wait_time = np.random.normal(36,12)
                 if wait_time < 6:
                     wait_time = 6
