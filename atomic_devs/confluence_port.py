@@ -42,9 +42,10 @@ class ConfluencePort(AtomicDEVS):
                         vessel.enter_port = self.state.current_time
                         self.state.ships_in_lock += 1
                     else:
-                        avg_time = self.state.current_time-vessel.enter_port
+                        avg_time = self.state.current_time - vessel.enter_port
                         self.state.ships_time.append(avg_time)
                         self.state.avg_time = sum(self.state.ships_time)/len(self.state.ships_time)
+                        print(self.state.avg_time)
                         self.state.ships_in_lock -= 1
 
                     destination = vessel.destination
