@@ -1,3 +1,4 @@
+import numpy as np
 from pypdevs.DEVS import AtomicDEVS
 import math
 
@@ -15,10 +16,14 @@ class ConfluencePortState:
         self.ships_in_port = 0
         self.avg_time = 0
         self.ships_time = []
-
+        self.ships_average = [0]
+        self.ships_average_weight = []
         self.last_hour = -1
         self.ships_memory_hour = [[], [], [], [], [], [], [], [], [], [], [], [],
                              [], [], [], [], [], [], [], [], [], [], [], []]
+        self.hour_update = False
+        self.count = 1
+        self.remaining_time = 0
 
 class ConfluencePort(AtomicDEVS):
     def __init__(self):
@@ -34,11 +39,19 @@ class ConfluencePort(AtomicDEVS):
             self.in_ports.append(self.addInPort(f"in_port_{i}"))
 
     def intTransition(self):
+        self.state.current_time += self.state.remaining_time
+        # if not self.state.hour_update:
+        #     print(f"false: {self.state.remaining_time}")
+        if self.state.hour_update:
+            print(self.state.ships_in_port, self.state.current_time)
+            # print(f"true: {self.state.remaining_time}")
+            self.state.count += 1
+        self.state.remaining_time = self.state.count-math.floor(self.state.current_time)
+        # print(self.state.hour_update, self.state.current_time)
         return self.state
 
     def extTransition(self, inputs):
-        if self.elapsed is not None:
-            self.state.current_time += self.elapsed
+        self.state.current_time += self.elapsed
 
         for i in range(self.state.output_number):
             if self.in_ports[i] in inputs:
@@ -54,17 +67,26 @@ class ConfluencePort(AtomicDEVS):
                             self.state.ships_in_port -= 1
 
                     # Analytics 3
-                    self.state.ships_time.append(self.state.ships_in_port)
-                    print(f"3: Average number of vessels in port: {sum(self.state.ships_time) / len(self.state.ships_time)}")
+
+                    self.state.ships_average.append(self.state.ships_in_port)
+                    if len(self.state.ships_average_weight)>0:
+
+                        self.state.ships_average_weight.append(self.state.current_time-self.state.ships_average_weight[-1])
+                    else:
+
+                        self.state.ships_average_weight.append(self.state.current_time)
+                    x = self.state.ships_average[:-1]
+
+                    # print("3: Average number of vessels in port: ",np.average(x, weights=self.state.ships_average_weight))
 
                     # Analytics 4
                     hour = math.floor(self.state.current_time) % 24
                     if self.state.last_hour == -1:
                         self.state.last_hour = hour
                     if self.state.last_hour != hour:
-                        print(
-                            f"4: Total number of vessels in the port at hour {self.state.last_hour}: "
-                            f"{sum(self.state.ships_memory_hour[self.state.last_hour]) / len(self.state.ships_memory_hour[self.state.last_hour])}")
+                        # print(
+                        #     f"4: Total number of vessels in the port at hour {self.state.last_hour}: "
+                        #     f"{sum(self.state.ships_memory_hour[self.state.last_hour]) / len(self.state.ships_memory_hour[self.state.last_hour])}")
                         self.state.ships_memory_hour[self.state.last_hour] = []
                         self.state.last_hour = hour
 
@@ -78,10 +100,14 @@ class ConfluencePort(AtomicDEVS):
         return self.state
 
     def timeAdvance(self):
+        y = math.floor(5.21)
+        self.state.remaining_time = self.state.count-self.state.current_time
+        self.state.hour_update =True
         for queue in self.state.queue:
             if len(queue) > 0:
-                return 0
-        return float('inf')
+                self.state.hour_update = False
+                self.state.remaining_time = 0
+        return self.state.remaining_time
 
     def outputFnc(self):
         output_dict = {}
