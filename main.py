@@ -1,6 +1,8 @@
 from coupled_devs import port_system
 import random
 import numpy as np
+from pypdevs.simulator import Simulator
+
 
 
 if __name__ == '__main__':
@@ -10,4 +12,7 @@ if __name__ == '__main__':
 
     # Set up the system and run
     system = port_system.PortSystem()
-    system.run()
+    sim =Simulator(system)
+    sim.setTerminationTime(74.709856)
+    sim.setClassicDEVS()
+    sim.simulate()
