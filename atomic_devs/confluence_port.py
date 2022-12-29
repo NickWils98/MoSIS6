@@ -115,8 +115,8 @@ class ConfluencePort(AtomicDEVS):
                 port = self.out_ports[queue_number]
                 output_dict[port] = vessel
                 self.state.queue[queue_number] = []
-
-        output_dict[self.stat1_out] = self.state.avg_time
+        if self.state.avg_time >0:
+            output_dict[self.stat1_out] = self.state.avg_time
 
         if len(self.state.ships_average_weight) > 0:
             output_dict[self.stat3_out] = np.average(self.state.ships_average[:-1], weights=self.state.ships_average_weight)
