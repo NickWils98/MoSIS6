@@ -31,7 +31,7 @@ class ControlTower(AtomicDEVS):
                     quay_id = i + 1
                     break
             if quay_id == 0:
-                self.state.queue.append(request)
+                self.state.queue.insert(0,request)
                 self.state.place_free = False
             else:
                 answer = portEntryPermission(request.vessel_id, quay_id, request.current_time)
