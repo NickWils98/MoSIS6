@@ -4,7 +4,8 @@ import numpy as np
 from pypdevs.simulator import Simulator
 import matplotlib.pyplot as plt
 
-SEED = 42
+
+SEED = 69
 
 if __name__ == '__main__':
     values = []
@@ -14,9 +15,9 @@ if __name__ == '__main__':
     np.random.seed(SEED)
 
     # Set up the system and run
-    system = model.PortSystem(100)
+    system = model.PortSystem()
     sim = Simulator(system)
-    sim.setTerminationTime(92)
+    sim.setTerminationTime(168)
     sim.setClassicDEVS()
     sim.simulate()
 
@@ -37,9 +38,9 @@ if __name__ == '__main__':
     stat7C = system.collector.state.stat7C_info
 
     # Write all data to txt file
-    filename = f"plots/task5/"
+    filename = f"plots/task6/seed{SEED}/"
 
-    f = open(f'{filename}task5_info.txt', 'w')
+    f = open(f'{filename}task6_seed_{SEED}_info.txt', 'w')
 
     f.write(f"Total amount of ships that left the port via the Sea: {total}")
     f.write(f"\n\tCrudeOilTanker: {system.collector.state.ships_count_type[0]}")
@@ -47,7 +48,7 @@ if __name__ == '__main__':
     f.write(f"\n\tTugBoat: {system.collector.state.ships_count_type[2]}")
     f.write(f"\n\tSmallCargoFreighter: {system.collector.state.ships_count_type[3]}")
 
-    f.write(f"\n\nAverage travel time for a vessel: {stat1[-1]}" )
+    f.write(f"\n\nAverage travel time for a vessel: {stat1[-1]}")
     f.write(f"\n\nAverage waiting time for a vessel in the anchorpoint: {stat2[-1]}")
     f.write(f"\n\nAverage number of vessels in the port: {stat3[-1]}")
     f.write(f"\n\nTotal vessels in the port at every hour in the simulation: \n{stat4}")
