@@ -14,11 +14,11 @@ from atomic_devs.confluence_port import ConfluencePort
 
 
 class PortSystem(CoupledDEVS):
-    def __init__(self):
+    def __init__(self, generation_max=float('inf')):
         CoupledDEVS.__init__(self, "FullSystem")
 
         # Define generator atomic submodel
-        generator = self.addSubModel(Generator())
+        generator = self.addSubModel(Generator(generation_max))
 
         # Define anchorpoint atomic submodel
         anchorpoint = self.addSubModel(AnchorPoint())
@@ -71,8 +71,8 @@ class PortSystem(CoupledDEVS):
 
         # Define all lock atomic submodels
         lock_A = self.addSubModel(Lock("A", 20/60, 1, 7/60, 62500))
-        lock_B = self.addSubModel(Lock("B", 12/60, 45/60, 5/60, 34000))
-        lock_C = self.addSubModel(Lock("C", 8/60, 30/60, 5/60, 25650))
+        # lock_B = self.addSubModel(Lock("B", 12/60, 45/60, 5/60, 34000))
+        # lock_C = self.addSubModel(Lock("C", 8/60, 30/60, 5/60, 25650))
 
         # Define all dock atomic submodels
         dock_1 = self.addSubModel(Dock(1))
@@ -146,17 +146,17 @@ class PortSystem(CoupledDEVS):
         self.connectPorts(confluence_C1.out_ports[4], canal_A2_C1.in2_port)
         self.connectPorts(canal_A2_C1.out2_port, confluence_A2.in_ports[2])
 
-        # confluence mid to C
-        self.connectPorts(confluence_MID.out_ports[1], waterway_MID_to_C.in1_port)
-        self.connectPorts(waterway_MID_to_C.out1_port, lock_C.in_port_sea)
-        self.connectPorts(lock_C.out_port_sea, waterway_MID_to_C.in2_port)
-        self.connectPorts(waterway_MID_to_C.out2_port, confluence_MID.in_ports[1])
-
-        # Connect Lock_C to Confluence C1
-        self.connectPorts(lock_C.out_port_dock, canal_C1_C.in1_port)
-        self.connectPorts(canal_C1_C.out1_port, confluence_C1.in_ports[0])
-        self.connectPorts(confluence_C1.out_ports[0], canal_C1_C.in2_port)
-        self.connectPorts(canal_C1_C.out2_port, lock_C.in_port_dock)
+        # # confluence mid to C
+        # self.connectPorts(confluence_MID.out_ports[1], waterway_MID_to_C.in1_port)
+        # self.connectPorts(waterway_MID_to_C.out1_port, lock_C.in_port_sea)
+        # self.connectPorts(lock_C.out_port_sea, waterway_MID_to_C.in2_port)
+        # self.connectPorts(waterway_MID_to_C.out2_port, confluence_MID.in_ports[1])
+        #
+        # # Connect Lock_C to Confluence C1
+        # self.connectPorts(lock_C.out_port_dock, canal_C1_C.in1_port)
+        # self.connectPorts(canal_C1_C.out1_port, confluence_C1.in_ports[0])
+        # self.connectPorts(confluence_C1.out_ports[0], canal_C1_C.in2_port)
+        # self.connectPorts(canal_C1_C.out2_port, lock_C.in_port_dock)
 
         # Connect Confluence C1 to dock 5
         self.connectPorts(confluence_C1.out_ports[1], canal_C1_5.in1_port)
@@ -180,16 +180,16 @@ class PortSystem(CoupledDEVS):
         self.connectPorts(canal_C1_3.out2_port, confluence_C1.in_ports[3])
 
         # Connect confluence Mid to lock B
-        self.connectPorts(confluence_MID.out_ports[2], canal_MID_B.in1_port)
-        self.connectPorts(canal_MID_B.out1_port, lock_B.in_port_sea)
-        self.connectPorts(lock_B.out_port_sea, canal_MID_B.in2_port)
-        self.connectPorts(canal_MID_B.out2_port, confluence_MID.in_ports[2])
-
-        # Connect lock B to confluence B1
-        self.connectPorts(lock_B.out_port_dock, canal_B1_B.in1_port)
-        self.connectPorts(canal_B1_B.out1_port, confluence_B1.in_ports[0])
-        self.connectPorts(confluence_B1.out_ports[0], canal_B1_B.in2_port)
-        self.connectPorts(canal_B1_B.out2_port, lock_B.in_port_dock)
+        # self.connectPorts(confluence_MID.out_ports[2], canal_MID_B.in1_port)
+        # self.connectPorts(canal_MID_B.out1_port, lock_B.in_port_sea)
+        # self.connectPorts(lock_B.out_port_sea, canal_MID_B.in2_port)
+        # self.connectPorts(canal_MID_B.out2_port, confluence_MID.in_ports[2])
+        #
+        # # Connect lock B to confluence B1
+        # self.connectPorts(lock_B.out_port_dock, canal_B1_B.in1_port)
+        # self.connectPorts(canal_B1_B.out1_port, confluence_B1.in_ports[0])
+        # self.connectPorts(confluence_B1.out_ports[0], canal_B1_B.in2_port)
+        # self.connectPorts(canal_B1_B.out2_port, lock_B.in_port_dock)
 
         # Connect confluence B1 to lock 8
         self.connectPorts(confluence_B1.out_ports[1], canal_B1_8.in1_port)
@@ -232,18 +232,18 @@ class PortSystem(CoupledDEVS):
 
         # Connect collector ports for statistic 5
         self.connectPorts(lock_A.stat5_out, collector.stat5A_in)
-        self.connectPorts(lock_B.stat5_out, collector.stat5B_in)
-        self.connectPorts(lock_C.stat5_out, collector.stat5C_in)
+        # self.connectPorts(lock_B.stat5_out, collector.stat5B_in)
+        # self.connectPorts(lock_C.stat5_out, collector.stat5C_in)
 
         # Connect collector ports for statistic 6
         self.connectPorts(lock_A.stat6_out, collector.stat6A_in)
-        self.connectPorts(lock_B.stat6_out, collector.stat6B_in)
-        self.connectPorts(lock_C.stat6_out, collector.stat6C_in)
+        # self.connectPorts(lock_B.stat6_out, collector.stat6B_in)
+        # self.connectPorts(lock_C.stat6_out, collector.stat6C_in)
 
         # Connect collector ports for statistic 6
         self.connectPorts(lock_A.stat7_out, collector.stat7A_in)
-        self.connectPorts(lock_B.stat7_out, collector.stat7B_in)
-        self.connectPorts(lock_C.stat7_out, collector.stat7C_in)
+        # self.connectPorts(lock_B.stat7_out, collector.stat7B_in)
+        # self.connectPorts(lock_C.stat7_out, collector.stat7C_in)
 
         # Make it accessible outside of our own scope
         self.collector = collector

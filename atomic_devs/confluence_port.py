@@ -86,9 +86,6 @@ class ConfluencePort(AtomicDEVS):
                     if self.state.last_hour == -1:
                         self.state.last_hour = hour
                     if self.state.last_hour != hour:
-                        # print(
-                        #     f"4: Total number of vessels in the port at hour {self.state.last_hour}: "
-                        #     f"{sum(self.state.ships_memory_hour[self.state.last_hour]) / len(self.state.ships_memory_hour[self.state.last_hour])}")
                         self.state.ships_memory_hour[self.state.last_hour] = []
                         self.state.last_hour = hour
 

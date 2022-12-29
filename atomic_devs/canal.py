@@ -28,8 +28,6 @@ class Canal(AtomicDEVS):
         # Create input and output ports for the other way
         self.in2_port = self.addInPort("in_port")
         self.out2_port = self.addOutPort("out_port")
-        self.x = 0
-        self.y = 0
 
     def intTransition(self):
         self.state.current_time+= self.state.remaining_time
@@ -89,10 +87,6 @@ class Canal(AtomicDEVS):
 
         if self.in2_port in inputs:
             for vessel in inputs[self.in2_port]:
-
-                if vessel.vessel_id ==98:
-                    #print("canal in",vessel.vessel_id, self.state.current_time)
-                    self.x = self.state.current_time
                 # If first vessel, no need to take into account velocity ship in front
                 if len(self.state.outgoing) == 0:
                     # calculate the remaining time

@@ -60,15 +60,7 @@ class Dock(AtomicDEVS):
 
         if self.in_port in inputs:
             for vessel in inputs[self.in_port]:
-                # self.state.counter += 1
-                # print(f"dock {self.state.quay_id}, counter= {self.state.counter}")
-                # if self.state.activate == False:
-                #     self.state.activate =True
-                #     print(f"vessel= {vessel.destination}, dock = {self.state.quay_id}, same = {self.state.quay_id == vessel.destination}")
                 wait_time = np.random.normal(36,12)
-                if vessel.vessel_id ==98:
-                    pass
-                    #print("time in dock for vessel with id ", vessel.vessel_id, wait_time, self.state.current_time)
                 if wait_time < 6:
                     wait_time = 6
                 self.state.vessels[vessel] = wait_time
@@ -104,10 +96,6 @@ class Dock(AtomicDEVS):
         # Output all the ships who left the water canal
         if len(self.state.leaving) > 0:
             leaving = self.state.leaving
-
-            if leaving[0].vessel_id == 98:
-                pass
-                #print("time out dock", leaving[0].vessel_id, self.state.current_time)
             return_dict[self.out_port] = leaving
             self.state.leaving = []
 

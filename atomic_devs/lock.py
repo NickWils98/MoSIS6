@@ -46,11 +46,11 @@ class LockState:
         self.empty_itteration = 0
         self.empty = True
         self.start_empty = 0
-        self.hourly_remainig_cappacity = self.surface_area
+        self.hourly_remainig_cappacity = -1
         self.hour_update =True
 
-        self.hour_remaining = 0
-
+        self.hour_remaining = 1
+        self.closegate = False
 class Lock(AtomicDEVS):
     def __init__(self, lock_id, washing_duration, lock_shift_interval, open_close_duration, surface_area):
         AtomicDEVS.__init__(self, "Lock")
@@ -67,10 +67,16 @@ class Lock(AtomicDEVS):
         self.stat6_out = self.addOutPort("stat6_out")
         self.stat7_out = self.addOutPort("stat7_out")
 
+
     def intTransition(self):
         if self.state.hour_update:
+            self.state.hour_update = False
+            self.state.current_time += self.state.hour_remaining
             self.state.remaining_time -= self.state.hour_remaining
             return self.state
+        # else:
+        #     self.state.hour_remaining -= self.state.remaining_time
+
         # ships are leaving takeing 30s each
         self.state.current_time += self.state.remaining_time
         if self.state.leaving_bool:
@@ -91,8 +97,11 @@ class Lock(AtomicDEVS):
         else:
             # if the gate closes:
             if self.state.gate_sea == 1 or self.state.gate_dock == 1:
-                self.state.hourly_remainig_cappacity = self.state.remaining_capacity
-                if self.state.empty:
+                if self.state.hourly_remainig_cappacity == -1:
+                    self.state.hourly_remainig_cappacity =0
+                self.state.hourly_remainig_cappacity += self.state.remaining_capacity
+                print(self.state.hourly_remainig_cappacity)
+                if len(self.state.in_lock)==0:
                     # analytic 6
                     self.state.empty_itteration += 1
                 # close gates
@@ -151,9 +160,6 @@ class Lock(AtomicDEVS):
                     # if a ship needs to leave
                     if len(self.state.leaving) > 0:
                         self.state.left = self.state.leaving.pop(0)
-                        if self.state.left.vessel_id == 98:
-                            pass
-                            #print("leave lock via dock at time: ", self.state.current_time)
                         self.state.remaining_time = START_DELAY * HOUR_TO_SECOND
                         self.state.time_open_used = self.state.time_open - self.state.remaining_time
                         self.state.leaving_bool = True
@@ -166,6 +172,7 @@ class Lock(AtomicDEVS):
 
     def extTransition(self, inputs):
         self.state.current_time += self.elapsed
+        self.state.remaining_time -= self.elapsed
 
         # ship at sea gate
         if self.in_port_sea in inputs:
@@ -203,6 +210,8 @@ class Lock(AtomicDEVS):
         return self.state
 
     def timeAdvance(self):
+        self.state.hour_update = False
+
         self.state.hour_remaining = math.floor(self.state.current_time)+1-self.state.current_time
 
         # return the remaining time that the lock will be open or closed or leaving of a ship
@@ -216,17 +225,11 @@ class Lock(AtomicDEVS):
     def outputFnc(self):
         return_dict = {}
 
-        if self.state.hour_update:
-            self.state.hour_update = False
-            remaining_capacity = self.state.hourly_remainig_cappacity
-            self.state.hourly_remainig_cappacity = 0
-            return_dict[self.stat7_out] = remaining_capacity
 
         if self.state.empty:
             self.state.idle_time += self.state.current_time - self.state.start_empty
             self.state.start_empty = self.state.current_time
         if self.state.left is not None:
-            print(self.state.idle_time)
             in_lock_bool = len(self.state.in_lock) == 0
             leaving_bool = len(self.state.leaving) == 0
             waiting_dock_bool = len(self.state.waiting_queue_dock) == 0
@@ -234,7 +237,6 @@ class Lock(AtomicDEVS):
             if in_lock_bool and leaving_bool and waiting_sea_bool and waiting_dock_bool and not self.state.empty:
                 self.state.start_empty = self.state.current_time
                 self.state.empty = True
-                print("aribariba")
             vessel = self.state.left
 
 
@@ -245,14 +247,18 @@ class Lock(AtomicDEVS):
                 return_dict[self.out_port_sea] = [vessel]
 
             # Statistic ports connect
-            if self.state.current_time > 0:
-                return_dict[self.stat5_out] = self.state.idle_time / self.state.current_time
-            else:
-                return_dict[self.stat5_out] = 0
+        if self.state.current_time > 0:
+            return_dict[self.stat5_out] = self.state.idle_time / (self.state.current_time)
+        else:
+            return_dict[self.stat5_out] = 0
 
-            return_dict[self.stat6_out] = self.state.empty_itteration
+        return_dict[self.stat6_out] = self.state.empty_itteration
 
-
+        if self.state.hour_update:
+            remaining_capacity = self.state.hourly_remainig_cappacity
+            self.state.hourly_remainig_cappacity = -1
+            # print(remaining_capacity, self.state.lock_id)
+            return_dict[self.stat7_out] = remaining_capacity
 
         return return_dict
 
