@@ -40,6 +40,8 @@ class Sea(AtomicDEVS):
 
     def outputFnc(self):
         self.state.left_counter += 1
+        if self.state.left_counter == 100:
+            print(self.state.current_time, " reached 100 ships")
         return_dict = {self.out_port: self.state.left_counter}
 
         return return_dict

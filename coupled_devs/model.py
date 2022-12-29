@@ -249,6 +249,7 @@ class PortSystem(CoupledDEVS):
 
         # Connect sea for to collector
         self.connectPorts(sea.out_port, collector.total_left_input)
+        self.connectPorts(generator.out_count, collector.ships_count_input)
 
         # Make it accessible outside of our own scope
         self.collector = collector

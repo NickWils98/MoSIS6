@@ -16,7 +16,7 @@ if __name__ == '__main__':
     # Set up the system and run
     system = model.PortSystem(100)
     sim = Simulator(system)
-    sim.setTerminationTime(100)
+    sim.setTerminationTime(92)
     sim.setClassicDEVS()
     sim.simulate()
 
@@ -35,29 +35,31 @@ if __name__ == '__main__':
     stat7A = system.collector.state.stat7A_info
     stat7B = system.collector.state.stat7B_info
     stat7C = system.collector.state.stat7C_info
-    print("total ships: ", total)
+
+    # Write all data to txt file
     f = open(f'plots/task5/task5_info.txt', 'w')
 
-    f.write(f"Average travel time for a vessel: \n {stat1[-1]}" )
-    f.write(f"\n\n\nAverage waiting time for a vessel in the anchorpoint: \n{stat2[-1]}")
-    f.write(f"\n\n\nAverage number of vessels in the port: \n{stat3[-1]}")
-    f.write(f"\n\n\nTotal vessels in the port at every hour in the simulation: \n{stat4}")
-    f.write(f"\n\n\nAverage idle time for Lock A: \n{stat5A[-1]}")
-    f.write(f"\n\n\nAverage idle time for Lock B: \n{stat5B[-1]}")
-    f.write(f"\n\n\nAverage idle time for Lock C: \n{stat5C[-1]}")
-    f.write(f"\n\n\nTimes Lock A changed state without containing ships: \n{stat6A[-1]}")
-    f.write(f"\n\n\nTimes Lock B changed state without containing ships: \n{stat6B[-1]}")
-    f.write(f"\n\n\nTimes Lock C changed state without containing ships: \n{stat6C[-1]}")
-    f.write(f"\n\n\nRemaining capacity for Lock A hourly: \n{stat7A}")
-    f.write(f"\n\n\nRemaining capacity for Lock B hourly: \n{stat7B}")
-    f.write(f"\n\n\nRemaining capacity for Lock C hourly: \n{stat7C}")
+    f.write(f"Total amount of ships that left the port via the Sea: {total}")
+    f.write(f"\n\tCrudeOilTanker: {system.collector.state.ships_count_type[0]}")
+    f.write(f"\n\tBulkCarrier: {system.collector.state.ships_count_type[1]}")
+    f.write(f"\n\tTugBoat: {system.collector.state.ships_count_type[2]}")
+    f.write(f"\n\tSmallCargoFreighter: {system.collector.state.ships_count_type[3]}")
 
-    f.write(f"\n\n\nCrudeOilTanker:{system.generator.state.factory.counter_COT}")
-    f.write(f"\n\n\nBulkCarrier:{system.generator.state.factory.counter_BK}")
-    f.write(f"\n\n\nTugBoat:{system.generator.state.factory.counter_TB}")
-    f.write(f"\n\n\nSmallCargoFreighter:{system.generator.state.factory.counter_SCF}")
+    f.write(f"\n\nAverage travel time for a vessel: {stat1[-1]}" )
+    f.write(f"\n\nAverage waiting time for a vessel in the anchorpoint: {stat2[-1]}")
+    f.write(f"\n\nAverage number of vessels in the port: {stat3[-1]}")
+    f.write(f"\n\nTotal vessels in the port at every hour in the simulation: \n{stat4}")
+    f.write(f"\n\nAverage idle time for Lock A: {stat5A[-1]}")
+    f.write(f"\n\nAverage idle time for Lock B: {stat5B[-1]}")
+    f.write(f"\n\nAverage idle time for Lock C: {stat5C[-1]}")
+    f.write(f"\n\nTimes Lock A changed state without containing ships: {stat6A[-1]}")
+    f.write(f"\n\nTimes Lock B changed state without containing ships: {stat6B[-1]}")
+    f.write(f"\n\nTimes Lock C changed state without containing ships: {stat6C[-1]}")
+    f.write(f"\n\nRemaining capacity for Lock A hourly: \n{stat7A}")
+    f.write(f"\n\nRemaining capacity for Lock B hourly: \n{stat7B}")
+    f.write(f"\n\nRemaining capacity for Lock C hourly: \n{stat7C}")
 
-
+    # Plot everything for 4 and 7
     plt.plot(range(len(stat4)), stat4)
     plt.xlabel('hour')
     plt.ylabel('number of vessels in port')
