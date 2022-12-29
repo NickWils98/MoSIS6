@@ -101,7 +101,6 @@ class Lock(AtomicDEVS):
         else:
             # if the gate closes:
             if self.state.gate_sea == 1 or self.state.gate_dock == 1:
-                print(self.state.current_time)
                 if self.state.hourly_remainig_cappacity == -1:
                     self.state.hourly_remainig_cappacity =0
                 self.state.hourly_remainig_cappacity += self.state.remaining_capacity

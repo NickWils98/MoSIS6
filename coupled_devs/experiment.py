@@ -2,7 +2,7 @@ import model
 import random
 import numpy as np
 from pypdevs.simulator import Simulator
-
+import matplotlib.pyplot as plt
 
 
 if __name__ == '__main__':
@@ -48,13 +48,28 @@ if __name__ == '__main__':
     print("\n\n\nRemaining capacity for Lock B hourly: \n", stat7B)
     print("\n\n\nRemaining capacity for Lock C hourly: \n", stat7C)
 
-    # data to be plotted
-    x = np.arange(1, 11)
-    y = x * x
 
-    # plotting
-    '''plt.title("Line graph")
-    plt.xlabel("X axis")
-    plt.ylabel("Y axis")
-    plt.plot(stat1, color="red")
-    plt.show()'''
+    plt.plot(range(len(stat4)), stat4)
+    plt.xlabel('hour')
+    plt.ylabel('number of vessels in port')
+    plt.title('Total number of vessels in the port at every hour')
+    plt.show()
+
+
+    plt.plot(range(len(stat7A)), stat7A)
+    plt.xlabel('hour')
+    plt.ylabel('Remaining capacity')
+    plt.title('Remaining capacity for each Lock at every hour Lock A')
+    plt.show()
+
+    plt.plot(range(len(stat7B)), stat7B)
+    plt.xlabel('hour')
+    plt.ylabel('Remaining capacity')
+    plt.title('Remaining capacity for each Lock at every hour Lock B')
+    plt.show()
+
+    plt.plot(range(len(stat7C)), stat7C)
+    plt.xlabel('hour')
+    plt.ylabel('Remaining capacity')
+    plt.title('Remaining capacity for each Lock at every hour Lock C')
+    plt.show()
