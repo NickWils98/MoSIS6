@@ -151,8 +151,8 @@ class PortSystem(CoupledDEVS):
         self.connectPorts(waterway_MID_to_C.out1_port, lock_C.in_port_sea)
         self.connectPorts(lock_C.out_port_sea, waterway_MID_to_C.in2_port)
         self.connectPorts(waterway_MID_to_C.out2_port, confluence_MID.in_ports[1])
-        #
-        # # Connect Lock_C to Confluence C1
+
+        # Connect Lock_C to Confluence C1
         self.connectPorts(lock_C.out_port_dock, canal_C1_C.in1_port)
         self.connectPorts(canal_C1_C.out1_port, confluence_C1.in_ports[0])
         self.connectPorts(confluence_C1.out_ports[0], canal_C1_C.in2_port)
@@ -232,10 +232,10 @@ class PortSystem(CoupledDEVS):
 
         # Connect collector ports for statistic 5
         self.connectPorts(lock_A.stat5_out, collector.stat5A_in)
+        self.connectPorts(lock_B.stat5_out, collector.stat5B_in)
         self.connectPorts(lock_C.stat5_out, collector.stat5C_in)
 
-        # Connect collector portk_B.stat5_out, collector.stat5B_in)
-        #         self.connectPorts(locs for statistic 6
+        # Connect collector ports for statistic 6
         self.connectPorts(lock_A.stat6_out, collector.stat6A_in)
         self.connectPorts(lock_B.stat6_out, collector.stat6B_in)
         self.connectPorts(lock_C.stat6_out, collector.stat6C_in)

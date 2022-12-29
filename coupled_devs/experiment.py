@@ -1,4 +1,4 @@
-import port_system
+import model
 import random
 import numpy as np
 from pypdevs.simulator import Simulator
@@ -13,8 +13,8 @@ if __name__ == '__main__':
     np.random.seed(42)
 
     # Set up the system and run
-    system = port_system.PortSystem(100)
-    sim =Simulator(system)
+    system = model.PortSystem()
+    sim = Simulator(system)
     sim.setTerminationTime(100)
     sim.setClassicDEVS()
     sim.simulate()
@@ -34,17 +34,27 @@ if __name__ == '__main__':
     stat7B = system.collector.state.stat7B_info
     stat7C = system.collector.state.stat7C_info
 
+    print("Average travel time for a vessel: \n", stat1)
+    print("\n\n\nAverage waiting time for a vessel in the anchorpoint: \n", stat2)
+    print("\n\n\nAverage number of vessels in the port: \n", stat3)
+    print("\n\n\nTotal vessels in the port at every hour in the simulation: \n", stat4)
+    print("\n\n\nAverage idle time for Lock A: \n", stat5A)
+    print("\n\n\nAverage idle time for Lock B: \n", stat5B)
+    print("\n\n\nAverage idle time for Lock C: \n", stat5C)
+    print("\n\n\nTimes Lock A changed state without containing ships: \n", stat6A)
+    print("\n\n\nTimes Lock B changed state without containing ships: \n", stat6B)
+    print("\n\n\nTimes Lock C changed state without containing ships: \n", stat6C)
+    print("\n\n\nRemaining capacity for Lock A hourly: \n", stat7A)
+    print("\n\n\nRemaining capacity for Lock B hourly: \n", stat7B)
+    print("\n\n\nRemaining capacity for Lock C hourly: \n", stat7C)
 
-    print("\n\n\nSTAT1 Average travel time for a vessel: \n", stat1)
-    print("\n\n\nSTAT2 Average waiting time for a vessel in the anchorpoint: \n", stat2)
-    print("\n\n\nSTAT3 Average number of vessels in the port: \n", stat3)
-    print("\n\n\nSTAT4 Total vessels in the port at every hour in the simulation: \n", stat4)
-    print("\n\n\nSTAT5 Average idle time for LockA: \n", stat5A)
-    print("\n\n\nSTAT5 Average idle time for LockB: \n", stat5B)
-    print("\n\n\nSTAT5 Average idle time for LockC: \n", stat5C)
-    print("\n\n\nSTAT6 Times Lock A changed state without containing ships: \n", stat6A)
-    print("\n\n\nSTAT6 Times Lock B changed state without containing ships: \n", stat6B)
-    print("\n\n\nSTAT6 Times Lock C changed state without containing ships: \n", stat6C)
-    print("\n\n\nSTAT7 Remaining capacity for Lock A hourly: \n", stat7A)
-    print("\n\n\nSTAT7 Remaining capacity for Lock B hourly: \n", stat7B)
-    print("\n\n\nSTAT7 Remaining capacity for Lock C hourly: \n", stat7C)
+    # data to be plotted
+    x = np.arange(1, 11)
+    y = x * x
+
+    # plotting
+    '''plt.title("Line graph")
+    plt.xlabel("X axis")
+    plt.ylabel("Y axis")
+    plt.plot(stat1, color="red")
+    plt.show()'''

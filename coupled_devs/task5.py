@@ -1,4 +1,4 @@
-import port_system
+import model
 import random
 import numpy as np
 from pypdevs.simulator import Simulator

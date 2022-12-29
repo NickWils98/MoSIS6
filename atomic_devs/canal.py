@@ -54,9 +54,6 @@ class Canal(AtomicDEVS):
         return self.state
 
     def extTransition(self, inputs):
-
-        self.state.current_time += self.elapsed
-        temp_list = [] # TODO:: Dees deleten of houden voor statistics?
         for i in range(len(self.state.ingoing)):
             self.state.ingoing[i][1] -= self.elapsed
 
