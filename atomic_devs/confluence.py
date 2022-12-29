@@ -54,6 +54,7 @@ class Confluence(AtomicDEVS):
                 vessel = self.state.queue[queue_number]
                 port = self.out_ports[queue_number]
                 output_dict[port] = vessel
+
                 self.state.queue[queue_number] = []
 
         return output_dict

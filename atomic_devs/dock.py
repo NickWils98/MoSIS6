@@ -33,7 +33,7 @@ class Dock(AtomicDEVS):
 
     def intTransition(self):
         # update all the remaining times
-        self.state.current_time+= self.state.remaining_time
+        self.state.current_time += self.state.remaining_time
         for vessel in self.state.vessels.keys():
             self.state.vessels[vessel] -= self.state.remaining_time
 
@@ -56,8 +56,8 @@ class Dock(AtomicDEVS):
         self.state.current_time+= self.elapsed
         for vessel in self.state.vessels.keys():
             self.state.vessels[vessel] -= self.elapsed
-        # add a new vessel in the waterway if possible
 
+        # add a new vessel in dock if possible
         if self.in_port in inputs:
             for vessel in inputs[self.in_port]:
                 wait_time = np.random.normal(36,12)
@@ -80,8 +80,7 @@ class Dock(AtomicDEVS):
 
         if len(self.state.requests) > 0 or len(self.state.leaving) > 0:
             self.state.remaining_time = 0
-        if self.state.remaining_time <0:
-            print("aiaiaiaiaiaiai")
+
         return self.state.remaining_time
 
     def outputFnc(self):

@@ -45,10 +45,6 @@ class ConfluencePort(AtomicDEVS):
 
     def intTransition(self):
         self.state.current_time += self.state.remaining_time
-        if self.state.hour_update:
-            pass
-            # ananlitic 4
-            # print(self.state.ships_in_port, self.state.current_time)
         self.state.remaining_time = self.state.count-math.floor(self.state.current_time)
         return self.state
 
@@ -69,7 +65,6 @@ class ConfluencePort(AtomicDEVS):
                             self.state.ships_in_port -= 1
 
                     # Analytics 3
-
                     self.state.ships_average.append(self.state.ships_in_port)
                     if len(self.state.ships_average_weight)>0:
 
@@ -78,9 +73,6 @@ class ConfluencePort(AtomicDEVS):
 
                         self.state.ships_average_weight.append(self.state.current_time)
 
-
-                    #print("3: Average number of vessels in port: ",np.average(self.state.ships_average[:-1], weights=self.state.ships_average_weight))
-
                     # Analytics 4
                     hour = math.floor(self.state.current_time) % 24
                     if self.state.last_hour == -1:
@@ -88,9 +80,9 @@ class ConfluencePort(AtomicDEVS):
                     if self.state.last_hour != hour:
                         self.state.ships_memory_hour[self.state.last_hour] = []
                         self.state.last_hour = hour
-
                     self.state.ships_memory_hour[hour].append(self.state.ships_in_port)
 
+                    # Set correct destination
                     destination = vessel.destination
                     for ports in range(len(self.state.map_port)):
                         if destination in self.state.map_port[ports]:
@@ -115,14 +107,18 @@ class ConfluencePort(AtomicDEVS):
                 port = self.out_ports[queue_number]
                 output_dict[port] = vessel
                 self.state.queue[queue_number] = []
-        if self.state.avg_time >0:
+
+        # Statistics 1 output
+        if self.state.avg_time > 0:
             output_dict[self.stat1_out] = self.state.avg_time
 
+        # Statistics 3 output
         if len(self.state.ships_average_weight) > 0:
             output_dict[self.stat3_out] = np.average(self.state.ships_average[:-1], weights=self.state.ships_average_weight)
         else:
             output_dict[self.stat3_out] = 0
 
+        # Statistics 4 output
         if self.state.hour_update:
             output_dict[self.stat4_out] = np.average(self.state.ships_in_port)
 

@@ -30,7 +30,7 @@ class Canal(AtomicDEVS):
         self.out2_port = self.addOutPort("out_port")
 
     def intTransition(self):
-        self.state.current_time+= self.state.remaining_time
+        self.state.current_time+= self.state.remaining_time # TODO: Weg voor consistentie?
         for i in range(len(self.state.ingoing)):
             self.state.ingoing[i][1] -= self.state.remaining_time
 
@@ -54,16 +54,21 @@ class Canal(AtomicDEVS):
         return self.state
 
     def extTransition(self, inputs):
+        # Update times of ingoing ships
         for i in range(len(self.state.ingoing)):
             self.state.ingoing[i][1] -= self.elapsed
 
             if self.state.ingoing[i][1] < 0:
                 self.state.ingoing[i][1] = 0
+
+        # Update times of outgoing ships
         for i in range(len(self.state.outgoing)):
             self.state.outgoing[i][1] -= self.elapsed
 
             if self.state.outgoing[i][1] < 0:
                 self.state.outgoing[i][1] = 0
+
+        # Loop over all the new ships in the comments
         if self.in1_port in inputs:
             for vessel in inputs[self.in1_port]:
                 # If first vessel, no need to take into account velocity ship in front
@@ -76,9 +81,7 @@ class Canal(AtomicDEVS):
                 else:
                     # Get vessel in front and it's velocity to calculate min (my vel, front vel)
                     front_vessel_avg = self.state.ingoing[-1][2]
-
                     min_avg_velocity = min(vessel.avg_v, front_vessel_avg)
-
                     remaining_time = self.state.distance / min_avg_velocity
                     self.state.ingoing.append([vessel, remaining_time, min_avg_velocity])
 
@@ -94,16 +97,10 @@ class Canal(AtomicDEVS):
                 else:
                     # Get vessel in front and it's velocity to calculate min (my vel, front vel)
                     front_vessel_avg = self.state.outgoing[-1][2]
-
                     min_avg_velocity = min(vessel.avg_v, front_vessel_avg)
-
                     remaining_time = self.state.distance / min_avg_velocity
                     self.state.outgoing.append([vessel, remaining_time, min_avg_velocity])
 
-        for v in range(len(self.state.ingoing)):
-            if v-1 >= 0:
-                if self.state.ingoing[v-1][1] > self.state.ingoing[v][1]:
-                    print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa") # TODO: Dees prolly ni houden in final version?
         return self.state
 
     def timeAdvance(self):
