@@ -13,14 +13,14 @@ from atomic_devs.collector import Collector
 from atomic_devs.confluence_port import ConfluencePort
 
 class PortSystem(CoupledDEVS):
-    def __init__(self, generation_max=float('inf'), prob=(.28, .22, .33, .17), change_lock_interval=1):
+    def __init__(self, det_bool=False, generation_max=float('inf'), prob=(.28, .22, .33, .17), change_lock_interval=1):
 
         CoupledDEVS.__init__(self, "FullSystem")
 
         self.ships_to_generate = generation_max
 
         # Define generator atomic submodel
-        generator = self.addSubModel(Generator(generation_max, prob))
+        generator = self.addSubModel(Generator(det_bool, generation_max, prob))
 
         # Define anchorpoint atomic submodel
         anchorpoint = self.addSubModel(AnchorPoint())
@@ -77,14 +77,14 @@ class PortSystem(CoupledDEVS):
         lock_C = self.addSubModel(Lock("C", 8/60, (change_lock_interval*(30))/60, 5/60, 25650))
 
         # Define all dock atomic submodels
-        dock_1 = self.addSubModel(Dock(1))
-        dock_2 = self.addSubModel(Dock(2))
-        dock_3 = self.addSubModel(Dock(3))
-        dock_4 = self.addSubModel(Dock(4))
-        dock_5 = self.addSubModel(Dock(5))
-        dock_6 = self.addSubModel(Dock(6))
-        dock_7 = self.addSubModel(Dock(7))
-        dock_8 = self.addSubModel(Dock(8))
+        dock_1 = self.addSubModel(Dock(1, det_bool))
+        dock_2 = self.addSubModel(Dock(2, det_bool))
+        dock_3 = self.addSubModel(Dock(3, det_bool))
+        dock_4 = self.addSubModel(Dock(4, det_bool))
+        dock_5 = self.addSubModel(Dock(5, det_bool))
+        dock_6 = self.addSubModel(Dock(6, det_bool))
+        dock_7 = self.addSubModel(Dock(7, det_bool))
+        dock_8 = self.addSubModel(Dock(8, det_bool))
 
         # Define colector atomic submodel
         collector = self.addSubModel(Collector())

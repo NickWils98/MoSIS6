@@ -5,10 +5,11 @@ from messages_events import port_events as Messages
 
 # Define the state of the AnchorPoint as a structured object
 class DockState:
-    def __init__(self, quay_id):
+    def __init__(self, quay_id, det_bool=False):
         # Keep track of current time and received vessels
         self.remaining_time = float('inf')
         self.quay_id = quay_id
+        self.det_bool = det_bool
 
         self.vessels = {}
         self.leaving = []
@@ -21,9 +22,9 @@ class DockState:
 
 
 class Dock(AtomicDEVS):
-    def __init__(self, quay_id):
+    def __init__(self, quay_id, det_bool=False):
         AtomicDEVS.__init__(self, "Dock")
-        self.state = DockState(quay_id)
+        self.state = DockState(quay_id, det_bool)
 
         self.in_port = self.addInPort("in_port")
         self.out_port = self.addOutPort("out_port")
@@ -60,7 +61,10 @@ class Dock(AtomicDEVS):
         # add a new vessel in dock if possible
         if self.in_port in inputs:
             for vessel in inputs[self.in_port]:
-                wait_time = np.random.normal(36,12)
+                if self.state.det_bool:
+                    wait_time = 36
+                else:
+                    wait_time = np.random.normal(36,12)
                 if wait_time < 6:
                     wait_time = 6
                 self.state.vessels[vessel] = wait_time

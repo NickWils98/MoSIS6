@@ -5,7 +5,7 @@ from messages_events import vessel
 
 # Define the state of the generator as a structured object
 class GeneratorState:
-    def __init__(self, counter=float('inf'), prob=(.28, .22, .33, .17)):
+    def __init__(self, det_bool=False, counter=float('inf'), prob=(.28, .22, .33, .17)):
         # Current simulation time (statistics)
         self.current_time = 0.0
         # Remaining time until generation of new event
@@ -17,16 +17,17 @@ class GeneratorState:
         self.counter = 0
         # factory to create vessels
         self.factory = vessel.VesselFactory(prob)
+        self.det_bool = det_bool
 
 class Generator(AtomicDEVS):
-    def __init__(self, generation_max=-1, prob=(.28, .22, .33, .17)):
+    def __init__(self, det_bool=False, generation_max=-1, prob=(.28, .22, .33, .17)):
         AtomicDEVS.__init__(self, "Generator")
         # Output port for the vessel
         self.out_port = self.addOutPort("out_port")
         self.out_count = self.addOutPort("out_count")
 
         # Define the state
-        self.state = GeneratorState(generation_max, prob)
+        self.state = GeneratorState(det_bool, generation_max, prob)
 
     def intTransition(self):
         self.state.counter+=1
@@ -36,7 +37,10 @@ class Generator(AtomicDEVS):
         # Get the hour from the current time
         hour = math.floor(self.state.current_time) % 24
         # Calculate waiting time to next vessel
-        self.state.remaining = np.random.exponential(scale=1 / self.state.ships_hours[hour])
+        if self.state.det_bool:
+            self.state.remaining = 1/self.state.ships_hours[hour]
+        else:
+            self.state.remaining = np.random.exponential(scale=1 / self.state.ships_hours[hour])
         if self.state.counter >=self.state.max_counter:
             self.state.remaining = float('inf')
         return self.state

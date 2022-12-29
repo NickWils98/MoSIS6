@@ -4,7 +4,7 @@ import numpy as np
 from pypdevs.simulator import Simulator
 import matplotlib.pyplot as plt
 
-SEED = 42
+SEED = 69
 
 prob_COT = .0
 prob_BK = .09
@@ -43,9 +43,9 @@ if __name__ == '__main__':
     stat7B = system.collector.state.stat7B_info
     stat7C = system.collector.state.stat7C_info
     # Write all data to txt file
-    filename = f"plots/task7/prob/task7_prob_"
+    filename = f"plots/task7/seed{SEED}/prob/"
 
-    f = open(f'{filename}_info.txt', 'w')
+    f = open(f'{filename}task7_prob_seed{SEED}_info.txt', 'w')
 
     f.write(f"Total amount of ships that left the port via the Sea: {total}")
     f.write(f"\n\tCrudeOilTanker: {system.collector.state.ships_count_type[0]}")
@@ -72,26 +72,26 @@ if __name__ == '__main__':
     plt.xlabel('hour')
     plt.ylabel('number of vessels in port')
     plt.title('Total number of vessels in the port at every hour')
-    plt.savefig(f"{filename}stat4_seed{SEED}.png")
+    plt.savefig(f"{filename}stat4_prob_seed{SEED}.png")
     plt.show()
 
     plt.plot(range(len(stat7A)), stat7A)
     plt.xlabel('hour')
     plt.ylabel('Remaining capacity')
     plt.title('Remaining capacity for each Lock at every hour Lock A')
-    plt.savefig(f"{filename}stat7A_seed{SEED}.png")
+    plt.savefig(f"{filename}stat7A_prob_seed{SEED}.png")
     plt.show()
 
     plt.plot(range(len(stat7B)), stat7B)
     plt.xlabel('hour')
     plt.ylabel('Remaining capacity')
     plt.title('Remaining capacity for each Lock at every hour Lock B')
-    plt.savefig(f"{filename}stat7B_seed{SEED}.png")
+    plt.savefig(f"{filename}stat7B_prob_seed{SEED}.png")
     plt.show()
 
     plt.plot(range(len(stat7C)), stat7C)
     plt.xlabel('hour')
     plt.ylabel('Remaining capacity')
     plt.title('Remaining capacity for each Lock at every hour Lock C')
-    plt.savefig(f"{filename}stat7C_seed{SEED}.png")
+    plt.savefig(f"{filename}stat7C_prob_seed{SEED}.png")
     plt.show()

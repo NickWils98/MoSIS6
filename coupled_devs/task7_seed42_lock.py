@@ -38,9 +38,9 @@ if __name__ == '__main__':
     stat7B = system.collector.state.stat7B_info
     stat7C = system.collector.state.stat7C_info
     # Write all data to txt file
-    filename = f"plots/task7/lock/task7_lock_"
+    filename = f"plots/task7/seed{SEED}/lock/"
 
-    f = open(f'{filename}_info.txt', 'w')
+    f = open(f'{filename}task7_lock_seed{SEED}_info.txt', 'w')
 
     f.write(f"Total amount of ships that left the port via the Sea: {total}")
     f.write(f"\n\tCrudeOilTanker: {system.collector.state.ships_count_type[0]}")
@@ -67,26 +67,26 @@ if __name__ == '__main__':
     plt.xlabel('hour')
     plt.ylabel('number of vessels in port')
     plt.title('Total number of vessels in the port at every hour')
-    plt.savefig(f"{filename}stat4_seed{SEED}.png")
+    plt.savefig(f"{filename}stat4_lock_seed{SEED}.png")
     plt.show()
 
     plt.plot(range(len(stat7A)), stat7A)
     plt.xlabel('hour')
     plt.ylabel('Remaining capacity')
     plt.title('Remaining capacity for each Lock at every hour Lock A')
-    plt.savefig(f"{filename}stat7A_seed{SEED}.png")
+    plt.savefig(f"{filename}stat7A_lock_seed{SEED}.png")
     plt.show()
 
     plt.plot(range(len(stat7B)), stat7B)
     plt.xlabel('hour')
     plt.ylabel('Remaining capacity')
     plt.title('Remaining capacity for each Lock at every hour Lock B')
-    plt.savefig(f"{filename}stat7B_seed{SEED}.png")
+    plt.savefig(f"{filename}stat7B_lock_seed{SEED}.png")
     plt.show()
 
     plt.plot(range(len(stat7C)), stat7C)
     plt.xlabel('hour')
     plt.ylabel('Remaining capacity')
     plt.title('Remaining capacity for each Lock at every hour Lock C')
-    plt.savefig(f"{filename}stat7C_seed{SEED}.png")
+    plt.savefig(f"{filename}stat7C_lock_seed{SEED}.png")
     plt.show()

@@ -8,7 +8,9 @@ class VesselFactory:
     """
     Make vessels
     """
-    def __init__(self, prob=(.28, .22, .33, .17)):
+    def __init__(self,det_bool=False, prob=(.28, .22, .33, .17)):
+        self.det_bool = det_bool
+        self.counter_det = [0,0,0,0]
         self.vessel_id = 0
         self.prob_COT = prob[0]
         self.prob_BK = prob[1]
@@ -16,26 +18,67 @@ class VesselFactory:
         self.prob_SCF = prob[3]
         # COT then BK then TB then SCF
         self.counter = [0,0,0,0]
-
+        self.reset()
+        self.phase = 0
+    def reset(self):
+        self.counter_det[0] = self.prob_COT*100
+        self.counter_det[1] = self.prob_BK*100
+        self.counter_det[2] = self.prob_TB*100
+        self.counter_det[3] = self.prob_SCF*100
     def create(self, creation_time):
         """
         Create a vessel based on a probability.
         """
-        number = np.random.uniform()
+        boat = None
+        if self.det_bool:
+            vessel_type = -1
+            for _ in range(4):
+                if self.counter_det[self.phase]>0:
+                    vessel_type=self.phase
+                    self.phase = (self.phase+1)%4
+                    self.counter_det[self.phase]-=1
+                    break
+                else:
+                    self.phase = (self.phase+1)%4
+            if vessel_type==-1:
+                self.reset()
+                self.phase =1
+                self.counter_det[0]-=1
+                self.counter[0] +=1
 
-        if number < self.prob_COT:
-            self.counter[0] +=1
-            boat = CrudeOilTanker
-        elif number < self.prob_COT + self.prob_BK:
-            self.counter[1] +=1
-            boat = BulkCarrier
-        elif number < self.prob_COT + self.prob_BK + self.prob_TB:
-            self.counter[2] +=1
-            boat = TugBoat
+                boat= CrudeOilTanker
+            if vessel_type == 0:
+                boat = CrudeOilTanker
+                self.counter[0] +=1
+
+            elif vessel_type ==1:
+                boat = BulkCarrier
+                self.counter[1] +=1
+
+            elif vessel_type ==2:
+                boat = TugBoat
+                self.counter[2] +=1
+
+            elif vessel_type ==3:
+                boat = SmallCargoFreighter
+                self.counter[3] +=1
+
         else:
-            self.counter[3] +=1
-            boat = SmallCargoFreighter
-        self.vessel_id += 1
+            number = np.random.uniform()
+
+            if number < self.prob_COT:
+                self.counter[0] +=1
+                boat = CrudeOilTanker
+            elif number < self.prob_COT + self.prob_BK:
+                self.counter[1] +=1
+                boat = BulkCarrier
+            elif number < self.prob_COT + self.prob_BK + self.prob_TB:
+                self.counter[2] +=1
+                boat = TugBoat
+            else:
+                self.counter[3] +=1
+                boat = SmallCargoFreighter
+            self.vessel_id += 1
         return boat(creation_time, self.vessel_id)
 
 
