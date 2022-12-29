@@ -5,7 +5,7 @@ class SeaState:
     def __init__(self):
         # Keep track of current time and received vessels
         self.current_time = 0.0
-        self.vessels = []
+        self.vessels_left = []
 
 
 class Sea(AtomicDEVS):
@@ -15,6 +15,12 @@ class Sea(AtomicDEVS):
         self.in_port = self.addInPort("in_port")
 
     def extTransition(self, inputs):
+        # Update simulation time
+        self.state.current_time += self.elapsed
+
+        # add vessel to leaving list
+        if self.in_port in inputs:
+            self.state.vessels_left.append(inputs[self.in_port])
 
         return self.state
 

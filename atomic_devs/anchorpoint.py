@@ -28,7 +28,7 @@ class AnchorPoint(AtomicDEVS):
         self.in_port = self.addInPort("in_port")
         self.out_port = self.addOutPort("out_port")
 
-        # Add the other ports: incoming events and finished event for communication
+        # Add the other ports for events
         self.in_event = self.addInPort("in_event")
         self.out_event = self.addOutPort("out_event")
 
