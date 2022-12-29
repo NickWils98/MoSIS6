@@ -22,7 +22,7 @@ class LockState:
         self.lock_shift_interval = lock_shift_interval
         self.open_close_duration = open_close_duration
         self.surface_area = surface_area
-        self.duration = 2 * self.open_close_duration + washing_duration
+        self.duration = (2 * self.open_close_duration) + washing_duration
         self.remaining_time = self.duration
         self.time_open = self.lock_shift_interval - self.duration
         self.max_ship_in_lock = (self.time_open/(START_DELAY*HOUR_TO_SECOND))-1
