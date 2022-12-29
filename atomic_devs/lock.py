@@ -73,6 +73,9 @@ class Lock(AtomicDEVS):
             self.state.hour_update = False
             self.state.current_time += self.state.hour_remaining
             self.state.remaining_time -= self.state.hour_remaining
+
+            if self.state.time_open_used != -1:
+                self.state.time_open_used -= self.state.hour_remaining
             return self.state
         # else:
         #     self.state.hour_remaining -= self.state.remaining_time
@@ -80,6 +83,7 @@ class Lock(AtomicDEVS):
         # ships are leaving takeing 30s each
         self.state.current_time += self.state.remaining_time
         if self.state.leaving_bool:
+            self.state.time_open_used -= self.state.remaining_time
             # ships are still leaving
             if len(self.state.leaving) > 0:
                 # remove the ship
@@ -87,20 +91,20 @@ class Lock(AtomicDEVS):
                 # the delay is 30 seconds
                 self.state.remaining_time = START_DELAY * HOUR_TO_SECOND
                 # the delay of leaving a ship is subtracted from the time the gate stays open
-                self.state.time_open_used = self.state.time_open-self.state.remaining_time
             # no ships to leave
             else:
                 self.state.leaving_bool = False
                 # wait the remaining time the gate stays open
                 self.state.remaining_time = self.state.time_open_used
+                self.state.time_open_used=-1
         # No ships are leaving
         else:
             # if the gate closes:
             if self.state.gate_sea == 1 or self.state.gate_dock == 1:
+                print(self.state.current_time)
                 if self.state.hourly_remainig_cappacity == -1:
                     self.state.hourly_remainig_cappacity =0
                 self.state.hourly_remainig_cappacity += self.state.remaining_capacity
-                print(self.state.hourly_remainig_cappacity)
                 if len(self.state.in_lock)==0:
                     # analytic 6
                     self.state.empty_itteration += 1
@@ -133,7 +137,7 @@ class Lock(AtomicDEVS):
                     if len(self.state.leaving) > 0:
                         self.state.left = self.state.leaving.pop(0)
                         self.state.remaining_time = START_DELAY*HOUR_TO_SECOND
-                        self.state.time_open_used = self.state.time_open-self.state.remaining_time
+                        self.state.time_open_used = self.state.time_open
                         self.state.leaving_bool = True
                     # no ships need to leave
                     else:
@@ -161,7 +165,7 @@ class Lock(AtomicDEVS):
                     if len(self.state.leaving) > 0:
                         self.state.left = self.state.leaving.pop(0)
                         self.state.remaining_time = START_DELAY * HOUR_TO_SECOND
-                        self.state.time_open_used = self.state.time_open - self.state.remaining_time
+                        self.state.time_open_used = self.state.time_open
                         self.state.leaving_bool = True
                     # no ships need to leave
                     else:
@@ -171,6 +175,8 @@ class Lock(AtomicDEVS):
         return self.state
 
     def extTransition(self, inputs):
+        if self.state.time_open_used != -1:
+            self.state.time_open_used -= self.elapsed
         self.state.current_time += self.elapsed
         self.state.remaining_time -= self.elapsed
 
@@ -257,7 +263,6 @@ class Lock(AtomicDEVS):
         if self.state.hour_update:
             remaining_capacity = self.state.hourly_remainig_cappacity
             self.state.hourly_remainig_cappacity = -1
-            # print(remaining_capacity, self.state.lock_id)
             return_dict[self.stat7_out] = remaining_capacity
 
         return return_dict
