@@ -39,7 +39,7 @@ class ControlTower(AtomicDEVS):
         return self.state
 
     def extTransition(self, inputs):
-
+        # Check if there are ships who sent message they want to enter the dock
         if self.in_event in inputs:
             for request in inputs[self.in_event]:
                 quay_id = 0
@@ -55,7 +55,7 @@ class ControlTower(AtomicDEVS):
                     answer = portEntryPermission(request.vessel_id, quay_id, request.current_time)
                     self.state.answers.append(answer)
 
-
+        # Check if there are ships who sent message they left the dock
         if self.free_event in inputs:
             for return_update in inputs[self.free_event]:
                 quay_id = return_update.quay_id - 1
