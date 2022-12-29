@@ -17,6 +17,8 @@ class PortSystem(CoupledDEVS):
 
         CoupledDEVS.__init__(self, "FullSystem")
 
+        self.ships_to_generate = generation_max
+
         # Define generator atomic submodel
         generator = self.addSubModel(Generator(generation_max, prob))
 
@@ -244,6 +246,9 @@ class PortSystem(CoupledDEVS):
         self.connectPorts(lock_A.stat7_out, collector.stat7A_in)
         self.connectPorts(lock_B.stat7_out, collector.stat7B_in)
         self.connectPorts(lock_C.stat7_out, collector.stat7C_in)
+
+        # Connect sea for to collector
+        self.connectPorts(sea.out_port, collector.total_left_input)
 
         # Make it accessible outside of our own scope
         self.collector = collector

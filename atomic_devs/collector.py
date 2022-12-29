@@ -20,6 +20,7 @@ class CollectorState(object):
         self.stat7A_info = []
         self.stat7B_info = []
         self.stat7C_info = []
+        self.total_ships_left_sea = 0
 
 
 class Collector(AtomicDEVS):
@@ -54,9 +55,16 @@ class Collector(AtomicDEVS):
         self.stat7B_in = self.addInPort("stat7B_in")
         self.stat7C_in = self.addInPort("stat7C_in")
 
+        # Sea total ships left
+        self.total_left_input = self.addInPort("total_left_input")
+
     def extTransition(self, inputs):
         # Update simulation time
         self.state.current_time += self.elapsed
+
+        # add anchor info to the list
+        if self.total_left_input in inputs:
+            self.state.total_ships_left_sea = inputs[self.total_left_input]
 
         # add anchor info to the list
         if self.stat1_in in inputs:
