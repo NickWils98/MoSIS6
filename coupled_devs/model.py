@@ -12,9 +12,9 @@ from atomic_devs.sea import Sea
 from atomic_devs.collector import Collector
 from atomic_devs.confluence_port import ConfluencePort
 
-
 class PortSystem(CoupledDEVS):
-    def __init__(self, generation_max=float('inf'), prob=(.28, .22, .33, .17)):
+    def __init__(self, generation_max=float('inf'), prob=(.28, .22, .33, .17), change_lock_interval=1):
+
         CoupledDEVS.__init__(self, "FullSystem")
 
         # Define generator atomic submodel
@@ -70,9 +70,9 @@ class PortSystem(CoupledDEVS):
         canal_B2_6 = self.addSubModel(Canal(1.37))
 
         # Define all lock atomic submodels
-        lock_A = self.addSubModel(Lock("A", 20/60, 1, 7/60, 62500))
-        lock_B = self.addSubModel(Lock("B", 12/60, 45/60, 5/60, 34000))
-        lock_C = self.addSubModel(Lock("C", 8/60, 30/60, 5/60, 25650))
+        lock_A = self.addSubModel(Lock("A", 20/60, (change_lock_interval*(60))/60, 7/60, 62500))
+        lock_B = self.addSubModel(Lock("B", 12/60, (change_lock_interval*(45))/60, 5/60, 34000))
+        lock_C = self.addSubModel(Lock("C", 8/60, (change_lock_interval*(30))/60, 5/60, 25650))
 
         # Define all dock atomic submodels
         dock_1 = self.addSubModel(Dock(1))

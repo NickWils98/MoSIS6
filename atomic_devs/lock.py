@@ -116,7 +116,7 @@ class Lock(AtomicDEVS):
             # if the gate closes:
             if self.state.gate_sea == 1 or self.state.gate_dock == 1:
 
-                self.state.max_ship_in_lock = self.state.time_open/(START_DELAY*HOUR_TO_SECOND)-1
+                self.state.max_ship_in_lock = (self.state.time_open/(START_DELAY*HOUR_TO_SECOND))-1
                 if self.state.hourly_remainig_cappacity == -1:
                     self.state.hourly_remainig_cappacity =0
                 self.state.hourly_remainig_cappacity += self.state.remaining_capacity

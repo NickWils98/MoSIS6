@@ -10,15 +10,12 @@ class VesselFactory:
     """
     def __init__(self, prob=(.28, .22, .33, .17)):
         self.vessel_id = 0
-        self.counter_COT = 0
-        self.counter_BK = 0
-        self.counter_TB = 0
-        self.counter_SCF = 0
         self.prob_COT = prob[0]
         self.prob_BK = prob[1]
         self.prob_TB = prob[2]
         self.prob_SCF = prob[3]
-
+        # COT then BK then TB then SCF
+        self.counter = [0,0,0,0]
 
     def create(self, creation_time):
         """
@@ -27,16 +24,16 @@ class VesselFactory:
         number = np.random.uniform()
 
         if number < self.prob_COT:
-            self.counter_COT += 1
+            self.counter[0] +=1
             boat = CrudeOilTanker
         elif number < self.prob_COT + self.prob_BK:
-            self.counter_BK += 1
+            self.counter[1] +=1
             boat = BulkCarrier
         elif number < self.prob_COT + self.prob_BK + self.prob_TB:
-            self.counter_TB += 1
+            self.counter[2] +=1
             boat = TugBoat
         else:
-            self.counter_SCF += 1
+            self.counter[3] +=1
             boat = SmallCargoFreighter
         self.vessel_id += 1
         return boat(creation_time, self.vessel_id)
