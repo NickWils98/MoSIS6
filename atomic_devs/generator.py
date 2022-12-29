@@ -5,7 +5,7 @@ from messages_events import vessel
 
 # Define the state of the generator as a structured object
 class GeneratorState:
-    def __init__(self, counter=float('inf')):
+    def __init__(self, counter=float('inf'), prob=(.28, .22, .33, .17)):
         # Current simulation time (statistics)
         self.current_time = 0.0
         # Remaining time until generation of new event
@@ -15,16 +15,16 @@ class GeneratorState:
                             246, 203, 43, 51, 33, 143, 187, 164, 123]
         self.max_counter = counter
         self.counter = 0
+        # factory to create vessels
+        self.factory = vessel.VesselFactory(prob)
 
 class Generator(AtomicDEVS):
-    def __init__(self, generation_max=-1):
+    def __init__(self, generation_max=-1, prob=(.28, .22, .33, .17)):
         AtomicDEVS.__init__(self, "Generator")
         # Output port for the vessel
         self.out_port = self.addOutPort("out_port")
-        # factory to create vessels
-        self.factory = vessel.VesselFactory()
         # Define the state
-        self.state = GeneratorState(generation_max)
+        self.state = GeneratorState(generation_max, prob)
 
     def intTransition(self):
         self.state.counter+=1
@@ -48,6 +48,6 @@ class Generator(AtomicDEVS):
             return {}
         # Calculate current time (note the addition!)
         creation_time = self.state.current_time + self.state.remaining
-        vessel = self.factory.create(creation_time)
+        vessel = self.state.factory.create(creation_time)
         # Output the new event on the output port
         return {self.out_port: vessel}

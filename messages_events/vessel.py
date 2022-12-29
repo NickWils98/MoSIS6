@@ -8,27 +8,35 @@ class VesselFactory:
     """
     Make vessels
     """
-    def __init__(self):
+    def __init__(self, prob=(.28, .22, .33, .17)):
         self.vessel_id = 0
+        self.counter_COT = 0
+        self.counter_BK = 0
+        self.counter_TB = 0
+        self.counter_SCF = 0
+        self.prob_COT = prob[0]
+        self.prob_BK = prob[1]
+        self.prob_TB = prob[2]
+        self.prob_SCF = prob[3]
+
 
     def create(self, creation_time):
         """
         Create a vessel based on a probability.
         """
         number = np.random.uniform()
-        choice = 0 # TODO: Analyse of deleten
-        prob_COT = .28
-        prob_BK = .22
-        prob_TB = .33
-        prob_SCF = .17 # TODO: deleten? wordt ni gebruikt en niet voor analyse
 
-        if number < prob_COT:
+        if number < self.prob_COT:
+            self.counter_COT += 1
             boat = CrudeOilTanker
-        elif number < prob_COT + prob_BK:
+        elif number < self.prob_COT + self.prob_BK:
+            self.counter_BK += 1
             boat = BulkCarrier
-        elif number < prob_COT + prob_BK + prob_TB:
+        elif number < self.prob_COT + self.prob_BK + self.prob_TB:
+            self.counter_TB += 1
             boat = TugBoat
         else:
+            self.counter_SCF += 1
             boat = SmallCargoFreighter
         self.vessel_id += 1
         return boat(creation_time, self.vessel_id)

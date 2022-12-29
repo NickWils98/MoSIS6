@@ -13,7 +13,7 @@ if __name__ == '__main__':
     np.random.seed(42)
 
     # Set up the system and run
-    system = port_system.PortSystem(100)
+    system = model.PortSystem(100)
     sim =Simulator(system)
     sim.setTerminationTime(100)
     sim.setClassicDEVS()

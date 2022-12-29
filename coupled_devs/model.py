@@ -14,11 +14,11 @@ from atomic_devs.confluence_port import ConfluencePort
 
 
 class PortSystem(CoupledDEVS):
-    def __init__(self, generation_max=float('inf')):
+    def __init__(self, generation_max=float('inf'), prob=(.28, .22, .33, .17)):
         CoupledDEVS.__init__(self, "FullSystem")
 
         # Define generator atomic submodel
-        generator = self.addSubModel(Generator(generation_max))
+        generator = self.addSubModel(Generator(generation_max, prob))
 
         # Define anchorpoint atomic submodel
         anchorpoint = self.addSubModel(AnchorPoint())
@@ -247,6 +247,7 @@ class PortSystem(CoupledDEVS):
 
         # Make it accessible outside of our own scope
         self.collector = collector
+        self.generator = generator
 
 
     def run(self):
