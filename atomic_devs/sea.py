@@ -7,6 +7,7 @@ class SeaState:
         self.current_time = 0.0
         self.entered = []
         self.left_counter = 0
+        self.left = []
 
 
 class Sea(AtomicDEVS):
@@ -17,19 +18,18 @@ class Sea(AtomicDEVS):
         self.out_port = self.addOutPort("out_port")
 
     def intTransition(self):
-        self.state.entered.pop(0)
-
+        # let the ship leave
+        vessel = self.state.entered.pop(0)
+        self.state.left.append(vessel)
         return self.state
 
     def extTransition(self, inputs):
         # Update simulation time
         self.state.current_time += self.elapsed
-
         # add vessel to leaving list
         if self.in_port in inputs:
-
+            self.state.left_counter += 1
             self.state.entered.append(inputs[self.in_port])
-
         return self.state
 
     def timeAdvance(self):
@@ -39,8 +39,6 @@ class Sea(AtomicDEVS):
         return float('inf')
 
     def outputFnc(self):
-        self.state.left_counter += 1
         return_dict = {self.out_port: self.state.left_counter}
-
         return return_dict
 
