@@ -73,7 +73,7 @@ class Generator(AtomicDEVS):
         # Calculate current time (note the addition!)
         creation_time = self.state.current_time + self.state.remaining
         # create the vessel
-        vessel = self.state.factory.create(creation_time)
+        boat = self.state.factory.create(creation_time)
 
         # Output the new event on the output port
-        return {self.out_port: vessel, self.out_count: self.state.factory.counter}
+        return {self.out_port: boat, self.out_count: self.state.factory.counter}
