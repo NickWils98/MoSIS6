@@ -116,7 +116,7 @@ class Waterway(AtomicDEVS):
             return_dict[self.out1_port] = leaving
             self.state.ingoing_leaving = []
 
-        # Output all the ships who left the water canal other direciton
+        # Output all the ships who left the water canal other direction
         if len(self.state.outgoing_leaving) > 0:
             leaving = self.state.outgoing_leaving
             return_dict[self.out2_port] = leaving
