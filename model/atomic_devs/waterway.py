@@ -39,11 +39,11 @@ class Waterway(AtomicDEVS):
             if self.state.ingoing[vessel] <= 0:
                 self.state.ingoing_leaving.append(vessel)
 
-        # delete the arrived vessel
+        # delete the arrived vessels
         for vessel in self.state.ingoing_leaving:
             del self.state.ingoing[vessel]
 
-        # update all the remaining times
+        # update all the remaining times for the other directions
         for vessel in self.state.outgoing.keys():
             self.state.outgoing[vessel] -= self.state.remaining_time
 
@@ -64,6 +64,7 @@ class Waterway(AtomicDEVS):
             if self.state.ingoing[vessel] < 0:
                 self.state.ingoing[vessel] = 0
 
+        # update all the remaining vessels in the other directions
         for vessel in self.state.outgoing.keys():
             self.state.outgoing[vessel] -= self.elapsed
             if self.state.outgoing[vessel] < 0:
@@ -76,7 +77,7 @@ class Waterway(AtomicDEVS):
                 remaining_time = self.state.distance / vessel.avg_v
                 self.state.ingoing[vessel] = remaining_time
 
-        # add a new vessel in the waterway in 1 way
+        # add a new vessel in the waterway in other way
         if self.in2_port in inputs:
             for vessel in inputs[self.in2_port]:
                 # calculate the remaining time
@@ -93,11 +94,12 @@ class Waterway(AtomicDEVS):
         if len(self.state.ingoing.keys()) > 0:
             self.state.remaining_time = min(self.state.ingoing.values())
 
-        # find the shortest time between the vessels
+        # find the shortest time between the vessels other directions
         if len(self.state.outgoing.keys()) > 0:
             remaining_outgoing = min(self.state.outgoing.values())
             self.state.remaining_time = min(self.state.remaining_time, remaining_outgoing)
 
+        #  if a ship needs to leave there is no delay
         if len(self.state.ingoing_leaving) > 0:
             self.state.remaining_time = 0
 
@@ -114,7 +116,7 @@ class Waterway(AtomicDEVS):
             return_dict[self.out1_port] = leaving
             self.state.ingoing_leaving = []
 
-        # Output all the ships who left the water canal
+        # Output all the ships who left the water canal other direciton
         if len(self.state.outgoing_leaving) > 0:
             leaving = self.state.outgoing_leaving
             return_dict[self.out2_port] = leaving

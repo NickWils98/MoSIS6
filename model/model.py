@@ -253,7 +253,6 @@ class PortSystem(CoupledDEVS):
 
         # Make it accessible outside of our own scope
         self.collector = collector
-        self.generator = generator
 
 
     def run(self):

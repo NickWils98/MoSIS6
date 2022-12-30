@@ -14,7 +14,7 @@ if __name__ == '__main__':
     np.random.seed(SEED)
 
     # Set up the system and run
-    system = model.PortSystem(100)
+    system = model.PortSystem(generation_max=100)
     sim = Simulator(system)
     sim.setTerminationTime(92)
     sim.setClassicDEVS()
@@ -67,25 +67,25 @@ if __name__ == '__main__':
     plt.ylabel('number of vessels in port')
     plt.title('Total number of vessels in the port at every hour')
     plt.savefig(f"{filename}stat4_seed{SEED}.png")
-    plt.show()
+    plt.close()
 
     plt.plot(range(len(stat7A)), stat7A)
     plt.xlabel('hour')
     plt.ylabel('Remaining capacity')
     plt.title('Remaining capacity for each Lock at every hour Lock A')
     plt.savefig(f"{filename}stat7A_seed{SEED}.png")
-    plt.show()
+    plt.close()
 
     plt.plot(range(len(stat7B)), stat7B)
     plt.xlabel('hour')
     plt.ylabel('Remaining capacity')
     plt.title('Remaining capacity for each Lock at every hour Lock B')
     plt.savefig(f"{filename}stat7B_seed{SEED}.png")
-    plt.show()
+    plt.close()
 
     plt.plot(range(len(stat7C)), stat7C)
     plt.xlabel('hour')
     plt.ylabel('Remaining capacity')
     plt.title('Remaining capacity for each Lock at every hour Lock C')
     plt.savefig(f"{filename}stat7C_seed{SEED}.png")
-    plt.show()
+    plt.close()
