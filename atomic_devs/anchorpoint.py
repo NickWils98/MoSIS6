@@ -36,7 +36,7 @@ class AnchorPoint(AtomicDEVS):
         self.stat2_out = self.addOutPort("stat2_out")
 
     def intTransition(self):
-        # Make a request to ask the control tower for a port
+        # Make a request to ask the control tower for a dock
         if len(self.state.waiting) != 0:
             for vessel in self.state.waiting:
                 # remove it from the waiting list and make the message
@@ -48,6 +48,7 @@ class AnchorPoint(AtomicDEVS):
         return self.state
 
     def extTransition(self, inputs):
+        # update time
         if self.elapsed is not None:
             self.state.current_time += self.elapsed
 
@@ -65,7 +66,7 @@ class AnchorPoint(AtomicDEVS):
                         vessel = ship
                         self.state.requested.remove(vessel)
                         break
-
+                #  update the vessel with the destination and make it ready to move
                 if vessel is not None:
                     vessel.destination = permission.destination
                     self.state.leaving.append(vessel)
@@ -81,21 +82,23 @@ class AnchorPoint(AtomicDEVS):
             return 0
         if len(self.state.waiting) > 0:
             return 0
+        if len(self.state.requests) > 0:
+            return 0
         return float('inf')
 
     def outputFnc(self):
         return_dict = {}
-
+        # Let the vessel start
         if len(self.state.leaving) > 0:
             leaving = self.state.leaving
             return_dict[self.out_port] = leaving
             self.state.leaving = []
-
+        # Send the message
         if len(self.state.requests) > 0:
             requests = self.state.requests
             return_dict[self.out_event] = requests
             self.state.requests = []
-
+        # Analytics
         return_dict[self.stat2_out] = self.state.avg_waiting_time
 
         return return_dict
