@@ -64,30 +64,31 @@ class Collector(AtomicDEVS):
         # Update simulation time
         self.state.current_time += self.elapsed
 
-        # add anchor info to the list
+        # add total ships
         if self.total_left_input in inputs:
             self.state.total_ships_left_sea = inputs[self.total_left_input]
 
+        # add total ships per type
         if self.ships_count_input in inputs:
             self.state.ships_count_type = inputs[self.ships_count_input]
 
-        # add anchor info to the list
+        # add stat1 info to the list
         if self.stat1_in in inputs:
             self.state.stat1_info.append(inputs[self.stat1_in])
 
-        # add cp info to the list
+        # add stat2 info to the list
         if self.stat2_in in inputs:
             self.state.stat2_info.append(inputs[self.stat2_in])
 
-        # add anchor info to the list
+        # add stat3 info to the list
         if self.stat3_in in inputs:
             self.state.stat3_info.append(inputs[self.stat3_in])
 
-        # add anchor info to the list
+        # add stat4 info to the list
         if self.stat4_in in inputs:
             self.state.stat4_info.append(inputs[self.stat4_in])
 
-        # add anchor info to the list
+        # add stat5 info to the list
         if self.stat5A_in in inputs:
             self.state.stat5A_info.append(inputs[self.stat5A_in])
         if self.stat5B_in in inputs:
@@ -95,7 +96,7 @@ class Collector(AtomicDEVS):
         if self.stat5C_in in inputs:
             self.state.stat5C_info.append(inputs[self.stat5C_in])
 
-        # add cp info to the list
+        # add stat6 info to the list
         if self.stat6A_in in inputs:
             self.state.stat6A_info.append(inputs[self.stat6A_in])
         if self.stat6B_in in inputs:
@@ -103,7 +104,7 @@ class Collector(AtomicDEVS):
         if self.stat6C_in in inputs:
             self.state.stat6C_info.append(inputs[self.stat6C_in])
 
-        # add anchor info to the list
+        # add stat7 info to the list
         if self.stat7A_in in inputs:
             self.state.stat7A_info.append(inputs[self.stat7A_in])
         if self.stat7B_in in inputs:
