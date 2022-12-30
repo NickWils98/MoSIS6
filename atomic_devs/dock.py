@@ -69,9 +69,6 @@ class Dock(AtomicDEVS):
                     wait_time = 6
                 self.state.vessels[vessel] = wait_time
 
-        if len(self.state.vessels) > 50:
-            print("ERROR")
-
         return self.state
 
     def timeAdvance(self):
