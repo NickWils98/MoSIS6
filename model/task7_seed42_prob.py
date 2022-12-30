@@ -44,7 +44,7 @@ if __name__ == '__main__':
     stat7C = system.collector.state.stat7C_info
 
     # Write all data to txt file
-    filename = f"plots/task7/seed{SEED}/prob/"
+    filename = f"model/plots/task7/seed{SEED}/prob/"
 
     f = open(f'{filename}task7_prob_seed{SEED}_info.txt', 'w')
 

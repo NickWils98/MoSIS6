@@ -37,7 +37,7 @@ if __name__ == '__main__':
     stat7C = system.collector.state.stat7C_info
 
     # Write all data to txt file
-    filename = f"plots/task5/"
+    filename = f"model/plots/task5/"
 
     f = open(f'{filename}task5_info.txt', 'w')
 

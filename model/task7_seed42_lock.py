@@ -38,7 +38,7 @@ if __name__ == '__main__':
     stat7B = system.collector.state.stat7B_info
     stat7C = system.collector.state.stat7C_info
     # Write all data to txt file
-    filename = f"plots/task7/seed{SEED}/lock/"
+    filename = f"model/plots/task7/seed{SEED}/lock/"
 
     f = open(f'{filename}task7_lock_seed{SEED}_info.txt', 'w')
 
