@@ -33,6 +33,7 @@ class VesselFactory:
         boat = None
         if self.det_bool:
             vessel_type = -1
+            # go over all the phases
             for _ in range(4):
                 if self.counter_det[self.phase]>0:
                     vessel_type=self.phase
@@ -41,6 +42,7 @@ class VesselFactory:
                     break
                 else:
                     self.phase = (self.phase+1)%4
+            # there was no room so reset
             if vessel_type==-1:
                 self.reset()
                 self.phase =1
@@ -48,6 +50,7 @@ class VesselFactory:
                 self.counter[0] +=1
 
                 boat= CrudeOilTanker
+            # choose vessel type
             if vessel_type == 0:
                 boat = CrudeOilTanker
                 self.counter[0] +=1
