@@ -4,21 +4,22 @@ from pypdevs.DEVS import AtomicDEVS
 # Define the state of the Canal as a structured object
 class CanalState:
     def __init__(self, distance):
+        # remaining time for closest vessel
         self.remaining_time = float('inf')
 
-        self.ingoing = [] # Queue van dictionaries
-        self.ingoing_leaving = [] # lijst van vessels
+        # list of vessels in canal in order from first to last
+        self.ingoing = [] # list of [vessel, remaining time]
+        self.ingoing_leaving = [] # list van vessels leaving
+        # list of vessels in canal in order from first to last other direction
         self.outgoing = []
         self.outgoing_leaving = []
 
         self.distance = distance
-        self.current_time = 0
 
 
 class Canal(AtomicDEVS):
     def __init__(self, distance):
         AtomicDEVS.__init__(self, "Canal")
-        # Fix the time needed to process a single event
         self.state = CanalState(distance)
 
         # Create input and output ports for one way
@@ -30,45 +31,49 @@ class Canal(AtomicDEVS):
         self.out2_port = self.addOutPort("out_port")
 
     def intTransition(self):
-        self.state.current_time+= self.state.remaining_time # TODO: Weg voor consistentie?
+        # update all the remaining times
+
         for i in range(len(self.state.ingoing)):
             self.state.ingoing[i][1] -= self.state.remaining_time
+            #  if the vessel is arrived add it to the leaving list
 
             if self.state.ingoing[i][1] <= 0:
                 self.state.ingoing_leaving.append(self.state.ingoing[i][0])
 
-        # delete from the dictionary
+        # delete from the list
         for vessel in self.state.ingoing_leaving:
             self.state.ingoing.pop(0)
 
+        # update all the remaining times for the other directions
         for i in range(len(self.state.outgoing)):
             self.state.outgoing[i][1] -= self.state.remaining_time
+            #  if the vessel is arrived add it to the leaving list
 
             if self.state.outgoing[i][1] <= 0:
                 self.state.outgoing_leaving.append(self.state.outgoing[i][0])
 
-        # delete from the dictionary
-        for vessel in self.state.outgoing_leaving:
+        # delete from the list
+        for _ in self.state.outgoing_leaving:
             self.state.outgoing.pop(0)
 
         return self.state
 
     def extTransition(self, inputs):
-        # Update times of ingoing ships
+        # Update times of ingoing vessels
         for i in range(len(self.state.ingoing)):
             self.state.ingoing[i][1] -= self.elapsed
 
             if self.state.ingoing[i][1] < 0:
                 self.state.ingoing[i][1] = 0
 
-        # Update times of outgoing ships
+        # Update times of outgoing vessels
         for i in range(len(self.state.outgoing)):
             self.state.outgoing[i][1] -= self.elapsed
 
             if self.state.outgoing[i][1] < 0:
                 self.state.outgoing[i][1] = 0
 
-        # Loop over all the new ships in the comments
+        # Loop over all the new vessels
         if self.in1_port in inputs:
             for vessel in inputs[self.in1_port]:
                 # If first vessel, no need to take into account velocity ship in front
@@ -79,7 +84,7 @@ class Canal(AtomicDEVS):
 
                 # If not first vessel, need to take into account velocity ship in front (take min)
                 else:
-                    # Get vessel in front and it's velocity to calculate min (my vel, front vel)
+                    # Get vessel in front with it's velocity to calculate min (vessel, front vessels)
                     front_vessel_avg = self.state.ingoing[-1][2]
                     min_avg_velocity = min(vessel.avg_v, front_vessel_avg)
                     remaining_time = self.state.distance / min_avg_velocity
@@ -95,7 +100,7 @@ class Canal(AtomicDEVS):
 
                 # If not first vessel, need to take into account velocity ship in front (take min)
                 else:
-                    # Get vessel in front and it's velocity to calculate min (my vel, front vel)
+                    # Get vessel in front with it's velocity to calculate min (my vel, front vel)
                     front_vessel_avg = self.state.outgoing[-1][2]
                     min_avg_velocity = min(vessel.avg_v, front_vessel_avg)
                     remaining_time = self.state.distance / min_avg_velocity
@@ -107,10 +112,12 @@ class Canal(AtomicDEVS):
         # wait idl if there is no ship in the waterway
         self.state.remaining_time = float("inf")
 
+        # wait for the vessels in front
         if len(self.state.ingoing) > 0:
             self.state.remaining_time = self.state.ingoing[0][1]
         if len(self.state.outgoing) > 0:
             self.state.remaining_time = min(self.state.outgoing[0][1], self.state.remaining_time)
+        # if a vessel wants to leave: no delay
         if len(self.state.ingoing_leaving) > 0:
             self.state.remaining_time = 0
         if len(self.state.outgoing_leaving) > 0:
@@ -118,7 +125,7 @@ class Canal(AtomicDEVS):
         return self.state.remaining_time
 
     def outputFnc(self):
-        # Output all the ships who left the water canal
+        # Output all the vessels who left the water canal
         return_dict = {}
         if len(self.state.ingoing_leaving) > 0:
             leaving = self.state.ingoing_leaving
