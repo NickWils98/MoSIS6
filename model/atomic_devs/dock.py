@@ -1,6 +1,6 @@
 from pypdevs.DEVS import AtomicDEVS
 import numpy as np
-from messages_events import port_events as Messages
+from messages_events import port_events
 
 
 # Define the state of the AnchorPoint as a structured object
@@ -9,15 +9,15 @@ class DockState:
         # Keep track of current time and received vessels
         self.remaining_time = float('inf')
         self.quay_id = quay_id
+        # does it need to be deterministic
         self.det_bool = det_bool
 
+        # vessels in the dock with remaining time as value
         self.vessels = {}
         self.leaving = []
 
         # List of request to send
         self.requests = []
-        self.activate = False
-        self.counter = 0
         self.current_time = 0
 
 
@@ -25,10 +25,10 @@ class Dock(AtomicDEVS):
     def __init__(self, quay_id, det_bool=False):
         AtomicDEVS.__init__(self, "Dock")
         self.state = DockState(quay_id, det_bool)
-
+        # in and out port for vessels
         self.in_port = self.addInPort("in_port")
         self.out_port = self.addOutPort("out_port")
-
+        # in and out ports for messeges
         self.in_event = self.addInPort("in_event")
         self.out_event = self.addOutPort("out_event")
 
@@ -40,7 +40,7 @@ class Dock(AtomicDEVS):
 
             #  if the vessel is leaving the dock, add it to the leaving list
             if self.state.vessels[vessel] <= 0:
-                request = Messages.portDepartureRequests(vessel.vessel_id, vessel.destination)
+                request = port_events.portDepartureRequests(vessel.vessel_id, vessel.destination)
                 vessel.destination = "S"
                 self.state.leaving.append(vessel)
                 self.state.requests.append(request)
@@ -61,10 +61,12 @@ class Dock(AtomicDEVS):
         # add a new vessel in dock if possible
         if self.in_port in inputs:
             for vessel in inputs[self.in_port]:
+                #  if detereministic: set wait_time on average (36)
                 if self.state.det_bool:
                     wait_time = 36
                 else:
                     wait_time = np.random.normal(36,12)
+                # make sure the minimal waiting time is 0
                 if wait_time < 6:
                     wait_time = 6
                 self.state.vessels[vessel] = wait_time
@@ -79,6 +81,7 @@ class Dock(AtomicDEVS):
         if len(self.state.vessels.keys()) > 0:
             self.state.remaining_time = min(self.state.vessels.values())
 
+        # if a vessels needs to leave: no delay
         if len(self.state.requests) > 0 or len(self.state.leaving) > 0:
             self.state.remaining_time = 0
 
