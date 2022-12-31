@@ -3,9 +3,10 @@ from pypdevs.DEVS import AtomicDEVS
 import math
 
 
-# Define the state of the Confluence as a structured object
+# Define the state of the ConfluencePort as a structured object
 class ConfluencePortState:
     def __init__(self):
+        # queue to keep FIFO
         self.queue = []
         self.map_port = [["S"], [1, 2], [3, 4, 5, 6, 7, 8]]
         for i in range(3):
@@ -13,16 +14,20 @@ class ConfluencePortState:
         self.current_time = 0
         self.output_number = 3
 
+        # Analytics
+        # amount of vessels in the port
         self.ships_in_port = 0
+        # average time a vessel is in the port
         self.avg_time = 0
+        # the times the vessels spend in the port
         self.ships_time = []
+        # amount of ships in the port
         self.ships_average = [0]
+        # time that the previous amount of ship were in the port
         self.ships_average_weight = []
-        self.last_hour = -1
-        self.ships_memory_hour = [[], [], [], [], [], [], [], [], [], [], [], [],
-                             [], [], [], [], [], [], [], [], [], [], [], []]
+        # is this an hourly update?
         self.hour_update = False
-        self.count = 1
+        # time remaining until the hourly update
         self.remaining_time = 0
 
 class ConfluencePort(AtomicDEVS):
@@ -44,43 +49,40 @@ class ConfluencePort(AtomicDEVS):
         self.stat4_out = self.addOutPort("stat4_out")
 
     def intTransition(self):
+        # keep time
         self.state.current_time += self.state.remaining_time
-        self.state.remaining_time = self.state.count-math.floor(self.state.current_time)
+        self.state.remaining_time = 0
         return self.state
 
     def extTransition(self, inputs):
+        # keep time
         self.state.current_time += self.elapsed
-
+        # Go over all the inputs
         for i in range(self.state.output_number):
             if self.in_ports[i] in inputs:
+                # go over all the vessels
                 for vessel in inputs[self.in_ports[i]]:
+                    # if the vessel comes from the ancherpoint
                     if i == 0:
+                        # keep the time the vessel entered the port
                         vessel.enter_port = self.state.current_time
                         self.state.ships_in_port += 1
+                    # if the vessel comes from the port
                     else:
+                        # if the vessel leaves the port
                         if vessel.destination == "S":
+                            # calculate the average time
                             avg_time = self.state.current_time - vessel.enter_port
                             self.state.ships_time.append(avg_time)
                             self.state.avg_time = sum(self.state.ships_time)/len(self.state.ships_time)
                             self.state.ships_in_port -= 1
 
-                    # Analytics 3
+                    # Analytics 3 : keep the time sinds the previous update in shipcount in port
                     self.state.ships_average.append(self.state.ships_in_port)
                     if len(self.state.ships_average_weight)>0:
-
                         self.state.ships_average_weight.append(self.state.current_time-self.state.ships_average_weight[-1])
                     else:
-
                         self.state.ships_average_weight.append(self.state.current_time)
-
-                    # Analytics 4
-                    hour = math.floor(self.state.current_time) % 24
-                    if self.state.last_hour == -1:
-                        self.state.last_hour = hour
-                    if self.state.last_hour != hour:
-                        self.state.ships_memory_hour[self.state.last_hour] = []
-                        self.state.last_hour = hour
-                    self.state.ships_memory_hour[hour].append(self.state.ships_in_port)
 
                     # Set correct destination
                     destination = vessel.destination
@@ -91,8 +93,10 @@ class ConfluencePort(AtomicDEVS):
         return self.state
 
     def timeAdvance(self):
+        # update every hour
         self.state.remaining_time = math.floor(self.state.current_time)+1-self.state.current_time
         self.state.hour_update =True
+        # if a ship is in the confluence there is no delay
         for queue in self.state.queue:
             if len(queue) > 0:
                 self.state.hour_update = False
@@ -101,6 +105,7 @@ class ConfluencePort(AtomicDEVS):
 
     def outputFnc(self):
         output_dict = {}
+        # let the vessels leave in each split
         for queue_number in range(self.state.output_number):
             if len(self.state.queue[queue_number]) > 0:
                 vessel = self.state.queue[queue_number]
