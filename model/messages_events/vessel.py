@@ -1,5 +1,6 @@
 import numpy as np
 import os
+import math
 
 # Conversion from knots to km/h
 KNOT_TO_KM_H = 1.852
@@ -8,7 +9,7 @@ class VesselFactory:
     """
     Make vessels
     """
-    def __init__(self,det_bool=False, prob=(.28, .22, .33, .17)):
+    def __init__(self,det_bool=False, prob=(0.28, .22, .33, .17)):
         self.det_bool = det_bool
         self.counter_det = [0,0,0,0]
         self.vessel_id = 0
@@ -21,10 +22,10 @@ class VesselFactory:
         self.reset()
         self.phase = 0
     def reset(self):
-        self.counter_det[0] = self.prob_COT*100
-        self.counter_det[1] = self.prob_BK*100
-        self.counter_det[2] = self.prob_TB*100
-        self.counter_det[3] = self.prob_SCF*100
+        self.counter_det[0] = math.floor(self.prob_COT*100)
+        self.counter_det[1] = math.floor(self.prob_BK*100)
+        self.counter_det[2] = math.floor(self.prob_TB*100)
+        self.counter_det[3] = math.floor(self.prob_SCF*100)
     def create(self, creation_time):
         """
         Create a vessel based on a probability.
@@ -35,8 +36,8 @@ class VesselFactory:
             for _ in range(4):
                 if self.counter_det[self.phase]>0:
                     vessel_type=self.phase
-                    self.phase = (self.phase+1)%4
                     self.counter_det[self.phase]-=1
+                    self.phase = (self.phase+1)%4
                     break
                 else:
                     self.phase = (self.phase+1)%4

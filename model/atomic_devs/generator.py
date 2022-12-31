@@ -21,7 +21,7 @@ class GeneratorState:
         # statistic
         self.counter = 0
         # factory to create vessels
-        self.factory = vessel.VesselFactory(prob)
+        self.factory = vessel.VesselFactory(det_bool,prob)
 
         self.max_counter = counter
         self.det_bool = det_bool
