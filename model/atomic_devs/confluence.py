@@ -11,7 +11,6 @@ class ConfluenceState:
         for i in range(outputs):
             self.queue.append([])
 
-        self.current_time = 0
         self.output_number = outputs
 
 class Confluence(AtomicDEVS):

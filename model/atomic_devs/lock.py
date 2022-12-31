@@ -9,15 +9,15 @@ START_DELAY = 30
 # Define the state of the Lock as a structured object
 class LockState:
     def __init__(self, lock_id, washing_duration, lock_shift_interval, open_close_duration, surface_area):
-        # self.water_level = "LOW"
-        # self.gate1_state = "CLOSED"
-        # self.gate2_state = "OPEN"
-
+        # water level 1=High, 0=Low
         self.water_level = 0
+        # gate 0=closed, 1=open
         self.gate_sea = 0
         self.gate_dock = 1
 
         self.lock_id = lock_id
+
+        # stats for this lock
         self.washing_duration = washing_duration
         self.lock_shift_interval = lock_shift_interval
         self.open_close_duration = open_close_duration
@@ -25,41 +25,49 @@ class LockState:
         self.duration = (2 * self.open_close_duration) + washing_duration
         self.remaining_time = self.duration
         self.time_open = self.lock_shift_interval - self.duration
+        # Make sure all the ships can leave
         self.max_ship_in_lock = (self.time_open/(START_DELAY*HOUR_TO_SECOND))-1
+        # timer that the ship stays open - the time ships were leaving
         self.time_open_used = -1
 
 
         self.remaining_capacity = self.surface_area
 
-
+        # list to keep track of vessels everywhere
         self.waiting_queue_sea = []
         self.waiting_queue_dock = []
         self.in_lock = []
         self.leaving = []
+        # a ship that leaves the lock
         self.left = None
         self.leaving_bool = False
 
-        # List of request to send
-        self.requests = []
-
+        # total time
         self.current_time = 0
+        # statistic idle time
         self.idle_time = 0
+        # amount of empty itterations
         self.empty_itteration = 0
+        # the lock is empty at the moment
         self.empty = True
+        # chronometer that starts running when the lock is empty
         self.start_empty = 0
+        # remainig cappacity this hour
         self.hourly_remainig_cappacity = -1
+        # this update is because of the hour change
         self.hour_update =True
-
+        # time until the next hour change
         self.hour_remaining = 1
-        self.closegate = False
+
+
 class Lock(AtomicDEVS):
     def __init__(self, lock_id, washing_duration, lock_shift_interval, open_close_duration, surface_area):
         AtomicDEVS.__init__(self, "Lock")
         self.state = LockState(lock_id, washing_duration, lock_shift_interval, open_close_duration, surface_area)
-
+        # ports for vessels that enter the lock from the sea and travel to the dock
         self.in_port_sea = self.addInPort("in_port_sea")
         self.out_port_dock = self.addOutPort("out_port_dock")
-
+        # ports for vessels that enter the lock from the dock and travel to the sea
         self.in_port_dock = self.addInPort("in_port_dock")
         self.out_port_sea = self.addOutPort("out_port_sea")
 
@@ -74,48 +82,37 @@ class Lock(AtomicDEVS):
             self.state.hour_update = False
             self.state.current_time += self.state.hour_remaining
             self.state.remaining_time -= self.state.hour_remaining
-            if self.state.remaining_time < 0 or self.state.hour_remaining < 0:
-                print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 
             if self.state.time_open_used != -1:
                 self.state.time_open_used -= self.state.hour_remaining
-                if self.state.time_open_used < 0 and self.state.time_open_used != -1:
-                    print("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")
             return self.state
         # else:
         #     self.state.hour_remaining -= self.state.remaining_time
 
         # ships are leaving takeing 30s each
         self.state.current_time += self.state.remaining_time
-        if self.state.remaining_time < 0 or self.state.hour_remaining<0:
-            print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
         if self.state.leaving_bool:
             self.state.time_open_used -= self.state.remaining_time
 
-            if self.state.time_open_used < 0 and self.state.time_open_used != -1:
-                print("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")
             # ships are still leaving
             if len(self.state.leaving) > 0:
                 # remove the ship
                 self.state.left = self.state.leaving.pop(0)
                 # the delay is 30 seconds
                 self.state.remaining_time = START_DELAY * HOUR_TO_SECOND
-                if self.state.remaining_time < 0 or self.state.hour_remaining < 0:
-                    print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                 # the delay of leaving a ship is subtracted from the time the gate stays open
             # no ships to leave
             else:
                 self.state.leaving_bool = False
                 # wait the remaining time the gate stays open
                 self.state.remaining_time = self.state.time_open_used
-                if self.state.remaining_time < 0 or self.state.hour_remaining < 0:
-                    print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                 self.state.time_open_used=-1
         # No ships are leaving
         else:
             # if the gate closes:
             if self.state.gate_sea == 1 or self.state.gate_dock == 1:
-
+                if len(self.state.in_lock)>0:
+                    print(self.state.current_time)
                 self.state.max_ship_in_lock = (self.state.time_open/(START_DELAY*HOUR_TO_SECOND))-1
                 if self.state.hourly_remainig_cappacity == -1:
                     self.state.hourly_remainig_cappacity =0
@@ -128,8 +125,6 @@ class Lock(AtomicDEVS):
                 self.state.gate_dock = 0
                 # set the remaining time to the duration of the shift
                 self.state.remaining_time = self.state.duration
-                if self.state.remaining_time < 0 or self.state.hour_remaining < 0:
-                    print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
             # if the gate opens
             else:
                 #  if the waterlevel changes to HIGH
@@ -157,19 +152,13 @@ class Lock(AtomicDEVS):
                     if len(self.state.leaving) > 0:
                         self.state.left = self.state.leaving.pop(0)
                         self.state.remaining_time = START_DELAY*HOUR_TO_SECOND
-                        if self.state.remaining_time < 0 or self.state.hour_remaining < 0:
-                            print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                         self.state.time_open_used = self.state.time_open
 
-                        if self.state.time_open_used < 0 and self.state.time_open_used != -1:
-                            print("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")
                         self.state.leaving_bool = True
                     # no ships need to leave
                     else:
                         self.state.remaining_time = self.state.time_open
 
-                        if self.state.remaining_time < 0 or self.state.hour_remaining < 0:
-                            print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 
                 #  if the waterlevel changes to LOW
                 else:
@@ -230,15 +219,21 @@ class Lock(AtomicDEVS):
                 self.state.empty = False
 
                 # gate at sea open and there is capacity
-                if self.state.water_level == 1 &\
-                        self.state.gate_sea == 1 &\
-                        self.state.remaining_capacity >= vessel.surface_area:
+                if self.state.water_level == 1:
+                    if self.state.gate_sea == 1:
+                        if self.state.remaining_capacity >= vessel.surface_area:
 
-                    if self.state.max_ship_in_lock > 0:
-                        self.state.max_ship_in_lock -= 1
-                        # go in lock
-                        self.state.in_lock.append(vessel)
-                        self.state.remaining_capacity -= vessel.surface_area
+                            if self.state.max_ship_in_lock > 0:
+                                self.state.max_ship_in_lock -= 1
+                                # go in lock
+                                self.state.in_lock.append(vessel)
+                                self.state.remaining_capacity -= vessel.surface_area
+                            else:
+                                self.state.waiting_queue_sea.append(vessel)
+                        else:
+                            self.state.waiting_queue_sea.append(vessel)
+                    else:
+                        self.state.waiting_queue_sea.append(vessel)
 
                 # else wait in queue
                 else:
@@ -252,16 +247,25 @@ class Lock(AtomicDEVS):
                 self.state.empty = False
 
                 # gate at dock open and there is capacity
-                if self.state.water_level == 0 &\
-                        self.state.gate_dock == 1 &\
-                        self.state.remaining_capacity >= vessel.surface_area:
-                    # go in lock
+                if self.state.water_level == 0:
+                    if self.state.gate_dock == 1:
+                        if self.state.remaining_capacity >= vessel.surface_area:
+                            # go in lock
 
-                    if self.state.max_ship_in_lock > 0:
-                        self.state.max_ship_in_lock -= 1
-                        self.state.in_lock.append(vessel)
+                            if self.state.max_ship_in_lock > 0:
+                                self.state.max_ship_in_lock -= 1
+                                self.state.in_lock.append(vessel)
 
-                        self.state.remaining_capacity -= vessel.surface_area
+                                self.state.remaining_capacity -= vessel.surface_area
+
+                            else:
+                                self.state.waiting_queue_dock.append(vessel)
+
+                        else:
+                            self.state.waiting_queue_dock.append(vessel)
+
+                    else:
+                        self.state.waiting_queue_dock.append(vessel)
 
                 # else wait in queue
                 else:
@@ -272,8 +276,6 @@ class Lock(AtomicDEVS):
         self.state.hour_update = False
 
         self.state.hour_remaining = math.floor(self.state.current_time)+1-self.state.current_time
-        if self.state.remaining_time < 0 or self.state.hour_remaining<0:
-            print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
         # return the remaining time that the lock will be open or closed or leaving of a ship
         if self.state.remaining_time < self.state.hour_remaining:
 
