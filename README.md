@@ -1,4 +1,5 @@
 # DEVS
+- run.sh: a script that will run all the expiriments for task 5 up until task 8
 - Images used in the report and the true travel time excel file can be found in the resources folder
 - The model map contains:
   - experiment.py: Setup the system, run and gather information for output
